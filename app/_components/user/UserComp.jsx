@@ -24,8 +24,8 @@ const UserComp = ({user = null, isSelectedUser = false, setOpen}) => {
     return (
         <Card 
             className={`${styles.userCard} ${user !== null ? 'cursorPointer' : ''} ${isSelectedUser ? styles.userSelected : ''}`}
-            onMouseEnter={selectUser}
-            onClick={selectUserAndCloseModal}
+            onMouseEnter={() => selectUser()}
+            onClick={() => selectUserAndCloseModal()}
         >
             {
                 user === null

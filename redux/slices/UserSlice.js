@@ -13,6 +13,7 @@ const UserSlice = createSlice({
             return {...state, usersList: [...action.payload]}
         },
         setSelectedUser: (state, action) => {
+            console.log('setSelectedUser', action.payload.name)
             return {...state, selectedUser: {...action.payload}}
         },
         setLoadingUsersList: (state, action) => {
