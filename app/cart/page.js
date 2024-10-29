@@ -1,50 +1,61 @@
 
 "use client"
-import React, { useEffect, useRef } from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
-import { H1, H2, H3, Subtitle, Body, InlineCode, InlineKeyCode, Overline, Link } from '@leafygreen-ui/typography';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { H1, H2, H3, Subtitle, Disclaimer, Body, InlineCode, InlineKeyCode, Overline, Link } from '@leafygreen-ui/typography';
 
 import styles from "./cart.module.css";
 import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import { Container } from 'react-bootstrap';
 import Button from "@leafygreen-ui/button";
-import { fetchCart } from '@/lib/api';
+import { fetchCart, fillCartRandomly } from '@/lib/api';
 import { setCartProductsList, setLoading } from '@/redux/slices/CartSlice';
 import CartItem from '../_components/cart/CartItem';
 
 export default function Page() {
+    const dispatch = useDispatch();
     const selectedUser = useSelector(state => state.User.selectedUser);
     const cart = useSelector(state => state.Cart);
-    const prevSelectedUser = useRef();
+    const [total, setTotal] = useState(0)
 
     const onCheckout = () => {
-        
+        // Todo: process cart and move to checkout page
+    }
+
+    const onFillCart = async () => {
+        if (selectedUser !== null && cart.products?.length < 1) {
+            try {
+                const result = await fillCartRandomly();
+                // Todo: process result and render returned cart
+            } catch (err) {
+                console.log(`Error filling cart ${err}`)
+            }
+        }
+
     }
 
     useEffect(() => {
         const getCart = async () => {
             try {
                 const result = await fetchCart(selectedUser._id);
-                console.log('result', result)
-                if (result) {
-                    if (result.length > 0)
-                        dispatch(setCartProductsList(result[0]))
+                if (result !== null) {
+                    dispatch(setCartProductsList(result))
                 }
                 dispatch(setLoading(false))
             } catch (err) {
-                console.log(`Error fetching cart`)
+                console.log(`Error fetching cart ${err}`)
             }
-        };
-
-        // get user's cart when the selected user has changed
-        if (prevSelectedUser.current !== selectedUser) {
-            prevSelectedUser.current = selectedUser;
-            getCart();
         }
+        getCart();
 
         return () => { }
     }, [selectedUser]);
+
+    useEffect(() => {
+        const total = cart.products.reduce((sum, product) => sum + product.price.amount, 0);
+        setTotal(total)
+    }, [cart.products?.length])
 
     return (
         <>
@@ -55,63 +66,44 @@ export default function Page() {
                     <Button
                         size='small'
                         className='ms-3 mb-2'
-                        disabled={cart.loading}
+                        disabled={cart.loading || cart.error || cart.products?.length > 0}
+                        onClick={() => onFillCart()}
                     >
                         Fill cart
                     </Button>
                 </div>
                 <div className='mt-3'>
-                    <H3>Products</H3>
-                    <div>
-                        {
-                            cart.loading === true
-                                ? [0, 1, 2, 3, 4].map((item) => (
+                    <H3 className="mb-2">Products</H3>
+                    {
+                        cart.loading === true
+                            ? [0, 1, 2].map((item) => (
+                                <CartItem
+                                    key={`loading-product-${item}`}
+                                    product={null}
+                                />
+                            ))
+                            : cart.products?.length > 0
+                            ? <div>
+                                {cart.products.map((product, index) => (
                                     <CartItem
-                                        key={`loading-product-${item}`}
-                                        product={{
-                                            "amount": {
-                                                "$numberInt": "2"
-                                            },
-                                            "brand": "Indigo",
-                                            "code": "INMPBT-MDB0001",
-                                            "description": "Indigo Nation Men Printed Black T-shirt",
-                                            "id": {
-                                                "$oid": "65e1e313cffbb90f3409a3cf"
-                                            },
-                                            "image": {
-                                                "url": "http://assets.myntassets.com/v1/images/style/properties/7a1bc7d255671c7f4b85f1b1b35e945b_images.jpg"
-                                            },
-                                            "name": "Indigo Nation Men Printed Black T-shirt",
-                                            "price": {
-                                                "amount": {
-                                                    "$numberDouble": "20.0"
-                                                },
-                                                "currency": "USD"
-                                            }
-                                        }}
+                                        key={`cart-product-${index}`}
+                                        product={product}
                                     />
-                                ))
-                                : cart.products.length > 0
-                                    ? cart.products.map((product, index) => (
-                                        <CartItem
-                                            key={`cart-product-${index}`}
-                                            product={null}
-                                        />
-                                    ))
-                                    : 'No products found, please reload'
-                        }
-                    </div>
-                    <div className='d-flex flex-row-reverse mt-3'>
-                        <Body>Subtotal (3 products): <strong>$784.99</strong></Body>
-                    </div>
-                    <div className='d-flex flex-row-reverse mt-3'>
-                        <Button 
-                            variant='primary'
-                            onClick={() => onCheckout()}
-                        >
-                            Proceed to checkout
-                        </Button>
-                    </div>
+                                ))}
+                                <div className='d-flex flex-row-reverse mt-3'>
+                                    <Body>Subtotal ({cart.products.length} product{cart.products.length > 1 ? 's' : ''}): <strong>${total}</strong></Body>
+                                </div>
+                                <div className='d-flex flex-row-reverse mt-3'>
+                                    <Button
+                                        variant='primary'
+                                        onClick={() => onCheckout()}
+                                    >
+                                        Proceed to checkout
+                                    </Button>
+                                </div>
+                            </div>
+                            : <Disclaimer className='mt-5'>No products found, click on the button above to fill the cart with products</Disclaimer>
+                    }
                 </div>
 
             </Container>

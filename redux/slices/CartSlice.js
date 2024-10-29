@@ -1,15 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { act } from "react";
 
 const CartSlice = createSlice({
     name: "Cart",
     initialState: {
         products: [],      // [] or [...]
+        _id: null,
         loading: true,      // true or false
         error: null         // null or {msg: ""}
     },
     reducers: {
         setCartProductsList: (state, action) => {
-            return {...state, products: [...products]}
+          console.log(action)
+            if(action.payload === null){ 
+              // cart is null when the document for this user's cart does not exist on Atlas
+              return {...state, products: [], _id: null, loading: false, error: null}
+            }else{
+              return {...state, products: [...action.payload.products],  _id: action.payload._id, loading: false, error: null}
+            }
         },
         addProduct: (state, action) => {
             return {...state, products: [...state.products, action.payload]}            

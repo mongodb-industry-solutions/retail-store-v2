@@ -19,14 +19,22 @@ const CartItem = ({ product = null }) => {
         >
             {
                 product === null
-                ? <Skeleton></Skeleton>
+                ? <>
+                    <Skeleton id="imageSkeleton" className={styles.responsiveImage}></Skeleton>
+                    <div className={styles.productInfo}>
+                        <Skeleton className='mb-2'></Skeleton>
+                        <Skeleton className='mb-2'></Skeleton>
+                        <Skeleton className='mb-2'></Skeleton>
+                        <Skeleton className=''></Skeleton>
+                    </div>
+                </>
                 : <>
                     <img src={`${product.image.url}`} className={styles.responsiveImage}/>
                     <div className={styles.productInfo}>
                         <Subtitle>{product.name}</Subtitle>
                         <Body className={`weightNormal mt-2 mb-2`}>{product.description}</Body>
-                        <Subtitle className={`weightNormal mt-2 mb-2`}>${product.price.amount.$numberDouble}</Subtitle>
-                        <Subtitle className={`weightNormal`}>Amount: {product.amount.$numberInt}</Subtitle>
+                        <Subtitle className={`weightNormal mt-2 mb-2`}>${product.price.amount}</Subtitle>
+                        <Subtitle className={`weightNormal`}>Amount: {product.amount}</Subtitle>
                     </div>
                 </>
             }
