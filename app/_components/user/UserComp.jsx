@@ -6,9 +6,9 @@ import { useDispatch } from 'react-redux';
 import { Body } from '@leafygreen-ui/typography';
 import Card from '@leafygreen-ui/card';
 import { Skeleton } from '@leafygreen-ui/skeleton-loader';
-import { setSelectedUser } from '@/redux/slices/UserSlice';
 
 import styles from "./userComp.module.css";
+import { setSelectedUser } from '@/redux/slices/UserSlice';
 
 const UserComp = ({user = null, isSelectedUser = false, setOpen, setLocalSelectedUser}) => {
     const dispatch = useDispatch();
@@ -40,6 +40,5 @@ const UserComp = ({user = null, isSelectedUser = false, setOpen, setLocalSelecte
         </Card>
     );
 };
-
 
 export default UserComp;

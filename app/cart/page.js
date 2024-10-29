@@ -2,9 +2,8 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { H1, H2, H3, Subtitle, Disclaimer, Body, InlineCode, InlineKeyCode, Overline, Link } from '@leafygreen-ui/typography';
+import { H1, H3, Disclaimer, Body } from '@leafygreen-ui/typography';
 
-import styles from "./cart.module.css";
 import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import { Container } from 'react-bootstrap';
@@ -17,7 +16,8 @@ export default function Page() {
     const dispatch = useDispatch();
     const selectedUser = useSelector(state => state.User.selectedUser);
     const cart = useSelector(state => state.Cart);
-    const [total, setTotal] = useState(0)
+    const [totalPrice, setTotalPrice] = useState(0)
+    const [totalAmount, setTotalAmount] = useState(0)
 
     const onCheckout = () => {
         // Todo: process cart and move to checkout page
@@ -32,7 +32,6 @@ export default function Page() {
                 console.log(`Error filling cart ${err}`)
             }
         }
-
     }
 
     useEffect(() => {
@@ -53,8 +52,10 @@ export default function Page() {
     }, [selectedUser]);
 
     useEffect(() => {
-        const total = cart.products.reduce((sum, product) => sum + product.price.amount, 0);
-        setTotal(total)
+        const totalP = cart.products.reduce((sum, product) => sum + (product.price.amount * product.amount), 0);
+        const totalA = cart.products.reduce((sum, product) => sum + product.amount, 0);
+        setTotalPrice(totalP);
+        setTotalAmount(totalA);
     }, [cart.products?.length])
 
     return (
@@ -91,7 +92,7 @@ export default function Page() {
                                     />
                                 ))}
                                 <div className='d-flex flex-row-reverse mt-3'>
-                                    <Body>Subtotal ({cart.products.length} product{cart.products.length > 1 ? 's' : ''}): <strong>${total}</strong></Body>
+                                    <Body>Subtotal ({totalAmount} product{totalAmount > 1 ? 's' : ''}): <strong>${totalPrice}</strong></Body>
                                 </div>
                                 <div className='d-flex flex-row-reverse mt-3'>
                                     <Button
@@ -105,7 +106,6 @@ export default function Page() {
                             : <Disclaimer className='mt-5'>No products found, click on the button above to fill the cart with products</Disclaimer>
                     }
                 </div>
-
             </Container>
             <Footer></Footer>
         </>

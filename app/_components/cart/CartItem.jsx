@@ -1,17 +1,13 @@
 "use client";
 
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import Card from '@leafygreen-ui/card';
 import { Skeleton } from '@leafygreen-ui/skeleton-loader';
-import { H1, H2, H3, Subtitle, Body, InlineCode, InlineKeyCode, Overline, Link } from '@leafygreen-ui/typography';
+import { Subtitle, Body } from '@leafygreen-ui/typography';
 
 import styles from "./cart.module.css";
 
-
-
 const CartItem = ({ product = null }) => {
-
 
     return (
         <Card
@@ -44,6 +40,7 @@ const CartItem = ({ product = null }) => {
 };
 
 export default CartItem;
+
 /*
 {
     "amount": {

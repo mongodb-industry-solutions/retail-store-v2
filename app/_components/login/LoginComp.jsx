@@ -1,14 +1,13 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Icon from '@leafygreen-ui/icon';
 import { Modal, Container } from 'react-bootstrap';
 import { H2, Subtitle, Description } from '@leafygreen-ui/typography';
-import UserComp from '../user/UserComp';
 
 import styles from "./loginComp.module.css";
-import { useSelector } from 'react-redux';
+import UserComp from '../user/UserComp';
 import { setLoadingUsersList, setUsersList } from '@/redux/slices/UserSlice';
 import { fetchUsers } from '@/lib/api';
 
