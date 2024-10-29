@@ -19,6 +19,7 @@ export default function Home() {
     const getAllUsers = async () => {
       try {
         const result = await fetchUsers();
+        console.log('result', result)
         if(result){
           dispatch(setUsersList(result))
           if(result.length > 0)
