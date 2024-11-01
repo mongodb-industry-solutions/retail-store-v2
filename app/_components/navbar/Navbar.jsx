@@ -1,4 +1,4 @@
-
+"use client"
 
 import Link from "next/link";
 import styles from "./navbar.module.css";
@@ -7,7 +7,8 @@ import Cart from "../cart/Cart";
 import Profile from "../profile/Profile"
 import SearchBar from "../searchBar/SearchBar";
 
-const Navbar = () => {
+const Navbar = ({showNavbar = false}) => {
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.logo}>
@@ -28,7 +29,9 @@ const Navbar = () => {
         <Link href="/contact">Contact</Link>
       </div>
 
-      <SearchBar></SearchBar>
+      {
+        showNavbar && <SearchBar/>
+      }
       
       <div className={styles.iconButtons}>
         <Profile></Profile>

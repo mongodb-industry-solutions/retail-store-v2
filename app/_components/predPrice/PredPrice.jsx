@@ -7,23 +7,23 @@ const PredPrice = ({ productId, initialPredPrice }) => {
   const [predPrice, setPredPrice] = useState(initialPredPrice);
   const [prevPredPrice, setPrevPredPrice] = useState(initialPredPrice);
 
-  useEffect(() => {
-    const fetchUpdatedPredPrice = async () => {
-      try {
-        const response = await axios.post("/api/getPredPrice", { productId });
-        const newPredPrice = response.data.pred_price.toFixed(2);
-        setPrevPredPrice(predPrice);
-        setPredPrice(newPredPrice);
-       // console.log(newPredPrice);
-      } catch (error) {
-        console.error("Failed to fetch updated predicted price:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUpdatedPredPrice = async () => {
+  //     try {
+  //       const response = await axios.post("/api/getPredPrice", { productId });
+  //       const newPredPrice = response.data.pred_price.toFixed(2);
+  //       setPrevPredPrice(predPrice);
+  //       setPredPrice(newPredPrice);
+  //      // console.log(newPredPrice);
+  //     } catch (error) {
+  //       console.error("Failed to fetch updated predicted price:", error);
+  //     }
+  //   };
 
-    const intervalId = setInterval(fetchUpdatedPredPrice, 3000);
+  //   const intervalId = setInterval(fetchUpdatedPredPrice, 3000);
 
-    return () => clearInterval(intervalId);
-  }, [productId, predPrice]);
+  //   return () => clearInterval(intervalId);
+  // }, [productId, predPrice]);
 
   const arrowDirection = predPrice > prevPredPrice ? '/arrow_down.png' : predPrice < prevPredPrice ? '/arrow_up.png' : null;
 

@@ -21,7 +21,7 @@ export default function Page() {
 
   return (
     <>
-      <Navbar></Navbar>
+      <Navbar showNavbar={true}></Navbar>
 
       <div className={styles.pageContainer}>
 
