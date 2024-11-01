@@ -10,7 +10,7 @@ import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import { Container } from 'react-bootstrap';
 import Button from "@leafygreen-ui/button";
-import { fetchCart } from '@/lib/api';
+import { fetchCart, fetchStoreLocations } from '@/lib/api';
 import { setCartProductsList, setLoading } from '@/redux/slices/CartSlice';
 import styles from './checkout.module.css'
 import Card from '@leafygreen-ui/card';
@@ -27,7 +27,8 @@ export default function Page() {
     const cart = useSelector(state => state.Cart);
     const selectedUser = useSelector(state => state.User.selectedUser);
     const [shippingMethod, setShippingMethod] = useState(shippingMethods[0].value)
-    
+    const [storeLocations, setStoreLocations] = useState([])
+
     const onConfirmOrder = () => {
 
     }
@@ -53,6 +54,24 @@ export default function Page() {
 
         return () => { }
     }, [selectedUser, cart.loading]);
+
+    useEffect(() => {
+        const getStoreLocations = async () => {
+            try {
+                const result = await fetchStoreLocations();
+                if (result !== null) {
+                    setStoreLocations(result)
+                }
+            } catch (err) {
+                console.log(`Error fetching cart ${err}`)
+            }
+        }
+        
+        getStoreLocations();
+
+      return () => {}
+    }, [])
+    
 
     return (
         <>
