@@ -103,7 +103,7 @@ export default function Page() {
                                         shippingMethod === shippingMethods[0].value // home
                                         ? <HomeAddressComp address={selectedUser.address} containerStyle={styles.cardInfo}/>
                                         :  shippingMethod === shippingMethods[1].value // bopis
-                                        ? <BopisComp containerStyle={containerStyle}/>
+                                        ? <BopisComp containerStyle={styles.cardInfo}/>
                                         : 'Unrecognized shipping method, please select another option'
                                     }
                                 </Card>
