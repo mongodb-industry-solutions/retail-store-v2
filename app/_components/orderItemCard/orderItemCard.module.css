@@ -1,5 +1,5 @@
 .OrderItemCard{
-
+    margin-bottom: 2rem;
 }
 .orderedDate{
     color: grey;
@@ -13,22 +13,19 @@
     flex-direction: column;
 }
 
-  
-  /* fullWidth first div */
-  .item.fullWidth {
+.item.fullWidth {
     flex: 1;
-  }
-  
-  /* fitContent second div */
-  .item.fitContent {
+}
+
+.item.fitContent {
     width: fitContent;
     display: flex;
     align-items: flex-end;
-  }
+}
 
-  /* Layout for larger screens (row layout for laptops and tablets) */
+/* Layout for larger screens (row layout for laptops and tablets) */
 @media (min-width: 768px) {
     .container {
       flex-direction: row;
     }
-  }
+}
