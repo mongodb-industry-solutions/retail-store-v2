@@ -1,6 +1,6 @@
 
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { H1, H3, Disclaimer, Body } from '@leafygreen-ui/typography';

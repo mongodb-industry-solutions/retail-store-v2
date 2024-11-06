@@ -47,7 +47,7 @@ const UserSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(fetchUserData.fulfilled, (state, action) => {
-            console.log(action.payload)
+            //console.log(action.payload)
             state.orders.loading = false
             state.orders.list = action.payload.orders;
             //TODO: state.cart = action.payload.cart;

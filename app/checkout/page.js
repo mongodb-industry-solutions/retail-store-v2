@@ -1,6 +1,7 @@
 
 "use client"
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useSelector, useDispatch } from 'react-redux';
 import { H1, H3, Body } from '@leafygreen-ui/typography';
 import Icon from '@leafygreen-ui/icon';
@@ -25,6 +26,7 @@ const shippingMethods = [
 ]
 
 export default function Page() {
+    const router = useRouter();
     const dispatch = useDispatch();
     const cart = useSelector(state => state.Cart);
     const selectedUser = useSelector(state => state.User.selectedUser);
@@ -35,6 +37,9 @@ export default function Page() {
     
     const onConfirmOrder = () => {
         // TODO: create order backend part
+        // let result = await createNewOrder(...)
+        // if(result.status === 200)
+        //     router.push(`/orderDetails/${result.order._id}`);
     }
 
     const onShippingMethodChange = (e) => {
