@@ -12,7 +12,6 @@ const CartSlice = createSlice({
     },
     reducers: {
         setCartProductsList: (state, action) => {
-          console.log(action)
             if(action.payload === null){ 
               // cart is null when the document for this user's cart does not exist on Atlas
               return {...state, products: [], totalPrice: 0, totalAmount: 0, _id: null, loading: false, error: null}

@@ -11,7 +11,7 @@ import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import { Container } from 'react-bootstrap';
 import Button from "@leafygreen-ui/button";
-import { fetchCart, fetchStoreLocations } from '@/lib/api';
+import { createNewOrder, fetchCart, fetchStoreLocations } from '@/lib/api';
 import { setCartProductsList, setLoading } from '@/redux/slices/CartSlice';
 import styles from './checkout.module.css'
 import Card from '@leafygreen-ui/card';
@@ -19,31 +19,37 @@ import HomeAddressComp from '../_components/homeAddressComp/homeAddressComp';
 import BopisComp from '../_components/bopisComp/BopisComp';
 import ProductsModalComp from '../_components/productsModalComp/ProductsModalComp';
 import { CardSkeleton } from '@leafygreen-ui/skeleton-loader';
-
-const shippingMethods = [
-    {value: 'home', label: 'Send to my home address'},
-    {value: 'bopis', label: 'Pick up in store'}
-]
+import { shippingMethods } from '@/lib/constants';
 
 export default function Page() {
     const router = useRouter();
     const dispatch = useDispatch();
     const cart = useSelector(state => state.Cart);
     const selectedUser = useSelector(state => state.User.selectedUser);
-    const [shippingMethod, setShippingMethod] = useState(shippingMethods[0].value)
+    const [shippingMethod, setShippingMethod] = useState(shippingMethods.bopis)
     const [storeLocations, setStoreLocations] = useState([])
     const [selectedStoreLocation, setSelectedStoreLocation] = useState(null)
     const [productDetailsOpened, setProductDetailsOpened] = useState(false)
     
-    const onConfirmOrder = () => {
+    const onConfirmOrder = async () => {
+
         // TODO: create order backend part
-        // let result = await createNewOrder(...)
-        // if(result.status === 200)
+        console.log(selectedStoreLocation)
+        let order = await createNewOrder(
+            selectedUser._id, 
+            selectedUser.address,
+            cart.products, 
+            shippingMethod, 
+            selectedStoreLocation,
+        )
+        // if(order){
         //     router.push(`/orderDetails/${result.order._id}`);
+        //      display alert with order id
+        //}
     }
 
     const onShippingMethodChange = (e) => {
-        setShippingMethod(e.target.value)
+        setShippingMethod(shippingMethods[e.target.value])
         setSelectedStoreLocation(null)
     }
 
@@ -69,7 +75,6 @@ export default function Page() {
         const getStoreLocations = async () => {
             try {
                 const result = await fetchStoreLocations();
-                console.log('result', result)
                 if (result !== null) {
                     setStoreLocations(result)
                 }
@@ -126,21 +131,22 @@ export default function Page() {
                                     className="radio-box-group-style mb-3"
                                 >
                                     {
-                                        shippingMethods.map((method, index) => (
+                                        Object.keys(shippingMethods).map((methodKey, index) => (
                                             <RadioBox 
+                                                key={methodKey}
                                                 checked={index == 0} 
-                                                value={method.value}
+                                                value={methodKey}
                                             >
-                                                {method.label}
+                                                {shippingMethods[methodKey].label}
                                             </RadioBox>
 
                                         ))
                                     }
                                 </RadioBoxGroup>
                                 {
-                                    shippingMethod === shippingMethods[0].value // home
+                                    shippingMethod.id === shippingMethods.home.id // home
                                     ? <HomeAddressComp address={selectedUser.address} containerStyle={styles.cardInfo}/>
-                                    :  shippingMethod === shippingMethods[1].value // bopis
+                                    :  shippingMethod.id === shippingMethods.bopis.id // bopis
                                     ? <BopisComp containerStyle={styles.cardInfo} storeLocations={storeLocations} setSelectedStoreLocation={setSelectedStoreLocation}/>
                                     : 'Unrecognized shipping method, please select another option'
                                 }
@@ -149,7 +155,7 @@ export default function Page() {
                             <div className='d-flex flex-row-reverse mt-3'>
                                 <Button
                                     variant='primary'
-                                    disabled={cart.products?.length === 0 || (shippingMethod === 'bopis' && selectedStoreLocation === null )}
+                                    disabled={cart.products?.length === 0 || (shippingMethod.id === shippingMethods.bopis && selectedStoreLocation === null )}
                                     onClick={() => onConfirmOrder()}
                                 >
                                     Confirm & order
