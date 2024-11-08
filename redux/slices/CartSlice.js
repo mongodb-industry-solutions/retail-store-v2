@@ -19,15 +19,23 @@ const CartSlice = createSlice({
             }else{
               const totalPrice = action.payload.products.reduce((sum, product) => sum + (product.price.amount * product.amount), 0);
               const totalAmount = action.payload.products.reduce((sum, product) => sum + product.amount, 0);
-              return {...state, products: [...action.payload.products], totalPrice, totalAmount,  _id: action.payload._id, loading: false, error: null}
+              return {
+                ...state, 
+                products: [...action.payload.products], 
+                totalPrice, 
+                totalAmount, 
+                 _id: action.payload._id, 
+                 loading: false, 
+                 error: null
+              }
             }
         },
         addProduct: (state, action) => {
-          // TODO re calculate totalPrice and totalAmount
+            // TODO if you wish to use this method first: re calculate totalPrice and totalAmount
             return {...state, products: [...state.products, action.payload]}            
         },
         removeProduct: (state, action) => {
-            // TODO re calculate totalPrice and totalAmount
+            // TODO  if you wish to use this method first: re calculate totalPrice and totalAmount
             let newList = state.products.filter(product => product.id !== action.payload.id)
             return {...state, products: [...newList]}        
         },

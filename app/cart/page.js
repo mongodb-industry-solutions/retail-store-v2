@@ -10,7 +10,7 @@ import Navbar from "../_components/navbar/Navbar";
 import { Container } from 'react-bootstrap';
 import Button from "@leafygreen-ui/button";
 import { fetchCart, fillCartRandomly } from '@/lib/api';
-import { setCartProductsList, setLoading } from '@/redux/slices/CartSlice';
+import { setCartProductsList, setError, setLoading } from '@/redux/slices/CartSlice';
 import CartItem from '../_components/cart/CartItem';
 
 export default function CartPage() {
@@ -27,8 +27,12 @@ export default function CartPage() {
     const onFillCart = async () => {
         if (selectedUser !== null && cart.products?.length < 1) {
             try {
-                const result = await fillCartRandomly();
-                // Todo: process result and render returned cart
+                dispatch(setLoading(true))
+                const cart = await fillCartRandomly(selectedUser._id);
+                console.log('result', cart)
+                if(cart)
+                    dispatch(setCartProductsList(cart))
+                dispatch(setLoading(false))
             } catch (err) {
                 console.log(`Error filling cart ${err}`)
             }
@@ -52,7 +56,6 @@ export default function CartPage() {
 
         return () => { }
     }, [selectedUser]);
-
 
     return (
         <>
