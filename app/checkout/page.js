@@ -111,11 +111,8 @@ export default function Page() {
                     <H1>Checkout</H1>
                 </div>
                 <Modal
-                    // className={styles.modal}
                     open={processingNewOrder}
                     setOpen={setProcessingNewOrder}
-                    // onClose={handleCloseModal}
-                    // onClick={handleModalClick}
                 >
                     <H3>Processing order</H3>
                 </Modal>

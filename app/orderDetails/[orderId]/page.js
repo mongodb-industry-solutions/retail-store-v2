@@ -41,7 +41,7 @@ export default function OrderDetailsPage({ params }) {
     const dispatch = useDispatch();
     const { orderId } = params; // id from the dynamic URL
     const orderDetails = useSelector(state => state.Order)
-    
+
     const onArrivedToStoreClick = () => {
         if (!orderDetails.packageIsInTheStore)
             return
@@ -62,7 +62,7 @@ export default function OrderDetailsPage({ params }) {
         };
         getOrderDetails();
         return () => { }
-    }, [orderId]);    
+    }, [orderId]);
 
     return (
         <>
@@ -76,13 +76,13 @@ export default function OrderDetailsPage({ params }) {
                     {
                         orderDetails.loading
                             ? <>
-                                <CardSkeleton className='mb-2'/>
+                                <CardSkeleton className='mb-2' />
                                 <H3 className="mb-2">Status</H3>
-                                <Skeleton className='mb-2'/>
-                                <Skeleton className='mb-2'/>
+                                <Skeleton className='mb-2' />
+                                <Skeleton className='mb-2' />
                                 <H3 className="mb-2">Products</H3>
-                                <CardSkeleton className='mb-2'/>
-                                <CardSkeleton/>
+                                <CardSkeleton className='mb-2' />
+                                <CardSkeleton />
                             </>
                             : orderDetails._id !== null
                                 ? <>
@@ -91,9 +91,9 @@ export default function OrderDetailsPage({ params }) {
                                             <p className={styles.orderData}><strong>Date:</strong> {prettifyDateFormat(orderDetails.status_history[0]?.timestamp)}</p>
                                             <p className={styles.orderData}><strong>ID:</strong> {orderId}</p>
                                             <p className={styles.orderData}><strong>Status:</strong> {
-                                                orderDetails.isCanceled 
-                                                ? <Badge variant="red">{orderDetails.status_history[orderDetails.status_history.length - 1]?.status}</Badge>
-                                                : orderDetails.status_history[orderDetails.status_history.length - 1]?.status
+                                                orderDetails.isCanceled
+                                                    ? <Badge variant="red">{orderDetails.status_history[orderDetails.status_history.length - 1]?.status}</Badge>
+                                                    : orderDetails.status_history[orderDetails.status_history.length - 1]?.status
                                             }</p>
                                         </div>
                                         <div className='col'>
@@ -107,18 +107,21 @@ export default function OrderDetailsPage({ params }) {
                                         </div>
                                     </Card>
                                     <H3 className="mb-2">Status</H3>
-                                    <Stepper
-                                        className={`${orderDetails.isCanceled ? styles.isCanceled : ''}`} 
-                                        // if the order is canceled it means that only the first step was completed. 
-                                        // because we defined by business rule that we can only cancel an order if the order is in the first stage (a.k.a: In progress)
-                                        currentStep={orderDetails.isCanceled ? 1 : orderDetails.status_history.length}
-                                    >
-                                        {
-                                            orderDetails.shippingMethod?.steps.map(step => 
-                                                <Step key={step.id}>{step.label}</Step>
-                                            )
-                                        }
-                                    </Stepper>
+                                    {
+                                        !orderDetails.isCanceled &&
+                                        <Stepper
+                                            className={`${orderDetails.isCanceled ? styles.isCanceled : ''}`}
+                                            // if the order is canceled it means that only the first step was completed. 
+                                            // because we defined by business rule that we can only cancel an order if the order is in the first stage (a.k.a: In progress)
+                                            currentStep={orderDetails.isCanceled ? 1 : orderDetails.status_history.length}
+                                        >
+                                            {
+                                                orderDetails.shippingMethod?.steps.map(step =>
+                                                    <Step key={step.id}>{step.label}</Step>
+                                                )
+                                            }
+                                        </Stepper>
+                                    }
                                     {
                                         orderDetails.packageIsInTheStore &&
                                         <Banner className='mb-2 mt-2' image={<Icon glyph="Bell"></Icon>}>

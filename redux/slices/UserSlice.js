@@ -34,7 +34,6 @@ const UserSlice = createSlice({
         },
         addUsersNewOrder: (state, action) => {
             let newOrders = [...state.orders.list, action.payload.order]
-            console.log(newOrders)
             return {
                 ...state,
                 orders: {
