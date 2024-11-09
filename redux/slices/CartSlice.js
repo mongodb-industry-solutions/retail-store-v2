@@ -16,8 +16,8 @@ const CartSlice = createSlice({
               // cart is null when the document for this user's cart does not exist on Atlas
               return {...state, products: [], totalPrice: 0, totalAmount: 0, _id: null, loading: false, error: null}
             }else{
-              const totalPrice = action.payload.products.reduce((sum, product) => sum + (product.price.amount * product.amount), 0);
-              const totalAmount = action.payload.products.reduce((sum, product) => sum + product.amount, 0);
+              const totalPrice = action.payload.products.reduce((sum, product) => sum + (product.price.amount * product.amount), 0) || 0;
+              const totalAmount = action.payload.products.reduce((sum, product) => sum + product.amount, 0) || 0;
               return {
                 ...state, 
                 products: [...action.payload.products], 
@@ -28,6 +28,16 @@ const CartSlice = createSlice({
                  error: null
               }
             }
+        },
+        clearCartProductsList: (state, action) => {
+          return {
+            ...state, 
+            products: [], 
+            totalPrice: 0, 
+            totalAmount: 0, 
+              loading: false, 
+              error: null
+          }
         },
         addProduct: (state, action) => {
             // TODO if you wish to use this method first: re calculate totalPrice and totalAmount
@@ -58,6 +68,7 @@ const CartSlice = createSlice({
 
 export const {
     setCartProductsList,
+    clearCartProductsList,
     addProduct, 
     removeProduct, 
     setTotalPrice,

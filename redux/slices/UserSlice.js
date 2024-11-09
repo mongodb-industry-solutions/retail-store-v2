@@ -32,6 +32,17 @@ const UserSlice = createSlice({
         setUsersList: (state, action) => {
             return {...state, usersList: [...action.payload]}
         },
+        addUsersNewOrder: (state, action) => {
+            let newOrders = [...state.orders.list, action.payload.order]
+            console.log(newOrders)
+            return {
+                ...state,
+                orders: {
+                    ...state.orders,
+                    list: newOrders
+                }
+            }
+        },
         setSelectedUser: (state, action) => {
             return {...state, selectedUser: {...action.payload}}
         },
@@ -57,6 +68,7 @@ const UserSlice = createSlice({
 
 export const {
     setUsersList, 
+    addUsersNewOrder,
     setSelectedUser, 
     setLoadingUsersList, 
     setErrorUsersList

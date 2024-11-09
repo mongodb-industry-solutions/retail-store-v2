@@ -10,7 +10,7 @@ import Navbar from "../_components/navbar/Navbar";
 import { Container } from 'react-bootstrap';
 import Button from "@leafygreen-ui/button";
 import { fetchCart, fillCartRandomly } from '@/lib/api';
-import { setCartProductsList, setError, setLoading } from '@/redux/slices/CartSlice';
+import { setCartProductsList, setLoading } from '@/redux/slices/CartSlice';
 import CartItem from '../_components/cart/CartItem';
 
 export default function CartPage() {
@@ -20,7 +20,6 @@ export default function CartPage() {
     const cart = useSelector(state => state.Cart);
 
     const onCheckout = () => {
-        // Todo: process cart and move to checkout page
         router.push('/checkout');
     }
 

@@ -11,8 +11,8 @@ import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import { Container } from 'react-bootstrap';
 import Button from "@leafygreen-ui/button";
-import { createNewOrder, fetchCart, fetchStoreLocations } from '@/lib/api';
-import { setCartProductsList, setLoading } from '@/redux/slices/CartSlice';
+import { clearCart, createNewOrder, fetchCart, fetchStoreLocations } from '@/lib/api';
+import { clearCartProductsList, setCartProductsList, setLoading } from '@/redux/slices/CartSlice';
 import styles from './checkout.module.css'
 import Card from '@leafygreen-ui/card';
 import HomeAddressComp from '../_components/homeAddressComp/homeAddressComp';
@@ -20,6 +20,9 @@ import BopisComp from '../_components/bopisComp/BopisComp';
 import ProductsModalComp from '../_components/productsModalComp/ProductsModalComp';
 import { CardSkeleton } from '@leafygreen-ui/skeleton-loader';
 import { shippingMethods } from '@/lib/constants';
+import Modal from '@leafygreen-ui/modal';
+import { clearOrder } from '@/redux/slices/OrderSlice';
+import { addUsersNewOrder } from '@/redux/slices/UserSlice';
 
 export default function Page() {
     const router = useRouter();
@@ -30,10 +33,10 @@ export default function Page() {
     const [storeLocations, setStoreLocations] = useState([])
     const [selectedStoreLocation, setSelectedStoreLocation] = useState(null)
     const [productDetailsOpened, setProductDetailsOpened] = useState(false)
-    
-    const onConfirmOrder = async () => {
+    const [processingNewOrder, setProcessingNewOrder] = useState(false)
 
-        // TODO: create order backend part
+    const onConfirmOrder = async () => {
+        setProcessingNewOrder(true)
         console.log(selectedStoreLocation)
         let order = await createNewOrder(
             selectedUser._id, 
@@ -42,15 +45,27 @@ export default function Page() {
             shippingMethod, 
             selectedStoreLocation,
         )
-        // if(order){
-        //     router.push(`/orderDetails/${result.order._id}`);
-        //      display alert with order id
-        //}
+        setProcessingNewOrder(false)
+        if(order){
+            // set selected order to null
+            dispatch(clearOrder())
+            // set redux cart to 0 products
+            dispatch(clearCartProductsList())
+            // add order to redux
+            dispatch(addUsersNewOrder({order}))
+            router.push(`/orderDetails/${order._id}`);
+            await clearCart(selectedUser._id)
+            // TODO enhance: alert(`New order created with id ${order._id}`)
+        }
     }
 
     const onShippingMethodChange = (e) => {
         setShippingMethod(shippingMethods[e.target.value])
         setSelectedStoreLocation(null)
+    }
+
+    const onStoreSelect = (store) => {
+        setSelectedStoreLocation(store)
     }
 
     useEffect(() => {
@@ -87,7 +102,6 @@ export default function Page() {
 
       return () => {}
     }, [])
-    
 
     return (
         <>
@@ -96,6 +110,15 @@ export default function Page() {
                 <div className='d-flex align-items-end'>
                     <H1>Checkout</H1>
                 </div>
+                <Modal
+                    // className={styles.modal}
+                    open={processingNewOrder}
+                    setOpen={setProcessingNewOrder}
+                    // onClose={handleCloseModal}
+                    // onClick={handleModalClick}
+                >
+                    <H3>Processing order</H3>
+                </Modal>
                 {
                     cart.loading
                         ? <div className='mt-3'>
@@ -145,9 +168,16 @@ export default function Page() {
                                 </RadioBoxGroup>
                                 {
                                     shippingMethod.id === shippingMethods.home.id // home
-                                    ? <HomeAddressComp address={selectedUser.address} containerStyle={styles.cardInfo}/>
+                                    ? <HomeAddressComp 
+                                        address={selectedUser.address} 
+                                        containerStyle={styles.cardInfo}
+                                    />
                                     :  shippingMethod.id === shippingMethods.bopis.id // bopis
-                                    ? <BopisComp containerStyle={styles.cardInfo} storeLocations={storeLocations} setSelectedStoreLocation={setSelectedStoreLocation}/>
+                                    ? <BopisComp 
+                                        containerStyle={styles.cardInfo} 
+                                        storeLocations={storeLocations} 
+                                        setSelectedStoreLocation={onStoreSelect}
+                                    />
                                     : 'Unrecognized shipping method, please select another option'
                                 }
                             </Card>
