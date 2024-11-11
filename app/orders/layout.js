@@ -1,9 +1,9 @@
 export const metadata = {
-    title: 'Contact',
+    title: 'Leafy Pop-Up Store',
     description: '',
   }
 
-export default function ContactLayout({
+export default function OrdersLayout({
     children,
   }) {
     return (

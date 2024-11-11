@@ -1,7 +1,8 @@
 
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { H1, H3, Disclaimer, Body } from '@leafygreen-ui/typography';
 
 import Footer from "../_components/footer/Footer";
@@ -12,22 +13,25 @@ import { fetchCart, fillCartRandomly } from '@/lib/api';
 import { setCartProductsList, setLoading } from '@/redux/slices/CartSlice';
 import CartItem from '../_components/cart/CartItem';
 
-export default function Page() {
+export default function CartPage() {
+    const router = useRouter();
     const dispatch = useDispatch();
     const selectedUser = useSelector(state => state.User.selectedUser);
     const cart = useSelector(state => state.Cart);
-    const [totalPrice, setTotalPrice] = useState(0)
-    const [totalAmount, setTotalAmount] = useState(0)
 
     const onCheckout = () => {
-        // Todo: process cart and move to checkout page
+        router.push('/checkout');
     }
 
     const onFillCart = async () => {
         if (selectedUser !== null && cart.products?.length < 1) {
             try {
-                const result = await fillCartRandomly();
-                // Todo: process result and render returned cart
+                dispatch(setLoading(true))
+                const cart = await fillCartRandomly(selectedUser._id);
+                console.log('result', cart)
+                if(cart)
+                    dispatch(setCartProductsList(cart))
+                dispatch(setLoading(false))
             } catch (err) {
                 console.log(`Error filling cart ${err}`)
             }
@@ -46,17 +50,11 @@ export default function Page() {
                 console.log(`Error fetching cart ${err}`)
             }
         }
-        getCart();
+        if(cart.loading === true && selectedUser !== null)
+            getCart();
 
         return () => { }
     }, [selectedUser]);
-
-    useEffect(() => {
-        const totalP = cart.products.reduce((sum, product) => sum + (product.price.amount * product.amount), 0);
-        const totalA = cart.products.reduce((sum, product) => sum + product.amount, 0);
-        setTotalPrice(totalP);
-        setTotalAmount(totalA);
-    }, [cart.products?.length])
 
     return (
         <>
@@ -92,7 +90,7 @@ export default function Page() {
                                     />
                                 ))}
                                 <div className='d-flex flex-row-reverse mt-3'>
-                                    <Body>Subtotal ({totalAmount} product{totalAmount > 1 ? 's' : ''}): <strong>${totalPrice}</strong></Body>
+                                    <Body>Subtotal ({cart.totalAmount} product{cart.totalAmount > 1 ? 's' : ''}): <strong>${cart.totalPrice}</strong></Body>
                                 </div>
                                 <div className='d-flex flex-row-reverse mt-3'>
                                     <Button
