@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Body, Description } from '@leafygreen-ui/typography';
 import Button from "@leafygreen-ui/button";
 
@@ -11,9 +12,10 @@ const suggestions = [
     "Can I pickup my order in a physical store?",
     "How much time do I have to cancel my order?"
 ]
-const initialMessage = `Hi there! I am a GenAI Chatbot design to assist you! \n `
 
 const ChatbotComp = () => {
+    const initialMessage = useSelector(state => state.User.orders.initialLoad)
+
     const [inputValue, setInputValue] = useState("");
     const [isAsking, setIsAsking] = useState(false);
     const [messages, setMessages] = useState([]);
@@ -25,11 +27,9 @@ const ChatbotComp = () => {
     const handleSuggestion = (index) => {
         setInputValue(suggestions[index]);
     };
-
     const handleAsk = async () => {
-
     }
-
+    
     return (
         <div className={`${styles.modalContentTab} d-flex flex-column`}>
             <div className={styles.chatbotBody}>
