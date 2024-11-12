@@ -7,15 +7,17 @@ import { Body } from '@leafygreen-ui/typography';
 import styles from "./chatbotComp.module.css";
 import ChatbotModal from './ChatbotModal';
 import Icon from '@leafygreen-ui/icon';
-import { getMinimizedSchemaForDataworkz } from '@/lib/helpers';
-import { setInitialMessage, setOrderData } from '@/redux/slices/ChatbotSlice';
+import { calculateInitialMessage, getMinimizedSchemaForDataworkz } from '@/lib/helpers';
+import { addMessage, setInitialMessage, setOrderData } from '@/redux/slices/ChatbotSlice';
+import { ROLE } from '@/lib/constants';
 
 const ChatbotOpener = () => {
     const dispatch = useDispatch();
     const ordersInitialLoad = useSelector(state => state.User.orders.initialLoad)
     const ordersList = useSelector(state => state.User.orders.list)
     const [isOpen, setIsOpen] = useState(false);  
-  
+    const selectedUser = useSelector(state => state.User.selectedUser)
+
     const handleClose = () => {
       setIsOpen(false);
     };
@@ -24,19 +26,26 @@ const ChatbotOpener = () => {
         const getOrderStatusForDataworkz = async () => {
             try {
                 let result = await getMinimizedSchemaForDataworkz(ordersList);
+                console.log('getMinimizedSchemaForDataworkz result', result)
                 if(result){
                     dispatch(setOrderData(result))
                     let initialMessage = await calculateInitialMessage(result);
+                    console.log('initialMessage', initialMessage)
                     dispatch(setInitialMessage(initialMessage))
+                    dispatch(addMessage({
+                        content: initialMessage,
+                        contentType: 'init',
+                        sender: ROLE.assistant
+                    }))
                 }
             } catch (err) {
                 console.log(`Error getting minimized schema for dataworkz, ${err}`)
             }
         };
-        if(ordersInitialLoad === true){
+        if(selectedUser !== null && ordersInitialLoad === false){
             getOrderStatusForDataworkz()
         }
-    }, [ordersInitialLoad]);
+    }, [ordersInitialLoad, selectedUser]);
 
     return (
         <>

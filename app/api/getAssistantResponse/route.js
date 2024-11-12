@@ -1,4 +1,13 @@
-{
+import { NextResponse } from "next/server";
+import { connectToDatabase } from "../../_db/connect";
+import { ROLE } from "@/lib/constants";
+const { ObjectId } = require('mongodb');
+
+const service = process.env.SERVICE
+const systemId = process.env.SYSTEM_ID
+const llmId = process.env.LLM_ID
+const token = process.env.TOKEN
+const agentSpec = {
 	"agentSpec": {
 		"persona": "You are a helpful assistant for Leafy Corp (an ecommerce store) and help Leafy Corp users with their questions.",
 		"scenarioSelectionFailureMessage": "I could not follow what you meant. Please rephrase and try. If you would like to know what I can do - please ask \"What can you do?\"",
@@ -325,4 +334,33 @@
 }
 		]
 	}
+}
+
+export async function POST(request) {
+    const {userId, userText, messages } = await request.json(); 
+    const urlTemplate = service + "/api/qna/v1/systems/" + systemId + "/call-agent?llmProviderId=" + llmId + "&userText=";
+    let json_data = agentSpec;
+    let string_dialogue = [];
+
+    messages.map(message => {
+        string_dialogue.push( { by: message.sender, text: message.content } )
+    })
+    string_dialogue.push( { by: ROLE.user, text: userText } )
+    console.log('--', userId, string_dialogue)
+    json_data["conversationHistory"] = string_dialogue;
+    const response = await fetch(`${urlTemplate}${userText}`, {
+        method: "POST",
+        headers: {
+            "Authorization": "SSWS " + token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(json_data)
+    });
+    let output = "I am sorry but I was unable to get a response.";
+    if (response.ok) { // response.ok is true if the status code is in the 200-299 range
+        const resJson = await response.json();
+        console.log('-- resJson: ', resJson);
+        output = resJson.answer;
+    }
+    return NextResponse.json({ message: output || null }, { status: 200 });
 }

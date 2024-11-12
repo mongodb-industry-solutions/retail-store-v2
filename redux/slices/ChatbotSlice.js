@@ -11,6 +11,11 @@ const ChatbotSlice = createSlice({
         loading: false,
         initialLoad:false,
         messages: []
+        // {
+        //     content: '' || <></>,
+        //     contentType: 'text' || 'html',
+        //     role: ROLE.assistant || ROLE.user
+        // }
     },
     reducers: {
         setOrderData: (state, action) => {
@@ -21,7 +26,7 @@ const ChatbotSlice = createSlice({
             }
         },
         setInitialMessage: (state, action) => {
-            return {...state,  initialMessage: action.payload.initialMessage}
+            return {...state,  initialMessage: action.payload}
         },
         setLoading: (state, action) => {
             return { ...state, loading: action.payload }
@@ -35,7 +40,7 @@ const ChatbotSlice = createSlice({
         addMessage: (state, action) => {
             return {
                 ...state, 
-                messages: [...state.messages, action.payload.message] }
+                messages: [...state.messages, action.payload] }
         }
     }
 })
@@ -44,7 +49,8 @@ export const {
     setOrderData,
     setInitialMessage,
     setLoading,
-    setError
+    setError,
+    addMessage
 } = ChatbotSlice.actions
 
 export default ChatbotSlice.reducer
