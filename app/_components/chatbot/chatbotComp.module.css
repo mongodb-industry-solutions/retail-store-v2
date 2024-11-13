@@ -186,3 +186,21 @@
     z-index: 10;                /* Place it above other elements */
     border-radius: 0 0 24px 24px;
 }
+.responseDetailsContainer{
+    /* background-color: rgba(0, 0, 0, 0.024); */
+    display: flex;
+    flex-direction: row;
+}
+.popoverJson{
+}
+.popoverJson :global(.popover-body){
+    padding: 0;
+    /* max-width: inherit;
+    width: fit-content; */
+}
+.popoverJson pre{
+    /* max-width: 600px;
+    width: fit-content; */
+    overflow-x: auto;
+    max-width: var(--bs-popover-max-width);
+}

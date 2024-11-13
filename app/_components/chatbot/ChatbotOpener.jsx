@@ -35,12 +35,12 @@ const ChatbotOpener = () => {
                         content: initialMessage.txt,
                         html: initialMessage.html,
                         contentType: 'init',
-                        sender: ROLE.assistant
+                        role: ROLE.assistant
                     }))
                     dispatch(addMessage({
                         content: initialMessage.txt,
                         contentType: 'init',
-                        sender: ROLE.assistant
+                        role: ROLE.assistant
                     }))
                 }
             } catch (err) {
