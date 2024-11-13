@@ -357,10 +357,11 @@ export async function POST(request) {
         body: JSON.stringify(json_data)
     });
     let output = "I am sorry but I was unable to get a response.";
+    let resJson;
     if (response.ok) { // response.ok is true if the status code is in the 200-299 range
-        const resJson = await response.json();
+        resJson = await response.json();
         console.log('-- resJson: ', resJson);
         output = resJson.answer;
     }
-    return NextResponse.json({ message: output || null }, { status: 200 });
+    return NextResponse.json({ message: output || null,  resJson}, { status: 200 });
 }

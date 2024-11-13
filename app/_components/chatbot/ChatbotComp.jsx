@@ -24,8 +24,6 @@ const ChatbotComp = () => {
     const messages = useSelector(state => state.Chatbot.messages)
     const askInputRef = useRef(null)
 
-    console.log('isLoadingAnswer', isLoadingAnswer)
-
     const handleSuggestion = (index) => {
         askInputRef.current.value = suggestions[index];
     };
@@ -37,15 +35,17 @@ const ChatbotComp = () => {
             contentType: 'text',
             role: ROLE.user
         }))
+        // get assistance response
         let result = await fetchAssistantResponse(
             selectedUserId,
             askInputRef.current.value,
             messages
         );
-        console.log(result)
         if (result) {
+            // push assistance's message
             dispatch(addMessage({
-                content: result,
+                content: result.message,
+                resJson: result.resJson,
                 contentType: 'text',
                 role: ROLE.assistant
             }))
@@ -62,7 +62,10 @@ const ChatbotComp = () => {
                 </div>
             }
             <div className={styles.chatbotBody}>
-                <Body className={styles.introBubble}>{initialMessage}</Body>
+                {
+                    initialMessage &&
+                    <div  className={styles.introBubble} dangerouslySetInnerHTML={{ __html: initialMessage.html }} />
+                }
                 {
                     messages
                         .filter(msg => msg.contentType !== 'init')

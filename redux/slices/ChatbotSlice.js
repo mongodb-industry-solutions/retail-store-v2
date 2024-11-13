@@ -5,13 +5,13 @@ This is a minimized version of the schema that is send to dataworkz chatbot
 const ChatbotSlice = createSlice({
     name: "Chatbot",
     initialState: {
-        initialMessage: "...",
-        orderData: [],      // [] or [...]
+        initialMessage: null,
+        minimizedOrderSchema: [],      // [] or [...]
         error: null,         // null or {msg: ""}
         loading: false,
         isLoadingAnswer: false,
         initialLoad:false,
-        messages: []
+        messages: [],
         // {
         //     content: '' || <></>,
         //     contentType: 'text' || 'html',
@@ -27,7 +27,7 @@ const ChatbotSlice = createSlice({
             }
         },
         setInitialMessage: (state, action) => {
-            return {...state,  initialMessage: action.payload}
+            return {...state,  initialMessage: {...action.payload}}
         },
         setLoading: (state, action) => {
             return { ...state, loading: action.payload }
@@ -45,18 +45,20 @@ const ChatbotSlice = createSlice({
         },
         setIsLoadingAnswer: (state, action) => {
             return {...state,  isLoadingAnswer: action.payload}
-
+        },
+        setMinimizedOrderSchema: (state, action) => {
+            return {...state,  minimizedOrderSchema: [...action.payload], initialLoad: true}
         }
     }
 })
 
 export const {
-    setOrderData,
     setInitialMessage,
     setLoading,
     setError,
     addMessage,
-    setIsLoadingAnswer
+    setIsLoadingAnswer,
+    setMinimizedOrderSchema
 } = ChatbotSlice.actions
 
 export default ChatbotSlice.reducer

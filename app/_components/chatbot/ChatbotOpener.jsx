@@ -8,7 +8,7 @@ import styles from "./chatbotComp.module.css";
 import ChatbotModal from './ChatbotModal';
 import Icon from '@leafygreen-ui/icon';
 import { calculateInitialMessage, getMinimizedSchemaForDataworkz } from '@/lib/helpers';
-import { addMessage, setInitialMessage, setOrderData } from '@/redux/slices/ChatbotSlice';
+import { addMessage, setInitialMessage, setMinimizedOrderSchema } from '@/redux/slices/ChatbotSlice';
 import { ROLE } from '@/lib/constants';
 
 const ChatbotOpener = () => {
@@ -28,12 +28,17 @@ const ChatbotOpener = () => {
                 let result = await getMinimizedSchemaForDataworkz(ordersList);
                 console.log('getMinimizedSchemaForDataworkz result', result)
                 if(result){
-                    dispatch(setOrderData(result))
+                    dispatch(setMinimizedOrderSchema(result))
                     let initialMessage = await calculateInitialMessage(result);
                     console.log('initialMessage', initialMessage)
-                    dispatch(setInitialMessage(initialMessage))
+                    dispatch(setInitialMessage({
+                        content: initialMessage.txt,
+                        html: initialMessage.html,
+                        contentType: 'init',
+                        sender: ROLE.assistant
+                    }))
                     dispatch(addMessage({
-                        content: initialMessage,
+                        content: initialMessage.txt,
                         contentType: 'init',
                         sender: ROLE.assistant
                     }))
@@ -42,7 +47,7 @@ const ChatbotOpener = () => {
                 console.log(`Error getting minimized schema for dataworkz, ${err}`)
             }
         };
-        if(selectedUser !== null && ordersInitialLoad === false){
+        if(selectedUser !== null && ordersInitialLoad === true){
             getOrderStatusForDataworkz()
         }
     }, [ordersInitialLoad, selectedUser]);
