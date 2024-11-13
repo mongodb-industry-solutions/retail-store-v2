@@ -9,6 +9,7 @@ const ChatbotSlice = createSlice({
         orderData: [],      // [] or [...]
         error: null,         // null or {msg: ""}
         loading: false,
+        isLoadingAnswer: false,
         initialLoad:false,
         messages: []
         // {
@@ -41,6 +42,10 @@ const ChatbotSlice = createSlice({
             return {
                 ...state, 
                 messages: [...state.messages, action.payload] }
+        },
+        setIsLoadingAnswer: (state, action) => {
+            return {...state,  isLoadingAnswer: action.payload}
+
         }
     }
 })
@@ -50,7 +55,8 @@ export const {
     setInitialMessage,
     setLoading,
     setError,
-    addMessage
+    addMessage,
+    setIsLoadingAnswer
 } = ChatbotSlice.actions
 
 export default ChatbotSlice.reducer

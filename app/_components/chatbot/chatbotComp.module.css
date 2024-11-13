@@ -128,7 +128,7 @@
     display: inline-block;
     max-width: 90%;
     word-wrap: break-word;
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
 }
 .chatbotBody {
     padding-top: 10px;
@@ -171,4 +171,18 @@
 
 .answerBubble.appear {
     opacity: 1;
+}
+.loadingOverlay{
+    background-color: rgba(0, 163, 92, 0.037);
+    position: absolute;         /* Position the overlay absolutely */
+    top: 107px;                     /* Cover from the top */
+    left: 0;                    /* Cover from the left */
+    right: 0;                   /* Cover to the right */
+    bottom: 0;                  /* Cover to the bottom */
+    color: white;               /* Text color for "LOADING..." */
+    display: flex;              /* Center the text */
+    align-items: center;        /* Center vertically */
+    justify-content: center;    /* Center horizontally */
+    z-index: 10;                /* Place it above other elements */
+    border-radius: 0 0 24px 24px;
 }
