@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "../../_db/connect";
 import { ROLE } from "@/lib/constants";
-const { ObjectId } = require('mongodb');
 
 const service = process.env.SERVICE
 const systemId = process.env.SYSTEM_ID
@@ -92,12 +90,12 @@ const agentSpec = {
             "examples": [
             ],
             "parameters": {
-                "user_id": {
-                    "type": {
-                        "name": "string"
-                    },
-                    "description": "The id of the user who is talking to us. This will be provided from the context. Do not ask the user for this."
-                },
+                // "user_id": {
+                //     "type": {
+                //         "name": "string"
+                //     },
+                //     "description": "The id of the user who is talking to us. This will be provided from the context. Do not ask the user for this."
+                // },
                 "order_query": {
                     "type": { "name": "string" },
                     "description": "query string to help identify which order the user is interested in"
@@ -234,7 +232,7 @@ export async function POST(request) {
         string_dialogue.push({ by: message.role, text: message.content })
     })
     string_dialogue.push({ by: ROLE.user, text: userText })
-    // console.log('--', userId, string_dialogue)
+    console.log('--', userId, string_dialogue)
     json_data["conversationHistory"] = string_dialogue;
     const response = await fetch(`${urlTemplate}${userText}`, {
         method: "POST",
@@ -250,6 +248,6 @@ export async function POST(request) {
     if (response.ok) { // response.ok is true if the status code is in the 200-299 range
         output = resJson.answer;
     }
-    // console.log('-- resJson: ', resJson);
+    console.log('-- resJson: ', resJson);
     return NextResponse.json({ message: output || null, resJson }, { status: 200 });
 }

@@ -14,10 +14,11 @@ import { fetchAssistantResponse } from '@/lib/api';
 import Typewriter from '../typewriter/Typewriter';
 import Icon from '@leafygreen-ui/icon';
 import JsonDisplay from '../jsonDisplayComp/JsonDisplayComp';
+import { Spinner } from 'react-bootstrap';
 
 const suggestions = [
-    "Can I pickup my order in a physical store?",
-    "How much time do I have to cancel my order?"
+    "What can you do for me?",
+    "How much time do I have to cancel an order?"
 ]
 
 const ChatbotComp = () => {
@@ -79,9 +80,9 @@ const ChatbotComp = () => {
                                 >
                                     {
                                         message.role === ROLE.user
-                                            ? <Body>
+                                            ? <div>
                                                 {message.content}
-                                            </Body>
+                                            </div>
                                             : <div>
                                                 <Typewriter
                                                     text={message.content}
@@ -91,12 +92,12 @@ const ChatbotComp = () => {
                                                         trigger="click"
                                                         placement={'top'}
                                                         overlay={
-                                                            <Popover 
+                                                            <Popover
                                                                 className={styles.popoverJson}
                                                             >
                                                                 <Popover.Header as="h3">Response details</Popover.Header>
                                                                 <Popover.Body>
-                                                                    <JsonDisplay data={message.resJson}/>
+                                                                    <JsonDisplay data={message.resJson} />
                                                                 </Popover.Body>
                                                             </Popover>
                                                         }
@@ -109,6 +110,17 @@ const ChatbotComp = () => {
                                 </div>
                             </div>
                         ))
+                }
+                {
+                    isLoadingAnswer &&
+                    <div className={styles.chatMessage}>
+                        <div className={`${styles.speechBubble} ${styles.answerBubble}`}>
+                            <Spinner size="sm" animation="border" role="status" variant="success" className='me-2'>
+                                <span className="visually-hidden">Loading...</span>
+                            </Spinner>
+                            Thinking...
+                        </div>
+                    </div>
                 }
             </div>
 
