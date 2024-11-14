@@ -234,7 +234,7 @@ export async function POST(request) {
         string_dialogue.push({ by: message.role, text: message.content })
     })
     string_dialogue.push({ by: ROLE.user, text: userText })
-    console.log('--', userId, string_dialogue)
+    // console.log('--', userId, string_dialogue)
     json_data["conversationHistory"] = string_dialogue;
     const response = await fetch(`${urlTemplate}${userText}`, {
         method: "POST",
@@ -250,6 +250,6 @@ export async function POST(request) {
     if (response.ok) { // response.ok is true if the status code is in the 200-299 range
         output = resJson.answer;
     }
-    console.log('-- resJson: ', resJson);
+    // console.log('-- resJson: ', resJson);
     return NextResponse.json({ message: output || null, resJson }, { status: 200 });
 }
