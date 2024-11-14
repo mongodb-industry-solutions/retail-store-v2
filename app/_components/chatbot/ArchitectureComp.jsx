@@ -19,15 +19,24 @@ const ArchitectureComp = () => {
                     height={60} // Arbitrary height to set the aspect ratio
                 />
             </div>
-            <Body className={'mt-2'}>
-                <strong>Retrieval-Augmented Generation (RAG)</strong> is the process of optimizing the output of a large language model by referencing internal, secure, authoritative knowledge. RAG extends capabilities of LLMs with enterprise’s internal knowledgebase, without having to retrain the model
-            </Body>
-            <H3>Transform Retail Industry with GenAI</H3>
-            <Body>
-                Generative AI is changing retail in fascinating ways. It’s providing new avenues for IT leaders at Retailers to explore the ways to enhance customer experience, streamline operations, and grow revenue in a fast-paced environment. In this demo we are leveraging <a href='https://www.dataworkz.com/' target='_blank'>Dataworkz</a> and <a href='https://www.mongodb.com/products/platform/atlas-database' target='_blank'>MongoDB Atlas</a> to bring a retail use case to life.
-            </Body>
-            
-            {/* ... Description of usecase of GenAI chatbot in the retail industry ...<br></br><br></br> */}
+            <H3>Why MongoDB Atlas and Dataworkz?
+            </H3>
+            <div>
+            <a href='https://www.mongodb.com/products/platform/atlas-database' target='_blank'>MongoDB Atlas</a> and <a href='https://www.dataworkz.com/' target='_blank'>Dataworkz</a> work together to deliver Agentic RAG-as-a-Service for a smarter, more responsive customer experience. Here’s a quick breakdown of how:
+            <ul>
+                <li>
+                    <strong>Vector Embeddings and Smart Search:</strong> MongoDB Atlas can turn words, phrases, or even customer behaviors into vector embeddings—essentially numbers that capture their meaning in a way that’s easy for AI to understand. This makes it possible to search for content based on meaning rather than exact wording, so search results are more accurate and relevant.
+                </li>
+                <li>
+                    <strong>Scalable, Reliable Performance:</strong> Atlas’ cloud-based, distributed setup is built to handle high-traffic retail environments, meaning no disruptions during peak shopping times.
+                </li>
+                <li>
+                    <strong>Deep Context with Dataworkz’s Agentic RAG-as-a-Service: </strong>Create agentic workflows powered by RAG pipelines that combine lexical & semantic search with Knowledge Graphs to fetch the most relevant data from unstructured, operational and analytical data sources before generating AI responses.
+                </li>
+
+            </ul>
+            This combo gives ecommerce brands the power to personalize experiences at a scale that’s never been possible before.
+            </div>            
         </div>
     );
 };
