@@ -65,7 +65,7 @@ const UserSlice = createSlice({
                     break;
                 }
             }
-            console.log('newList', newList)
+            //console.log('newList', newList)
             return {
                 ...state, 
                 orders: {
