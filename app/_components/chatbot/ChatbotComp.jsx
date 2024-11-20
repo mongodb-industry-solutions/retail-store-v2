@@ -24,7 +24,6 @@ const ChatbotComp = () => {
     const minimizedOrderSchema = useSelector(state => state.Chatbot.minimizedOrderSchema);
     const isLoadingAnswer = useSelector(state => state.Chatbot.isLoadingAnswer);
     const messages = useSelector(state => state.Chatbot.messages);
-    const messageUpdates = useSelector(state => state.Chatbot.messageUpdates);
     const askInputRef = useRef(null);
 
     const handleSuggestion = (index) => {
@@ -59,16 +58,12 @@ const ChatbotComp = () => {
         }
         dispatch(setIsLoadingAnswer(false))
     }
-
-    useEffect(() => {
-      console.log('messageUpdates: ', messageUpdates, 'messages: ', messages)
-    }, [messageUpdates])
     
     return (
         <div className={`${styles.modalContentTab} d-flex flex-column`}>
             <div className={styles.chatbotBody}>
                 {
-                    initialMessage &&
+                    initialMessage && 
                     <div 
                         className={styles.introBubble} 
                         dangerouslySetInnerHTML={{ __html: initialMessage.html }} 
@@ -102,7 +97,7 @@ const ChatbotComp = () => {
                         ))
                 }
                 {
-                    isLoadingAnswer &&
+                   ( isLoadingAnswer || initialMessage === null ) &&
                     <div className={styles.chatMessage}>
                         <div className={`${styles.speechBubble} ${styles.answerBubble}`}>
                             <Spinner size="sm" animation="border" role="status" variant="success" className='me-2'>

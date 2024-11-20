@@ -13,7 +13,6 @@ const ChatbotSlice = createSlice({
         isLoadingAnswer: false,
         initialLoad:false,
         messages: [],
-        messageUpdates: false, // toggle tor ender changes
         // {
         //     content: '' || <></>,
         //     contentType: 'text' || 'html',
@@ -48,7 +47,6 @@ const ChatbotSlice = createSlice({
                     ...state.messages, 
                     {...action.payload, isAnimationDone: false }
                 ],
-                messageUpdates: !state.messageUpdates
             }
         },
         setAnimationMessage: (state, action) => {
@@ -63,7 +61,6 @@ const ChatbotSlice = createSlice({
             return {
                 ...state,
                 messages: [...newMessages],
-                messageUpdates: !state.messageUpdates
             }
         },
         setIsLoadingAnswer: (state, action) => {
