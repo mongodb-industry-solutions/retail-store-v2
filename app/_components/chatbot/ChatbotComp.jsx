@@ -1,20 +1,16 @@
 "use client"
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Body, Description, H3 } from '@leafygreen-ui/typography';
+import { Body, Description } from '@leafygreen-ui/typography';
 import Button from "@leafygreen-ui/button";
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Popover from 'react-bootstrap/Popover';
 
 import styles from "./chatbotComp.module.css";
 import { addMessage, setIsLoadingAnswer } from '@/redux/slices/ChatbotSlice';
 import { ROLE } from '@/lib/constants';
 import { fetchAssistantResponse } from '@/lib/api';
-import Typewriter from '../typewriter/Typewriter';
-import Icon from '@leafygreen-ui/icon';
-import JsonDisplay from '../jsonDisplayComp/JsonDisplayComp';
 import { Spinner } from 'react-bootstrap';
+import AssistantMessageComp from './AssistantMessageComp';
 
 const suggestions = [
     "What can you do for me?",
@@ -28,6 +24,7 @@ const ChatbotComp = () => {
     const minimizedOrderSchema = useSelector(state => state.Chatbot.minimizedOrderSchema);
     const isLoadingAnswer = useSelector(state => state.Chatbot.isLoadingAnswer);
     const messages = useSelector(state => state.Chatbot.messages);
+    const messageUpdates = useSelector(state => state.Chatbot.messageUpdates);
     const askInputRef = useRef(null);
 
     const handleSuggestion = (index) => {
@@ -63,12 +60,20 @@ const ChatbotComp = () => {
         dispatch(setIsLoadingAnswer(false))
     }
 
+    useEffect(() => {
+      console.log('messageUpdates: ', messageUpdates, 'messages: ', messages)
+    }, [messageUpdates])
+    
     return (
         <div className={`${styles.modalContentTab} d-flex flex-column`}>
             <div className={styles.chatbotBody}>
                 {
                     initialMessage &&
-                    <div className={styles.introBubble} dangerouslySetInnerHTML={{ __html: initialMessage.html }} />
+                    <div 
+                        className={styles.introBubble} 
+                        dangerouslySetInnerHTML={{ __html: initialMessage.html }} 
+                        onClick={() => console.log('minimizedOrderSchema', minimizedOrderSchema)}
+                    />
                 }
                 {
                     messages
@@ -83,29 +88,14 @@ const ChatbotComp = () => {
                                             ? <div>
                                                 {message.content}
                                             </div>
-                                            : <div>
-                                                <Typewriter
-                                                    text={message.content}
-                                                ></Typewriter>
-                                                <div className={styles.responseDetailsContainer}>
-                                                    <OverlayTrigger
-                                                        trigger="click"
-                                                        placement={'top'}
-                                                        overlay={
-                                                            <Popover
-                                                                className={styles.popoverJson}
-                                                            >
-                                                                <Popover.Header as="h3">Response details</Popover.Header>
-                                                                <Popover.Body>
-                                                                    <JsonDisplay data={message.resJson} />
-                                                                </Popover.Body>
-                                                            </Popover>
-                                                        }
-                                                    >
-                                                        <Button size='xsmall'><Icon glyph='Sparkle'></Icon></Button>
-                                                    </OverlayTrigger>
-                                                </div>
-                                            </div>
+                                            : <AssistantMessageComp 
+                                                index={index} 
+                                                content={message.content} 
+                                                resJson={message.resJson}
+                                                isAnimationDone={message.isAnimationDone}
+                                                stylesResponseDetailsContainer={styles.responseDetailsContainer}
+                                                stylesPopoverJson={styles.popoverJson}
+                                            />
                                     }
                                 </div>
                             </div>
