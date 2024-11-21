@@ -232,9 +232,8 @@ export async function POST(request) {
         string_dialogue.push({ by: message.role, text: message.content })
     })
     string_dialogue.push({ by: ROLE.user, text: userText })
-    //console.log('--', userId, string_dialogue)
-    console.log('--', agentSpec.agentSpec.tools[0].implConfig.data)
-    console.log('--', string_dialogue)
+    // console.log('--', agentSpec.agentSpec.tools[0].implConfig.data)
+    // console.log('--', string_dialogue)
     json_data["conversationHistory"] = string_dialogue;
     const response = await fetch(`${urlTemplate}${userText}`, {
         method: "POST",
