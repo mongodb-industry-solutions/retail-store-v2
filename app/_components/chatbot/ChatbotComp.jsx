@@ -125,7 +125,7 @@ const ChatbotComp = () => {
                     type="text"
                     ref={askInputRef}
                     disabled={isLoadingAnswer}
-                    placeholder={isLoadingAnswer ? "Assintent processing answer..." : "Type your question..."}
+                    placeholder={isLoadingAnswer ? "Assistant processing answer..." : "Type your question..."}
                 />
                 <Button onClick={handleAsk} variant="baseGreen" disabled={!askInputRef.current?.value.length === 0 || isLoadingAnswer}>
                     {isLoadingAnswer ? "Asking..." : "Ask"}
