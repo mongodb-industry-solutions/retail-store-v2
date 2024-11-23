@@ -28,7 +28,7 @@ export async function POST(request) {
             brand: product.brand,
             code: product.code,
             description: product.description,
-            _id: ObjectId.createFromHexString(product._id),
+            _id: product._id,
             image: { url: product.image.url },
             name: product.name,
             price: {
