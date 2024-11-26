@@ -4,7 +4,7 @@ const { ObjectId } = require('mongodb');
 
 export async function POST(request) {
     try {
-        let { userId, numProducts } = await request.json();
+        let { userId, numProducts = 0, productsToAdd = [] } = await request.json();
         console.log(userId, numProducts);
         const db = await connectToDatabase();
         const productsCollection = db.collection('products');
@@ -14,34 +14,38 @@ export async function POST(request) {
             numProducts = 5;
         }
 
-        // Retrieve N random products from the 'products' collection
-        const selectedProducts = await productsCollection
-            .aggregate([
-                { $sample: { size: numProducts } }
-            ]).toArray();
+        if (numProducts > 0) {
+            // Retrieve N random products from the 'products' collection
+            const selectedProducts = await productsCollection
+                .aggregate([
+                    { $sample: { size: numProducts } }
+                ]).toArray();
 
-        console.log('selectedProducts', selectedProducts);
+            console.log('selectedProducts', selectedProducts);
 
-        // Prepare the products to be added to the cart
-        const productsToAdd = selectedProducts.map(product => ({
-            amount: 1,
-            brand: product.brand,
-            code: product.code,
-            description: product.description,
-            _id: product._id,
-            image: { url: product.image.url },
-            name: product.name,
-            price: {
-                amount: product.price.amount,
-                currency: product.price.currency
-            }
-        }));
+            // Prepare the products to be added to the cart
+            let randomProducts = selectedProducts.map(product => ({
+                amount: 1,
+                brand: product.brand,
+                code: product.code,
+                description: product.description,
+                _id: product._id,
+                image: { url: product.image.url },
+                name: product.name,
+                price: {
+                    amount: product.price.amount,
+                    currency: product.price.currency
+                }
+            }));
+            productsToAdd = productsToAdd.concat(randomProducts)
+        }
+
 
         // Use findOneAndUpdate to upsert the cart and return the updated document
         const result = await cartsCollection.findOneAndUpdate(
-            { user: new ObjectId(userId) }, // Query to find the cart by userId
+            { user: new ObjectId.createFromHexString(userId) }, // Query to find the cart by userId
             {
-                $setOnInsert: { _id: new ObjectId(), user: new ObjectId(userId) }, // Set a new _id and user if inserting
+                $setOnInsert: { _id: new ObjectId(), user: new ObjectId.createFromHexString(userId) }, // Set a new _id and user if inserting
                 $push: { products: { $each: productsToAdd } } // Push new products to the array
             },
             {
