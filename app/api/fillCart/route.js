@@ -14,6 +14,20 @@ export async function POST(request) {
             numProducts = 5;
         }
 
+        productsToAdd = productsToAdd.map(product => ({
+            amount: 1,
+            brand: product.brand,
+            code: product.code,
+            description: product.description,
+            _id: product._id,
+            image: { url: product.image.url },
+            name: product.name,
+            price: {
+                amount: Number(product.price.amount) || Number(product.price),
+                currency: product.price.currency || product.currency
+            }
+        }));
+        
         if (numProducts > 0) {
             // Retrieve N random products from the 'products' collection
             const selectedProducts = await productsCollection
