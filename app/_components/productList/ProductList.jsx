@@ -47,6 +47,7 @@ const ProductList = ({ filters }) => {
       try {
         const response = await axios.post("/api/getProducts", filters);
         const transformedProducts = response.data.products.map((product) => ({
+          ...product,
           id: product.id,
           photo: product.image.url,
           name: product.name,

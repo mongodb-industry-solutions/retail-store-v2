@@ -10,7 +10,7 @@ export async function POST(request) {
         const productsCollection = db.collection('products');
         const cartsCollection = db.collection('carts');
 
-        if (!numProducts || isNaN(numProducts) || numProducts < 1) {
+        if ((!numProducts || isNaN(numProducts) || numProducts < 1) && productsToAdd.length === 0) {
             numProducts = 5;
         }
 
@@ -40,12 +40,12 @@ export async function POST(request) {
             productsToAdd = productsToAdd.concat(randomProducts)
         }
 
-
+        console.log('userId', userId)
         // Use findOneAndUpdate to upsert the cart and return the updated document
         const result = await cartsCollection.findOneAndUpdate(
-            { user: new ObjectId.createFromHexString(userId) }, // Query to find the cart by userId
+            { user: ObjectId.createFromHexString(userId) }, // Query to find the cart by userId
             {
-                $setOnInsert: { _id: new ObjectId(), user: new ObjectId.createFromHexString(userId) }, // Set a new _id and user if inserting
+                $setOnInsert: { _id: new ObjectId(), user: ObjectId.createFromHexString(userId) }, // Set a new _id and user if inserting
                 $push: { products: { $each: productsToAdd } } // Push new products to the array
             },
             {
