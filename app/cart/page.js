@@ -12,6 +12,7 @@ import Button from "@leafygreen-ui/button";
 import { fetchCart, fillCartRandomly } from '@/lib/api';
 import CartItem from '../_components/cart/CartItem';
 import { setCartLoading, setCartProductsList } from '@/redux/slices/UserSlice';
+import { Avatar, Format } from '@leafygreen-ui/avatar';
 
 export default function CartPage() {
     const router = useRouter();
@@ -43,7 +44,8 @@ export default function CartPage() {
             <Navbar></Navbar>
             <Container className=''>
                 <div className='d-flex align-items-end'>
-                    <H1>My cart</H1>
+                    <H1 className=''>My cart</H1>
+                    {/* <Avatar className='ms-3 mb-2 cursorPointer' format={Format.MongoDB} sizeOverride={25} /> */}
                     <Button
                         size='small'
                         className='ms-3 mb-2'
