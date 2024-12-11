@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState } from 'react';
-import Icon from '@leafygreen-ui/icon';
 import { Tabs, Tab } from '@leafygreen-ui/tabs';
 import Code from '@leafygreen-ui/code';
 
@@ -35,21 +34,28 @@ const CartIndexModal = (props) => {
                 <Tabs setSelected={setSelected} selected={selected}>
                     <Tab name="Schema">
                         <h3 className='mt-2'>Cart Schema</h3>
+                        <div >
+                            <Image
+                                src="/rsc/images/cartSchema.png"
+                                alt="Cart Schema"
+                                loading='lazy'
+                                width={600}
+                                height={300}
+                            />
+                        </div>
                     </Tab>
                     <Tab name="Unique indexes">
                         <h3 className='mt-2'>Cart Consistency through Unique indexes</h3>
                         <p>It is importtant for an e-commerce that a user has one single cart instance across their sessions. No mater in which device or at what time they look at their cart it must be the same cart instance.</p>
                         <p>How do we ensure this? Through <strong><a href="https://www.mongodb.com/docs/manual/core/index-unique/" target='_blank'>unique indexes</a></strong></p>
                         <p>A unique index ensures that the indexed fields do not store duplicate values. A unique index on a single field ensures that a value appears at most once for a given field. Thats how we make sure each user has at most one cart.</p>
-                        <div style={{ position: 'relative', height: '600px' }}>
+                        <div >
                             <Image
                                 src="/rsc/images/cartIndex.png"
                                 alt="Index creation form"
                                 loading='lazy'
-                                fill
-                                style={{
-                                    objectFit: 'cover', // cover, contain, none
-                                }}
+                                width={750}
+                                height={650}
                             />
                         </div>
                     </Tab>
