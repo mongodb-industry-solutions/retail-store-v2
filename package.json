@@ -16,6 +16,7 @@
     "@leafygreen-ui/callout": "^9.0.18",
     "@leafygreen-ui/card": "^10.0.6",
     "@leafygreen-ui/checkbox": "^12.1.0",
+    "@leafygreen-ui/code": "^15.0.0",
     "@leafygreen-ui/combobox": "^8.1.4",
     "@leafygreen-ui/guide-cue": "^5.1.0",
     "@leafygreen-ui/icon": "^11.27.1",

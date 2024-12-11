@@ -1,6 +1,6 @@
 
 "use client"
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { H1, H3, Disclaimer, Body } from '@leafygreen-ui/typography';
@@ -13,12 +13,14 @@ import { fetchCart, fillCartRandomly } from '@/lib/api';
 import CartItem from '../_components/cart/CartItem';
 import { setCartLoading, setCartProductsList } from '@/redux/slices/UserSlice';
 import { Avatar, Format } from '@leafygreen-ui/avatar';
+import CartIndexModal from '../_components/whereMDB_cartIndex/CartIndexModal';
 
 export default function CartPage() {
     const router = useRouter();
     const dispatch = useDispatch();
     const selectedUser = useSelector(state => state.User.selectedUser);
     const cart = useSelector(state => state.User.cart);
+    const [open, setOpen] = useState(false)
 
     const onCheckout = () => {
         router.push('/checkout');
@@ -45,7 +47,12 @@ export default function CartPage() {
             <Container className=''>
                 <div className='d-flex align-items-end'>
                     <H1 className=''>My cart</H1>
-                    {/* <Avatar className='ms-3 mb-2 cursorPointer' format={Format.MongoDB} sizeOverride={25} /> */}
+                    <Avatar 
+                        className='ms-3 mb-2 cursorPointer' 
+                        format={Format.MongoDB} 
+                        sizeOverride={25} 
+                        onClick={() => setOpen(true)}
+                    />
                     <Button
                         size='small'
                         className='ms-3 mb-2'
@@ -90,6 +97,11 @@ export default function CartPage() {
                 </div>
             </Container>
             <Footer></Footer>
+
+            <CartIndexModal             
+                open={open} 
+                setOpen={setOpen}
+            />
         </>
     );
 }
