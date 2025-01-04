@@ -2,8 +2,14 @@
 
 Restore the e-commerce data to your own MongoDB Atlas database
 ```bash
-mongorestore --gzip --dir=dump/dotLocalStore --uri "mongodb+srv://<user>:<password>@<cluster-url>/<target-database>"
+mongorestore --gzip --dir=dump/leafy_popup_store --db=leafy_popup_store --uri "mongodb+srv://<user>:<password>@<cluster-url>"
 ```
+For example:
+```bash
+mongorestore --gzip --dir=dump/leafy_popup_store --db=leafy_popup_store 
+--uri 'mongodb+srv://<user>:<password>@cluster0.oj5ctai.mongodb.net/?retryWrites=true&w=majority&appName=<clusterName>'
+```
+
 Note 1: we can focus for now only on: users, products and locations
 Note 2: This dump was generated from executing the following command on the original db
 ```bash
