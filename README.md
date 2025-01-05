@@ -1,3 +1,14 @@
+# Buying experience (RAG chatbot & Omnichannel ordering)
+
+## Prerequisites
+
+Make sure to have the following tools to follow along smoothly and run this demo on your own environment.
+* MongoDB Atlas Account. Create an Atlas account at https://cloud.mongodb.com and provision a Cluster. You can follow the instructions from this article to set up your Cluster.
+* Install Node. This will be required to install the node modules which contain all the necessary packages to run our demo. 
+* Install Git. This will be required to clone the demo repository.
+
+## Initial Configuration
+
 ### Step 1. Clone the repository
 Start by obtaining the demo code. Open your terminal, navigate to the directory where you want to store the code, and run the following command:
 
