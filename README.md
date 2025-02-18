@@ -40,13 +40,18 @@ Today’s shoppers want quick, accurate answers. With this microservice the reta
 
 See the full step by step [README](.//resources/features/README-agenticRAG.md) to run this microservice from your own environment in the demo.
 
+<details>
+
 Tech Stack:
-- MongoDB Atlas Account
+
+- MongoDB Atlas AccountSee the full step by step [README](.//resources/features/README-agenticRAG.md) to run this microservice from your own environment in the demo.
 - Dataworkz Account
 - Node
 
 Partners:
 - [Dataworkz](https://cloud.mongodb.com/ecosystem/dataworkz)
+
+</details>
 
 ### Omnichannel Ordering Solution
 
@@ -54,9 +59,12 @@ Customers expect a seamless shopping experiences that blend online and offline s
 
 See the full step by step [README](.//resources/features/README-omnichannel.md) to run this microservice from your own environment in the demo.
 
+<details>
+
 Tech Stack:
 - MongoDB Atlas Account
 - Node
+</details>
 
 ### Personalized recommendations from digital receipts
 
