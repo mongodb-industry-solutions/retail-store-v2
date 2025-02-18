@@ -47,6 +47,7 @@ Depending on the feature or features you wish to run you might need additional i
 ### Agentic RAG Chatbot (with Dataworkz)
 
 Today’s shoppers want quick, accurate answers. With this microservice the retailer can support customers at any point in time through an Agentic RAG chatbot. This Agent is context aware of the business policies as well as the user’s order history and preferences, delivering the customer with the answers they need without waiting on hold or navigating complex menus.
+
 See the full step by step [README](.//resources/features/README-agenticRAG.md) to run this microservice from your own environment in the demo.
 
 <details>
