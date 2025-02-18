@@ -1,5 +1,15 @@
 # Omnichannel ordering solution
 
+## Table of Contents
+<details>
+  <ol>
+    <li><a href="#prerequisites">Prerequisites</a></li>
+    <li><a href="#initial-configuration">Initial Configuration</a></li>
+    <li><a href="#demo-overview">Demo Overview</a></li>
+    <li><a href="#authors-&-contributors">Authors & Contributors</a></li>
+    </ol>
+</details>
+
 ## Prerequisites
 
 Make sure to have the following tools to follow along smoothly and run this demo on your own environment.
@@ -49,6 +59,7 @@ A MongoDB connection string is required to connect to the cluster you created in
 When choosing your connection method for MongoDB, select the option labeled ‘Drivers’, as illustrated in Figure 1.
 
 ![image](../media/omnichannel/connection.png)
+
 Figure 1. Atlas screen to choose a connection method.
 
 Once you select the ‘Drivers’ option copy the provided connection string. It should look something like this:
@@ -133,12 +144,12 @@ Congratulations, you have successfully set up the demo in your own environment! 
 
 ## Demo Overview
 
-When first accessing the demo you’ll be presented with the Login screen (Figure 10) where you can choose which user you want to login with. All users represent a customer and have the same privileges, the only variation between each user is that they have different pre-loaded data, such as their name, their address, their orders history and items in their cart. 
+When first accessing the demo you’ll be presented with the Login screen (Figure 4) where you can choose which user you want to login with. All users represent a customer and have the same privileges, the only variation between each user is that they have different pre-loaded data, such as their name, their address, their orders history and items in their cart. 
 
 ![image](../media/omnichannel/login.png)
 Figure 4. Login screen
 
- After choosing a Persona, you will be taken to ‘My cart’ screen (Figure 11). Here, you will see a few products already loaded to your cart. If you do not have any, don't worry we added a “Fill Cart” button to automatically add some random products to the cart so you can continue with the demo.
+ After choosing a Persona, you will be taken to ‘My cart’ screen (Figure 5). Here, you will see a few products already loaded to your cart. If you do not have any, don't worry we added a “Fill Cart” button to automatically add some random products to the cart so you can continue with the demo.
 
 ![image](../media/omnichannel/cart.png)
 Figure 5. My Cart screen
@@ -165,7 +176,7 @@ Every order will automatically move from status every 10 seconds thanks to an At
 ![image](../media/omnichannel/status2.png)
 Figure 9. Customer alert to notify its presence to the store
 
-‘BOPIS’ orders only: It has specific states displayed in Figure 16. 
+‘BOPIS’ orders only: It has specific states displayed in Figure 10. 
 ‘Buy Online, Get Delivery at Home’ orders only: It has specific states displayed in Figure 16.
 
 ![image](../media/omnichannel/progressOrders.png)
@@ -174,3 +185,5 @@ Figure 10. Progression of an order through various states
 To get the full glimpse of the power of change streams open two screens: One with the Order details and another one with the list of Orders. You will notice the order status changing in real time for both screens, providing a unified experience for the user. 
 Another highlight is the ability to create orders with different shipping methods having very different types and amounts of status. This is possible thanks to the flexibility of the document model. It’s schema-free and polymorphism allows to have documents on the same collection with different versions of a document schema.
 
+
+## Authors & Contributors
