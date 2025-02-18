@@ -53,7 +53,7 @@ See the full step by step [README](.//resources/features/README-agenticRAG.md) t
 
 Tech Stack:
 
-- MongoDB Atlas AccountSee the full step by step [README](.//resources/features/README-agenticRAG.md) to run this microservice from your own environment in the demo.
+- MongoDB Atlas Account
 - Dataworkz Account
 - Node
 
