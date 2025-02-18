@@ -9,9 +9,9 @@
     <li>
         <a href="#features">Features</a>
         <ol>
-            <li>Agentic RAG Chatbot (with Dataworkz)</li>
-            <li>Omnichannel Ordering Solution</li>
-            <li>Personalized recommendations from digital receipts</li>
+            <li><a href="#agentic-rag-chatbot-with-dataworkz">Agentic RAG Chatbot (with Dataworkz)</a></li>
+            <li><a href="#omnichannel-ordering-solution">Omnichannel Ordering Solution</a> </li>
+            <li><a href="#personalized-recommendations-from-digital-receipts">Personalized recommendations from digital receipts</a></li>
         </ol>
     </li>
     <li><a href="#authors-&-contributors">Authors & Contributors</a></li>
@@ -32,12 +32,21 @@ Customers have higher expectations than ever before, they expect seamless shoppi
 
 In this demo, users will be able to explore how MongoDB optimizes data management and enhances system performance in a retail environment, while also facilitating the integration of AI technologies and systems—such as Dataworkz on the agentic RAG chatbot feature—by storing complex, rich data structures that merge operational and AI data. The solution serves as a practical guide for developers interested in implementing similar architectures in the retail industry, showing how MongoDB canbe leveraged to solve common challenges faced in modern e-commerce applications.
 
+## Prerequisites
+
+Let’s get started! To follow along smoothly and run this demo in your own environment, make sure you have the following tools: 
+
+- MongoDB Atlas Account. Create an Atlas account at https://cloud.mongodb.com
+- Install Node. This will be required to install the node modules which contain all the necessary packages to run our demo. 
+- Install Git. This will be required to clone the demo repository.
+
+Depending on the feature or features you wish to run you might need additional instals. 
+
 ## Features
 
 ### Agentic RAG Chatbot (with Dataworkz)
 
-Today’s shoppers want quick, accurate answers. With this microservice the retailer can support customers at any point in time through an Agentic RAG chatbot. This Agent is context aware of the business policies as well as the user’s history order and preferences, delivering the customer with the answers they need without waiting on hold or navigating complex menus.
-
+Today’s shoppers want quick, accurate answers. With this microservice the retailer can support customers at any point in time through an Agentic RAG chatbot. This Agent is context aware of the business policies as well as the user’s order history and preferences, delivering the customer with the answers they need without waiting on hold or navigating complex menus.
 See the full step by step [README](.//resources/features/README-agenticRAG.md) to run this microservice from your own environment in the demo.
 
 <details>

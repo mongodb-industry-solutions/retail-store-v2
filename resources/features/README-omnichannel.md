@@ -44,11 +44,12 @@ npm install
 This installation might take a few moments to complete, as all the required packages are being downloaded and installed into the project. Once the command finishes executing, a new folder named ‘node_modules’ will appear at the root level of the application code, containing the installed dependencies.
 
 ### Step 3. Retrieve your connection string
-A MongoDB connection string is required to connect to the cluster you created in the ‘Prerequisites’ section. Follow the steps provided in this article to retrieve your connection string. 
+A MongoDB connection string is required to connect to the cluster you created in the ‘Prerequisites’ section. Follow the steps provided in [this article](https://www.mongodb.com/resources/products/fundamentals/mongodb-connection-string#:~:text=How%20to%20get%20your%20MongoDB,connection%20string%20for%20your%20cluster.) to retrieve your connection string. 
 
-When choosing your connection method for MongoDB, select the option labeled ‘Drivers’, as illustrated in Figure 4.
+When choosing your connection method for MongoDB, select the option labeled ‘Drivers’, as illustrated in Figure 1.
 
-Figure 4. Atlas screen to choose a connection method.
+![image](../media/omnichannel/connection.png)
+Figure 1. Atlas screen to choose a connection method.
 
 Once you select the ‘Drivers’ option copy the provided connection string. It should look something like this:
 
@@ -68,7 +69,7 @@ NODE_ENV="development"
 ###  Step 4. Populate your database
 Next, populate your database with the required data and metadata required for the demo. In the application code locate the dump/leafy_popup_store directory. Inside it, there are several .gz files which contain the data and metadata of the collections: users, products, orders, locations and carts.
 
-Use the mongorestore command to load the data from the database dump into a new database within your Cluster.
+Use the [mongorestore](https://www.mongodb.com/docs/database-tools/mongorestore/) command to load the data from the database dump into a new database within your Cluster.
 
 Let's go back to your terminal, navigate to the directory /retail-store-v2 (the root level of the application code), and run the following command:
 
@@ -91,12 +92,12 @@ Curious about how the database dump was generated? Check out  the documentation 
 ### Step 5. Create your Atlas Trigger
 The scope of this demo is to simulate an omnichannel experience for the end customer. Due to this limitation scope, backend operations are performed to mimic the behind-the-scenes processes required to update an order's status. Such as workers from the warehouse managing the order, postal services delivering packages, or store employees packing an order.
 
-These backend operations are enabled by a Database Trigger that listens to the orders collection. When a new order is created, the trigger executes an Atlas Function, which is designed in this demo to update the order status every 10 seconds, progressing through each stage until the order is marked as delivered.
+These backend operations are enabled by a [Database Trigger](https://www.mongodb.com/docs/atlas/atlas-ui/triggers/database-triggers/) that listens to the orders collection. When a new order is created, the trigger executes [an Atlas Function](https://www.mongodb.com/docs/atlas/atlas-ui/triggers/functions/#std-label-atlas-functions), which is designed in this demo to update the order status every 10 seconds, progressing through each stage until the order is marked as delivered.
 
-To set up this Database Trigger login to your Atlas account. Once you are logged in, follow the how-to guide to learn how to create a trigger and understand the configuration form sections. Refer to Figure 5 for some specific details you will need to configure this trigger.
+To set up this Database Trigger login to your Atlas account. Once you are logged in, follow the [how-to guide](https://www.mongodb.com/docs/atlas/atlas-ui/triggers/database-triggers/#create-a-database-trigger) to learn how to create a trigger and understand the configuration form sections. Refer to Figure 2 for some specific details you will need to configure this trigger.
 
-
-Figure 5. The configuration screen showing the ‘Trigger Details’ section.
+![image](../media/omnichannel/trigger.png)
+Figure 2. The configuration screen showing the ‘Trigger Details’ section.
 
 As seen on the ‘Trigger Details’ section the following values are important to note:
 * Trigger Type. Select Database type.
@@ -107,13 +108,13 @@ As seen on the ‘Trigger Details’ section the following values are important 
 When you get to the ‘Event Type’ section the following values are important to note:
 * Event type. Select Function
 * Function. Whenever an Insert or Update event occurs in the orders collection, this function runs automatically. It receives the change event, as a parameter, which contains all relevant details about the event. 
+
 The function code is provided within the application code at /retail-store-v2/microservices/atlas-trigger-omnichannel/updateOrderStatus.js file. Copy the entire contents of the file and paste it into the field.
 
+Curious about which relevant details are provided by the change event? Take a look at the event object format in [this article](https://www.mongodb.com/docs/atlas/atlas-ui/triggers/database-triggers/#change-event-types) section.
 
-Curious about which relevant details are provided by the change event? Take a look at the event object format in this article section.
 
-
-Once you have created your Database Trigger you should be able to see it listed inside Atlas’ Triggers section with the status of .
+Once you have created your Database Trigger you should be able to see it listed inside Atlas’ Triggers section with the status of "Enabled".
 
 ### Step 6. Run the demo
 Now you are all set to run the demo. Go back to the terminal, at the root of the application code execute the following command:
@@ -122,9 +123,54 @@ Now you are all set to run the demo. Go back to the terminal, at the root of the
 npm run dev
 ```
 
-Then, open your browser and navigate to http://localhost:8080/cart and you should see the interface shown on Figure 6.
+Then, open your browser and navigate to http://localhost:8080/cart and you should see the interface shown on Figure 3.
 
-
-Figure 6. Omnichannel Ordering demo interface.
+![image](../media/omnichannel/login.png)
+Figure 3. Omnichannel Ordering demo interface.
 
 Congratulations, you have successfully set up the demo in your own environment! Select any user to see their cart and click on ‘Proceed to checkout’ to start your Omnichannel Ordering experience.
+
+
+## Demo Overview
+
+When first accessing the demo you’ll be presented with the Login screen (Figure 10) where you can choose which user you want to login with. All users represent a customer and have the same privileges, the only variation between each user is that they have different pre-loaded data, such as their name, their address, their orders history and items in their cart. 
+
+![image](../media/omnichannel/login.png)
+Figure 4. Login screen
+
+ After choosing a Persona, you will be taken to ‘My cart’ screen (Figure 11). Here, you will see a few products already loaded to your cart. If you do not have any, don't worry we added a “Fill Cart” button to automatically add some random products to the cart so you can continue with the demo.
+
+![image](../media/omnichannel/cart.png)
+Figure 5. My Cart screen
+
+Once you are ready to move forward click on the “Proceed to Checkout”.
+From the ‘Checkout‘ screen you will notice the start of your Omnichannel experience. There are two shipping methods available ‘Buy Online, Pickup in store’ (BOPIS) which shows a list of available stores to pick up the order. And ‘Buy Online, Get Delivery At home’ which shows the address of that specific user.
+
+![image](../media/omnichannel/shippingMethod.png)
+Figure 6. BOPIS shipping method
+
+![image](../media/omnichannel/shippingMethod2.png)
+Figure 7. Home delivery shipping method
+
+Select your preferred shipping method and click on “Confirm & order”. This will generate the new order and redirect you to the ”Order Details” page.
+Inside the ‘Order details’ page you will see slight variations depending on the shipping method you selected.:
+In any order:  You first have the “Summary” section (Figure 14) which lists general info about the order. Below that, you have the “Status” showing a Stepper showing the order status progressing through each stage until the order is marked as Delivered/Completed. And at the bottom the list of products contained in the order.
+Every time an order moves forward with the next status the stepper circle will turn green and a new entry will show with the timestamp that status was logged into the database.
+
+![image](../media/omnichannel/status.png)
+Figure 8. Stepper on ‘Status’ section
+
+Every order will automatically move from status every 10 seconds thanks to an Atlas Trigger. The only status that depends on the user is the “Customer in store” status from the BOPIS orders. This status is to indicate to the store that the customer is physically at the store and ready to pick up the order. So the customer has to click on the “I am here” button to change of status
+
+![image](../media/omnichannel/status2.png)
+Figure 9. Customer alert to notify its presence to the store
+
+‘BOPIS’ orders only: It has specific states displayed in Figure 16. 
+‘Buy Online, Get Delivery at Home’ orders only: It has specific states displayed in Figure 16.
+
+![image](../media/omnichannel/progressOrders.png)
+Figure 10. Progression of an order through various states
+
+To get the full glimpse of the power of change streams open two screens: One with the Order details and another one with the list of Orders. You will notice the order status changing in real time for both screens, providing a unified experience for the user. 
+Another highlight is the ability to create orders with different shipping methods having very different types and amounts of status. This is possible thanks to the flexibility of the document model. It’s schema-free and polymorphism allows to have documents on the same collection with different versions of a document schema.
+
