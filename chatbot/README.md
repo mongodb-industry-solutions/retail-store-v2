@@ -77,8 +77,29 @@ NODE_ENV="development"
 
 **Use your own MongoDB cluster and populate data**
 
-Follow these steps to use your own MongoDB cluster and populate data - [TODO]()
+Create an Atlas account at https://cloud.mongodb.com and provision a Cluster. You can follow the instructions from [this article](https://www.mongodb.com/resources/products/fundamentals/mongodb-cluster-setup) to set up your Cluster.
 
+Then, a MongoDB connection string is required to connect to the cluster you created. Follow the steps provided in [this article](https://www.mongodb.com/resources/products/fundamentals/mongodb-connection-string#:~:text=How%20to%20get%20your%20MongoDB,connection%20string%20for%20your%20cluster.) to retrieve your connection string.
+
+You can now edit your `.env.local`
+```bash
+MONGODB_URI=<connection-string>
+DATABASE_NAME="leafy_popup_store"
+COLLECTION_NAME="orders"
+NODE_ENV="development"
+...
+```
+
+Lastly, lets populate the database with data. In the application code locate the dump/leafy_popup_store directory. Inside it, there are several .gz files which contain the data and metadata of the collections: users, products, orders, locations and carts.
+
+Use the [mongorestore](https://www.mongodb.com/docs/database-tools/mongorestore/) command to load the data from the database dump into a new database within your Cluster.
+
+Let's go back to your terminal, navigate to the directory /retail-store-v2 (the root level of the application code), and run the following command:
+
+```
+mongorestore --gzip --dir=dump/leafy_popup_store --db=leafy_popup_store --uri "mongodb+srv://<user>:<password>@<cluster-url>"
+```
+This command will create the database and collections and log its progress. 
 
 You are now ready for Step 4
 
