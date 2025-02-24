@@ -39,7 +39,6 @@ DATAWORKZ_SERVICE=https://ragapps.dataworkz.com
 DATAWORKZ_LLM_ID=
 DATAWORKZ_TOKEN=
 DATAWORKZ_AGENT_ID=
-NEXT_PUBLIC_CHATBOT_PASSWORD=test
 ```
 
 We will fill in the blank values in the following steps.
@@ -137,7 +136,7 @@ Temperature: 0.0
 
 ![Create RAG App](dw_rag_app.png)
 
-- In RAG App Name provide the following value - `Leafy_Portal_Polciies`
+- In RAG App Name provide the following value - `Leafy_Portal_Policies`
 - Pick the LLM you configured in the previous step 
 - Click `Next`
 
@@ -156,7 +155,7 @@ Temperature: 0.0
 
 ![Create RAG App - 5](dw_rag_app_4.png)
 
-- You can now click `Next` until the wizard completes with `Review And Submit`.
+- You can now click `Next`. The next page is the 'Chunk & Vectorize' page where you can change Embedding models and pick a different data processing flow. For now, you can use the defaults and choose `Next`. The next page configures the Retrieval pipeline which allows for a host of configuration on how retrieval should work. Again, for now, the defaults are good and you can click `Review & Submit` and then `Save`.
 
 ![Create RAG App - 6](dw_rag_app_5.png)
 
@@ -357,7 +356,7 @@ Users should be able to do the following -
 
 ![Create Agent](dw_agent_6.png)
 
-- Click on `Create`. The Agent Builder will take a few moments to process and analyze this input. Once it is done you will see the Agent specification that describes the behaviour of the agent. You should see 2 scenarios (your specific scenarios may be named differently because the Agent Builder generates different text in each run) - one that is an `FAQ` and one that is `OrderOperations` amongst other scenarios that are common to all Agents.
+- Click on `Create`. The Agent Builder will take a few moments to process and analyze this input. Once it is done you will see the Agent specification that describes the behaviour of the agent. You should see 2 scenarios (your specific scenarios may be named differently from the example here because the Agent Builder generates different text in each run) - one that is an `FAQ` (or similar) and one that is `OrderOperations` (or similar). Other scenarios generated are common to all Agents.
 
 ![Create Agent](dw_agent_7.png)
 
@@ -430,7 +429,6 @@ DATAWORKZ_SERVICE=https://ragapps.dataworkz.com
 DATAWORKZ_LLM_ID=<Set the llm id from (2) here>
 DATAWORKZ_TOKEN=<Set the dataworkz api token from (3) here>
 DATAWORKZ_AGENT_ID=<Set the dataworkz agent id from (1) here>
-NEXT_PUBLIC_CHATBOT_PASSWORD=test
 ```
 At this point all values must be filled in and we are ready to run the demo!
 
@@ -442,4 +440,4 @@ Now you are all set to run the demo. Go back to the terminal, at the root of the
 npm run dev
 ```
 
-Congratulations, you have successfully set up the demo in your own environment! Open your browser and navigate to http://localhost:8080/cart.Select any user to see their cart and click on the chatbot button at the bottom right corner to see the chatbot in action.
+Congratulations, you have successfully set up the demo in your own environment! Open your browser and navigate to http://localhost:8080/cart. Select any user to see their cart and click on the chatbot button at the bottom right corner to see the chatbot in action.
