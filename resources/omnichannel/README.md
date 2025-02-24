@@ -58,7 +58,7 @@ A MongoDB connection string is required to connect to the cluster you created in
 
 When choosing your connection method for MongoDB, select the option labeled ‘Drivers’, as illustrated in Figure 1.
 
-![image](../media/omnichannel/connection.png)
+![image](./media/connection.png)
 
 Figure 1. Atlas screen to choose a connection method.
 
@@ -107,7 +107,7 @@ These backend operations are enabled by a [Database Trigger](https://www.mongodb
 
 To set up this Database Trigger login to your Atlas account. Once you are logged in, follow the [how-to guide](https://www.mongodb.com/docs/atlas/atlas-ui/triggers/database-triggers/#create-a-database-trigger) to learn how to create a trigger and understand the configuration form sections. Refer to Figure 2 for some specific details you will need to configure this trigger.
 
-![image](../media/omnichannel/trigger.png)
+![image](./media/trigger.png)
 Figure 2. The configuration screen showing the ‘Trigger Details’ section.
 
 As seen on the ‘Trigger Details’ section the following values are important to note:
@@ -136,7 +136,7 @@ npm run dev
 
 Then, open your browser and navigate to http://localhost:8080/cart and you should see the interface shown on Figure 3.
 
-![image](../media/omnichannel/login.png)
+![image](./media/login.png)
 Figure 3. Omnichannel Ordering demo interface.
 
 Congratulations, you have successfully set up the demo in your own environment! Select any user to see their cart and click on ‘Proceed to checkout’ to start your Omnichannel Ordering experience.
@@ -146,21 +146,21 @@ Congratulations, you have successfully set up the demo in your own environment! 
 
 When first accessing the demo you’ll be presented with the Login screen (Figure 4) where you can choose which user you want to login with. All users represent a customer and have the same privileges, the only variation between each user is that they have different pre-loaded data, such as their name, their address, their orders history and items in their cart. 
 
-![image](../media/omnichannel/login.png)
+![image](./media/login.png)
 Figure 4. Login screen
 
  After choosing a Persona, you will be taken to ‘My cart’ screen (Figure 5). Here, you will see a few products already loaded to your cart. If you do not have any, don't worry we added a “Fill Cart” button to automatically add some random products to the cart so you can continue with the demo.
 
-![image](../media/omnichannel/cart.png)
+![image](./media/cart.png)
 Figure 5. My Cart screen
 
 Once you are ready to move forward click on the “Proceed to Checkout”.
 From the ‘Checkout‘ screen you will notice the start of your Omnichannel experience. There are two shipping methods available ‘Buy Online, Pickup in store’ (BOPIS) which shows a list of available stores to pick up the order. And ‘Buy Online, Get Delivery At home’ which shows the address of that specific user.
 
-![image](../media/omnichannel/shippingMethod.png)
+![image](./media/shippingMethod.png)
 Figure 6. BOPIS shipping method
 
-![image](../media/omnichannel/shippingMethod2.png)
+![image](./media/shippingMethod2.png)
 Figure 7. Home delivery shipping method
 
 Select your preferred shipping method and click on “Confirm & order”. This will generate the new order and redirect you to the ”Order Details” page.
@@ -168,18 +168,18 @@ Inside the ‘Order details’ page you will see slight variations depending on 
 In any order:  You first have the “Summary” section (Figure 14) which lists general info about the order. Below that, you have the “Status” showing a Stepper showing the order status progressing through each stage until the order is marked as Delivered/Completed. And at the bottom the list of products contained in the order.
 Every time an order moves forward with the next status the stepper circle will turn green and a new entry will show with the timestamp that status was logged into the database.
 
-![image](../media/omnichannel/status.png)
+![image](./media/status.png)
 Figure 8. Stepper on ‘Status’ section
 
 Every order will automatically move from status every 10 seconds thanks to an Atlas Trigger. The only status that depends on the user is the “Customer in store” status from the BOPIS orders. This status is to indicate to the store that the customer is physically at the store and ready to pick up the order. So the customer has to click on the “I am here” button to change of status
 
-![image](../media/omnichannel/status2.png)
+![image](./media/status2.png)
 Figure 9. Customer alert to notify its presence to the store
 
 ‘BOPIS’ orders only: It has specific states displayed in Figure 10. 
 ‘Buy Online, Get Delivery at Home’ orders only: It has specific states displayed in Figure 16.
 
-![image](../media/omnichannel/progressOrders.png)
+![image](./media/progressOrders.png)
 Figure 10. Progression of an order through various states
 
 To get the full glimpse of the power of change streams open two screens: One with the Order details and another one with the list of Orders. You will notice the order status changing in real time for both screens, providing a unified experience for the user. 
@@ -187,3 +187,14 @@ Another highlight is the ability to create orders with different shipping method
 
 
 ## Authors & Contributors
+
+### Lead Authors   
+Prashant Juttukonda - Principal
+
+Rodrigo Leal - Principal
+
+Genevieve Broadhead - Global lead, retail solutions
+
+[Angie Guemes](https://www.linkedin.com/in/angelica-guemes-estrada/) – Developer & Maintainer 
+
+Florencia Arin – Developer & Maintainer 

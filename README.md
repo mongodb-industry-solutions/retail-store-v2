@@ -48,7 +48,7 @@ Depending on the feature or features you wish to run you might need additional i
 
 Today’s shoppers want quick, accurate answers. With this microservice the retailer can support customers at any point in time through an Agentic RAG chatbot. This Agent is context aware of the business policies as well as the user’s order history and preferences, delivering the customer with the answers they need without waiting on hold or navigating complex menus.
 
-See the full step by step [README](.//resources/features/README-agenticRAG.md) to run this microservice from your own environment in the demo.
+See the full step by step [README](.//resources/chatbot/README.md) to run this microservice from your own environment in the demo.
 
 <details>
 
@@ -67,7 +67,7 @@ Partners:
 
 Customers expect a seamless shopping experiences that blend online and offline seamlessly. To meet these evolving needs, retailers must offer convenient options like Buy Online, Pick Up In Store (BOPIS) and home delivery. This microservice will allow you to create a new order selecting your desired shipping method. 
 
-See the full step by step [README](.//resources/features/README-omnichannel.md) to run this microservice from your own environment in the demo.
+See the full step by step [README](.//resources/omnichannel/README.md) to run this microservice from your own environment in the demo.
 
 <details>
 
@@ -82,3 +82,19 @@ Comming soon!
 
 ## Authors & Contributors
 
+### Lead Authors   
+Prashant Juttukonda - Principal
+
+Rodrigo Leal - Principal
+
+Genevieve Broadhead - Global lead, retail solutions
+
+[Angie Guemes](https://www.linkedin.com/in/angelica-guemes-estrada/) – Developer & Maintainer 
+
+Florencia Arin – Developer & Maintainer 
+
+
+### Contributors  
+This demo was made possible with the contributions of:  
+[Sachin Smotra](https://www.dataworkz.com/) – Contributed to Agentic RAC chatbot  
+[Sachin Hejip](https://www.dataworkz.com/) – Contributed to Agentic RAC chatbot  
