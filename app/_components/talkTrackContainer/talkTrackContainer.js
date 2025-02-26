@@ -1,8 +1,8 @@
 import { useState } from "react";
 import InfoWizard from '../InfoWizard/InfoWizard'
-import { cartPage } from "@/lib/talkTrack";
 
-const TalkTrackCart = () => {
+const TalkTrackContainer = (props) => {
+    const {sections} = props
     const [openHelpModal, setOpenHelpModal] = useState(false);
 
     return (
@@ -12,11 +12,11 @@ const TalkTrackCart = () => {
                 setOpen={setOpenHelpModal}
                 tooltipText="Talk track!"
                 iconGlyph="Wizard"
-                sections={cartPage}
+                sections={sections}
                 openModalIsButton={true}
             />
         </div>
     )
 }
 
-export default TalkTrackCart
+export default TalkTrackContainer

@@ -16,7 +16,8 @@ import { fillCartRandomly } from '@/lib/api';
 import CartItem from '../_components/cart/CartItem';
 import { setCartLoading, setCartProductsList } from '@/redux/slices/UserSlice';
 import CartIndexModal from '../_components/whereMDB_cartIndex/CartIndexModal';
-import TalkTrackCart from '../_components/talkTrackCart/talkTrackCart';
+import TalkTrackContainer from '../_components/talkTrackContainer/talkTrackContainer';
+import { cartPage } from '@/lib/talkTrack';
 
 export default function CartPage() {
     const router = useRouter();
@@ -69,7 +70,7 @@ export default function CartPage() {
                             Fill cart
                         </Button>
                     </div>
-                    <TalkTrackCart></TalkTrackCart>
+                    <TalkTrackContainer sections={cartPage}/>
                 </div>
                 <div className='mt-3'>
                     <H3 className="mb-2">Products</H3>
