@@ -37,7 +37,7 @@ Modern retail customers expect:
 - **Intelligent assistance** that understands complex questions
 - **Personalized recommendations** based on their unique needs
 
-This repository contains demos highlighting key features of a contemporary retail environment, with special focus on our AI-powered Agentic RAG chatbot integration.
+This repository contains demos highlighting key features of a contemporary retail environment, with special focus on how MongoDB optimizes data management and enhances system performance as well as its easiness to integrate with AI-powered technologies such as the Agentic RAG chatbot integration.
 
 ## Prerequisites
 
