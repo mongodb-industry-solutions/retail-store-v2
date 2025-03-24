@@ -33,7 +33,7 @@ const Navbar = () => {
         <Profile></Profile>
       </div>
     </nav>
-  );
-};
+  )
+}
 
 export default Navbar;

@@ -1,5 +1,6 @@
 "use client";
 import styles from "./banner.module.css";
+import Link from "next/link";
 import "../../fonts.css";
 import Image from "next/image";
 import { H1, Body } from '@leafygreen-ui/typography';
@@ -9,7 +10,6 @@ const Banner = () => {
 
     return (
         <div className={styles.bannerContainer}>
-
             <div className={styles.bannerText}>
 
                 <H1 className={styles.title}>Welcome to the Pop-Up Store!</H1>
@@ -19,11 +19,10 @@ const Banner = () => {
                     and enjoy exploring the capabilities of MongoDB!
                 </Body>
 
-                <Button  href="/shop" className={styles.shopButton}>
-                    Shop Now
+                <Button className={styles.shopButton}>
+                    <Link href="/shop">Shop Now</Link>
                 </Button>
             </div>
-
             <div className={styles.imgContainer}>
                 <Image 
                     src="/placeholder.png" 

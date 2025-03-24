@@ -1,0 +1,25 @@
+.personalizedRecommendationsContainer{
+    margin-top: 3rem;
+}
+.scroll-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px;
+  }
+  
+  .scroll-content {
+    display: flex;
+    gap: 10px;
+  }
+  .PRCard{
+    /* background-color: antiquewhite; */
+    width: 200px;
+  }
+  .PRCard .name,   .PRCard .brand{
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .PRCard .brand{
+    font-weight: lighter;
+  }
