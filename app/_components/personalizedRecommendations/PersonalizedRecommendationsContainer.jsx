@@ -101,13 +101,13 @@ const PersonalizedRecommendationsContainer = () => {
         {
           id: 1,
           title: 'Based on your last order you might like',//'Because you bought X product',
-          query: 'db.products.find({})',
+          query: null,//'db.products.find({})',
           items: lastRecommendations || []
         },
         {
           id: 2,
           title: 'Buy again',
-          query: 'db.products.find({})',
+          query: null,
           items: lastBoughtProducts || []
           // ordersLoaded === false
           //   ? <CardSkeleton></CardSkeleton>
