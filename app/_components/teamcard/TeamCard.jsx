@@ -3,8 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from "./teamcard.module.css";
-
-import { H1, H2, H3, Subtitle, Body, InlineCode, InlineKeyCode, Disclaimer, Overline, Description } from '@leafygreen-ui/typography';
+import { Subtitle, Body, Description } from '@leafygreen-ui/typography';
 
 const TeamMemberCard = ({ photo, name, title, subtitle }) => {
   return (

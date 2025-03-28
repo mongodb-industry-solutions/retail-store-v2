@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { H1, H2, H3, Subtitle, Description } from '@leafygreen-ui/typography';
+import { H3 } from '@leafygreen-ui/typography';
 import InfoWizard from '../InfoWizard/InfoWizard';
-import Card from '@leafygreen-ui/card';
 import PRCard from './PRCard';
 
 const PRList = (props) => {
@@ -13,7 +12,7 @@ const PRList = (props) => {
             {
                 sections.map(section => (
                     <div className='mb-4' key={section.id}>
-                        <div className='d-flex'>
+                        <div className='d-flex mb-2'>
                             <H3 className="me-2">{section.title}</H3>
                             <InfoWizard
                                 open={openHelpModal}
@@ -41,9 +40,11 @@ const PRList = (props) => {
                         <div className='scroll-container'>
                             <div className='scroll-content'>
                                 {
-                                    [1, 2, 3, 4, 5, 6].map((product, i) => (
+                                    section.items.length > 0
+                                    ? section.items.map((product, i) => (
                                         <PRCard key={i} product={product} />
                                     ))
+                                    : 'No recommendations'
                                 }
                             </div>
                         </div>
