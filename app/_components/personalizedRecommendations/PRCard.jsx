@@ -19,7 +19,6 @@ const PRCard = (props) => {
             name,
             brand,
             price,
-            pred_price: 0,
             items: [],
         }))
     }

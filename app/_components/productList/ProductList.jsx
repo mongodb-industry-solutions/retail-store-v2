@@ -28,7 +28,7 @@ const ProductList = ({ filters }) => {
         dispatch(setLoading(true))
         let result = await getProductsWithSearch();
         if(result){
-            console.log('getAllProducts result', Object.keys(result).length)
+            //console.log('getAllProducts result', Object.keys(result).length)
             dispatch(setInitialLoad(true))
             dispatch(setProducts(result))
         }
@@ -48,13 +48,10 @@ const ProductList = ({ filters }) => {
         const response = await axios.post("/api/getProducts", filters);
         const transformedProducts = response.data.products.map((product) => ({
           ...product,
-          id: product.id,
           photo: product.image.url,
           name: product.name,
           brand: product.brand,
           price: `${product.price.amount.toFixed(2)}`,
-          pred_price: `${product.pred_price.toFixed(2)}`,
-          items: product.items,
         }));
         setFilteredProducts(transformedProducts);
         setPaginationLength(transformedProducts.length)

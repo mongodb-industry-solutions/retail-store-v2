@@ -47,8 +47,7 @@ const ProductsSlice = createSlice({
         updateProductPrice: (state, action) => {
             let newProducts = {...state.products}
             newProducts[action.payload.objectId] = {
-                ...state.products[action.payload.objectId], 
-                pred_price: action.payload.newPredPrice
+                ...state.products[action.payload.objectId]
             }
             return {
                 ...state,
