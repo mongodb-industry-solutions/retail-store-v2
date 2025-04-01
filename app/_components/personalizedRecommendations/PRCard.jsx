@@ -5,8 +5,6 @@ import { Subtitle } from '@leafygreen-ui/typography';
 import { setOpenedProductDetails } from '@/redux/slices/ProductsSlice';
 import Badge from '@leafygreen-ui/badge';
 import Icon from '@leafygreen-ui/icon';
-import Card from '@leafygreen-ui/card';
-
 
 const PRCard = (props) => {
     const { id = 1234, image, name = '', brand, price, vectorSearchScore } = props.product;
