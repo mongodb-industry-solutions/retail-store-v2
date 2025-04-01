@@ -35,7 +35,8 @@ const UserSlice = createSlice({
             initialLoad: false,
             updateToggle: false
         },
-        cart: {...initCart, loading: true}
+        cart: {...initCart, loading: true},
+        lastBoughtProducts: []
     },
     reducers: {
         setUsersList: (state, action) => {
@@ -126,6 +127,22 @@ const UserSlice = createSlice({
             //let newList = state.products.filter(product => product.id !== action.payload.id)
             //return {...state, products: [...newList]}        
         },
+        setSelectedUserLastRecommendations: (state, action) => {
+            return {
+                ...state, 
+                selectedUser: {
+                    ...state.selectedUser, 
+                    lastRecommendations: action.payload
+                }
+              }
+        },
+        setSelectedUserLastBoughtProducts: (state, action) => {
+            console.log("REDUX", action.payload)
+            return {
+                ...state, 
+                lastBoughtProducts: [...action.payload]
+              }
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchUserData.fulfilled, (state, action) => {
@@ -160,7 +177,9 @@ export const {
     updateUsersOrder,
     setCartProductsList,
     clearCartProductsList,
-    setCartLoading
+    setCartLoading,
+    setSelectedUserLastRecommendations,
+    setSelectedUserLastBoughtProducts
 } = UserSlice.actions
 
 export default UserSlice.reducer

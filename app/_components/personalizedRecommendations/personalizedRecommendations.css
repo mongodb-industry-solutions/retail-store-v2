@@ -11,8 +11,9 @@
     gap: 10px;
   }
   .PRCard{
-    /* background-color: antiquewhite; */
     width: 200px;
+    padding-left: 0px;
+    padding-right: 0px;
   }
   .PRCard .name,   .PRCard .brand{
     font-size: 16px;
@@ -26,10 +27,16 @@
     position: sticky;
     top: 34px;
     margin-left: 10px;
+    z-index: 1;
   }
   .scorebadge{
     box-shadow: 0 4px 14px 0px rgb(0 0 0 / 91%);
   }
   .scorebadge svg{
     margin-right: 5px;
+  }
+  .imageContainer{
+    width: 200px;
+    height: 200px;
+    position: relative;
   }
