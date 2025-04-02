@@ -24,6 +24,7 @@ import { shippingMethods } from '@/lib/constants';
 import ShippingMethodBadgeComp from '@/app/_components/shippingMethodBadgeComp/ShippingMethodBadgeComp';
 import { checkoutPage, orderDetailsPage } from '@/lib/talkTrack';
 import TalkTrackContainer from '@/app/_components/talkTrackContainer/talkTrackContainer';
+import { setOpenedInvoice } from '@/redux/slices/InvoiceSlice';
 
 export default function OrderDetailsPage({ params }) {
     const dispatch = useDispatch();
@@ -48,6 +49,11 @@ export default function OrderDetailsPage({ params }) {
         if (result) {
             console.log('result', result)
         }
+    }
+    const onSeeReceiptClick = () => {
+        console.log('onSeeReceiptClick')
+        // TODO
+        dispatch(setOpenedInvoice({}))
     }
 
     const listenToSSEUpdates = useCallback(() => {
@@ -176,9 +182,9 @@ export default function OrderDetailsPage({ params }) {
                                             <p className={styles.orderData}><strong>Address:</strong> {orderDetails.shipping_address}</p>
                                         </div>
                                         <div className='col'>
-                                            <p className={styles.orderData}><strong>Products:</strong> ${orderDetails.totalPrice} </p>
+                                            <p className={styles.orderData}><strong>Totak:</strong> ${orderDetails.totalPrice} </p>
                                             <p className={styles.orderData}><strong>Shipping:</strong> $0 </p>
-                                            <p className={styles.orderData}><strong>Total:</strong> ${orderDetails.totalPrice} </p>
+                                            <p className={styles.orderData}><strong>Receipt:</strong> <a className={styles.seeReceipt} onClick={() => onSeeReceiptClick() }>See details</a></p>
                                         </div>
                                     </Card>
                                     <H3 className="mb-2">Status</H3>

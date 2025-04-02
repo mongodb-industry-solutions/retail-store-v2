@@ -13,6 +13,7 @@ import { clearOrder } from "@/redux/slices/OrderSlice";
 import { shippingMethods } from "@/lib/constants";
 import ShippingMethodBadgeComp from "../shippingMethodBadgeComp/ShippingMethodBadgeComp";
 import { deleteOrder } from "@/lib/api";
+import { setOpenedInvoice } from "@/redux/slices/InvoiceSlice";
 
 
 const prettifyDateFormat = (timestamp) => {
@@ -49,6 +50,11 @@ const OrderItemCard = ({ order, updateToggle }) => {
             return
         const result = await deleteOrder(order._id);
 
+    }
+    const onSeeReceiptClick = () => {
+        console.log('onSeeReceiptClick')
+        // TODO
+        dispatch(setOpenedInvoice({}))
     }
 
     useEffect(() => {
@@ -101,6 +107,13 @@ const OrderItemCard = ({ order, updateToggle }) => {
                     
                 </div>
                 <div className={`${styles.item} ${styles.fitContent}`}>
+                    <Button
+                        className="me-2"
+                        variant='default'
+                        onClick={() => onSeeReceiptClick()}
+                    >
+                        See receipt
+                    </Button>
                     <Button
                         variant='primary'
                         onClick={() => onSeeOrderClick()}
