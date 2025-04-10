@@ -41,3 +41,24 @@
       border-radius: 0px;
     }
 }
+.tabsModal{
+    min-height: 500px;
+}
+.tab-content{
+    background-color: #f8faf9;
+    min-height: 400px;
+    height: 400px;
+}
+.products-container{
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    min-width: 700px;
+}
+.product-price-list{
+    display: inline-flex;
+    justify-content: space-between;
+}
+.product-price-list p{
+    width: fit-content;
+}

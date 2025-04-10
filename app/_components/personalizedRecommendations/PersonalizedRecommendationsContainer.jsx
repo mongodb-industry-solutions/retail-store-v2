@@ -101,7 +101,9 @@ const PersonalizedRecommendationsContainer = () => {
         {
           id: 1,
           title: 'Based on your last order you might like',//'Because you bought X product',
-          query: null,//'db.products.find({})',
+          query: 'db.products.find({})',
+          // TODO data Model ( Extended Reference Pattern AKA embedding)
+          // TODO show JSON document
           items: lastRecommendations || []
         },
         {

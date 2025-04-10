@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Icon from '@leafygreen-ui/icon';
-import { Modal, Container, ModalHeader, ModalFooter, Tabs, Tab } from 'react-bootstrap';
+import { Modal, Container, ModalHeader, ModalFooter } from 'react-bootstrap';
 import { H2, Subtitle, Description, H3 } from '@leafygreen-ui/typography';
 
-import "./digitalReceiptComp.module.css";
+import "./digitalReceiptComp.css";
 import { setOpenedInvoice } from '@/redux/slices/InvoiceSlice';
 import Image from 'next/image';
+import { Tab, Tabs } from '@leafygreen-ui/tabs';
+import DigitalReceiptData from './DigitalReceiptData';
 
 
 const DigitalReceiptComp = () => {
@@ -24,7 +26,7 @@ const DigitalReceiptComp = () => {
         <Modal
             show={openedInvoice !== null}
             onHide={handleClose}
-            size="lg"
+            size="xl"
             aria-labelledby="contained-modal-title-vcenter"
             centered
             fullscreen={'md-down'}
@@ -37,10 +39,10 @@ const DigitalReceiptComp = () => {
                 <Icon className='cursorPointer' onClick={() => handleClose()} glyph="X" />
             </ModalHeader>
 
-            <Tabs setSelected={setSelected} selected={selected}>
+            <Tabs className='tabsModal' setSelected={setSelected} selected={selected}>
                 <Tab className={``} name="Receipt">
                     <Container className={` p-3 h-100`}>
-                        HOLA
+                        <DigitalReceiptData/>
                     </Container>
                 </Tab>
                 <Tab className={``} name="Archi">

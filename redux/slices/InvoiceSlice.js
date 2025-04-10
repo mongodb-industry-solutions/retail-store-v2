@@ -6,7 +6,7 @@ const InvoiceSlice = createSlice({
     initialState: {
         invoiceIsLoading: false,
         error: null,         // null or {msg: ""}
-        openedInvoice: null // null or {...} este es el 
+        openedInvoice: {} // null or {...} este es el 
     },
     reducers: {
         setOpenedInvoice: (state, action) => {

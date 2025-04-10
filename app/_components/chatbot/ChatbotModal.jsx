@@ -34,7 +34,7 @@ const ChatbotModal = ({ isOpen, handleClose }) => {
                 <Icon className='cursorPointer' onClick={() => handleClose()} glyph="X" />
             </ModalHeader>
             <Tabs id='tabs-chatbot' setSelected={setSelected} selected={selected}>
-                <Tab className={styles.backgroundGray} name="Chatbot">
+                <Tab  name="Chatbot">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         {
                             allowChatbot === true
@@ -45,7 +45,7 @@ const ChatbotModal = ({ isOpen, handleClose }) => {
                         }
                     </Container>
                 </Tab>
-                <Tab className={styles.backgroundGray} name="How to demo">
+                <Tab  name="How to demo">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         <div className={styles.ArchitectureComp}>
                             <H3>How to demo? </H3>
@@ -86,12 +86,12 @@ const ChatbotModal = ({ isOpen, handleClose }) => {
                         </div>
                     </Container>
                 </Tab>
-                <Tab className={styles.backgroundGray} name="Behind the scenes">
+                <Tab  name="Behind the scenes">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         <ArchitectureComp />
                     </Container>
                 </Tab>
-                <Tab className={styles.backgroundGray} name="Why MongoDB & Dataworkz">
+                <Tab  name="Why MongoDB & Dataworkz">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         <div className={styles.ArchitectureComp}>
                             <H3>Why MongoDB Atlas and Dataworkz? </H3>
