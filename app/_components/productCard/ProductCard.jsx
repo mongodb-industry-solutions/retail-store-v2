@@ -11,8 +11,6 @@ import {
   Description,
   Subtitle
 } from "@leafygreen-ui/typography";
-import Modal from "@leafygreen-ui/modal";
-import Button from "@leafygreen-ui/button";
 import IconButton from "@leafygreen-ui/icon-button";
 import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
 import Image from "next/image";
@@ -35,40 +33,43 @@ const ProductCard = ({ id, photo, name, brand, price, items }) => {
   }
 
   return (
-      <LeafyGreenProvider>
-        <Card className={styles.card} onClick={() => onProductClick()}>
-          <div className={styles.scoreContainer}>
-            {
-              // score &&
-              // <Badge className={styles.scorebadge} variant="yellow">
-              //   <Icon glyph="Favorite" />
-              //   {score.toFixed(5)}
-              // </Badge>
-            }
-          </div>
-          <div className={styles.productInfo}>
+    <LeafyGreenProvider>
+      <Card className={styles.card} onClick={() => onProductClick()}>
+        <div className={styles.scoreContainer}>
+        </div>
+        <div className={styles.productInfo}>
+          <div className={styles.imageContainer}>
             <Image
               src={photo}
               alt={name}
-              width={200}
-              height={200}
+              fill
               quality={50}
               unoptimized
+              style={{ objectFit: "contain" }}
             />
-            <Label className={styles.productName}>{name}</Label>
-            <Description>{brand}</Description>
           </div>
+          {/* <Image
+            src={photo}
+            alt={name}
+            width={200}
+            height={200}
+            quality={50}
+            unoptimized
+          /> */}
+          <Label className={styles.productName}>{name}</Label>
+          <Description>{brand}</Description>
+        </div>
 
-          <div className={styles.cardFooter}>
-            <div className={styles.subtitle}>
-              <Subtitle>${price}</Subtitle>
-              <IconButton className={styles.cartAdd} aria-label="Add to Cart">
+        <div className={styles.cardFooter}>
+          <div className={styles.subtitle}>
+            <Subtitle>${price}</Subtitle>
+            <IconButton className={styles.cartAdd} aria-label="Add to Cart">
               <Image src="/cart.png" alt="Cart" width={16} height={16}></Image>
             </IconButton>
-            </div>
           </div>
-        </Card>
-      </LeafyGreenProvider>
+        </div>
+      </Card>
+    </LeafyGreenProvider>
   );
 };
 

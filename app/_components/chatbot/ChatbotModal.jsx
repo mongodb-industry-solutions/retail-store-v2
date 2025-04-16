@@ -45,13 +45,13 @@ const ChatbotModal = ({ isOpen, handleClose }) => {
                         }
                     </Container>
                 </Tab>
-                <Tab className={styles.backgroundGray} name="How to demo">
+                <Tab  name="How to demo">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         <div className={styles.ArchitectureComp}>
                             <H3>How to demo? </H3>
                             <div className='mt-2'>
                                 This Agentic RAG chatbot has the ability to reply with custom responses based on
-                                the user’s order history + the policies of the e-commerce store. Because we
+                                the user's order history + the policies of the e-commerce store. Because we
                                 trained the Agent with a PDF policy document that contains the business
                                 rules of the e-commerce store (cancellation policy, shipping methods, return
                                 policy, etc…). PDF lives in Dataworkz, the embeddings of the PDF are stored
@@ -86,12 +86,12 @@ const ChatbotModal = ({ isOpen, handleClose }) => {
                         </div>
                     </Container>
                 </Tab>
-                <Tab className={styles.backgroundGray} name="Behind the scenes">
+                <Tab  name="Behind the scenes">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         <ArchitectureComp />
                     </Container>
                 </Tab>
-                <Tab className={styles.backgroundGray} name="Why MongoDB & Dataworkz">
+                <Tab  name="Why MongoDB & Dataworkz">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         <div className={styles.ArchitectureComp}>
                             <H3>Why MongoDB Atlas and Dataworkz? </H3>

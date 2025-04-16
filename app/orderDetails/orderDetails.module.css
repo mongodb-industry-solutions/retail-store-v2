@@ -10,3 +10,7 @@
     background-color: rgb(222, 25, 25);
     color: white;
 } 
+.seeReceipt{
+    color: blue;
+    cursor: pointer !important;
+}
