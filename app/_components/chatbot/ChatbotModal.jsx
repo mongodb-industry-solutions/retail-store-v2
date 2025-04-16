@@ -34,7 +34,7 @@ const ChatbotModal = ({ isOpen, handleClose }) => {
                 <Icon className='cursorPointer' onClick={() => handleClose()} glyph="X" />
             </ModalHeader>
             <Tabs id='tabs-chatbot' setSelected={setSelected} selected={selected}>
-                <Tab  name="Chatbot">
+                <Tab className={styles.backgroundGray} name="Chatbot">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         {
                             allowChatbot === true
