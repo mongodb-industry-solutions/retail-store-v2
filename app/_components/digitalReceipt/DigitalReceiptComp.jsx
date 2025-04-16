@@ -1,10 +1,11 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Icon from '@leafygreen-ui/icon';
+import Code from '@leafygreen-ui/code';
 import { Modal, Container, ModalHeader, ModalFooter } from 'react-bootstrap';
-import { H2, Subtitle, Description, H3 } from '@leafygreen-ui/typography';
+import { H3 } from '@leafygreen-ui/typography';
 
 import "./digitalReceiptComp.css";
 import { setOpenedInvoice } from '@/redux/slices/InvoiceSlice';
@@ -39,19 +40,29 @@ const DigitalReceiptComp = () => {
                 <Icon className='cursorPointer' onClick={() => handleClose()} glyph="X" />
             </ModalHeader>
 
-            <Tabs className='tabsModal' setSelected={setSelected} selected={selected}>
+            <Tabs aria-label="Invoice details tabs" className='tabsModal' setSelected={setSelected} selected={selected}>
                 <Tab className={``} name="Receipt">
                     <Container className={` p-3 h-100`}>
                         <DigitalReceiptData/>
                     </Container>
                 </Tab>
-                <Tab className={``} name="Archi">
+                <Tab className={``} name="Document">
                     <Container className={` p-3 h-100`}>
-                        HOLA
+                        <H3 className='mb-2'>Invoice document</H3>
+                        <Code language="javascript">{JSON.stringify(openedInvoice, null, 2)}</Code>
+                    </Container>
+                </Tab>
+                <Tab className={``} name="Behind the scenes">
+                    <Container className={` p-3 h-100`}>
+                        Comming soon! This is a feature under development!
+                    </Container>
+                </Tab>
+                <Tab className={``} name="Digital receipts">
+                    <Container className={` p-3 h-100`}>
+                        Comming soon! This is a feature under development!
                     </Container>
                 </Tab>
             </Tabs>
-
             <ModalFooter/>
         </Modal>
     )

@@ -62,3 +62,23 @@
 .product-price-list p{
     width: fit-content;
 }
+.recommendations-list{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    max-width: 100%;
+    gap: 10;
+}
+.tabsModal > div:nth-of-type(2){
+    overflow-y: auto;
+    max-height: calc(101vh - 200px);
+    min-height: calc(101vh - 200px);
+}
+.fake-link{
+    color: rgb(69, 69, 253);
+    cursor: pointer;
+    width: fit-content;
+}
+.fake-link:hover{
+    color: blue;
+    text-decoration: underline;
+}

@@ -15,27 +15,13 @@ const PRList = (props) => {
                         <div className='d-flex mb-2'>
                             <H3 className="me-2">{section.title}</H3>
                             {
-                                section.query &&
+                                section.addModal &&
                                 <InfoWizard
                                     open={openHelpModal}
                                     setOpen={setOpenHelpModal}
-                                    tooltipText="See query"
+                                    tooltipText="Learn more"
                                     iconGlyph="Wizard"
-                                    sections={[
-                                        {
-                                            heading: "Query that retrieved this recommendation",
-                                            content: [
-                                                {
-                                                    heading: '',
-                                                    body: `
-                                                    <br/>
-                                                    <pre>${section.query}</pre>                                                    
-                                                `,
-                                                    isHTML: true
-                                                }
-                                            ]
-                                        },
-                                    ]}
+                                    tabs={section.modalContentTabs}
                                     openModalIsButton={false}
                                 />
                             }
@@ -47,7 +33,7 @@ const PRList = (props) => {
                                         ? section.items.map((product, i) => (
                                             <PRCard key={i} product={product} />
                                         ))
-                                        : 'Loading recommendations...'
+                                        : 'Loading recommendations... (feature under development)'
                                 }
                             </div>
                         </div>

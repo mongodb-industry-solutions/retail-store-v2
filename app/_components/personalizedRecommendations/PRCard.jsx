@@ -6,8 +6,17 @@ import { setOpenedProductDetails } from '@/redux/slices/ProductsSlice';
 import Badge from '@leafygreen-ui/badge';
 import Icon from '@leafygreen-ui/icon';
 
+import './prCard.css'
+
 const PRCard = (props) => {
-    const { id = 1234, image, name = '', brand, price, vectorSearchScore } = props.product;
+    const { 
+        id = 1234, 
+        image = null, 
+        name = 'Product Name', 
+        brand = 'Brand Name', 
+        price = 0.00, 
+        vectorSearchScore = null
+    } = props.product;
     const dispatch = useDispatch();
 
     const onProductClick = () => {
@@ -34,14 +43,18 @@ const PRCard = (props) => {
                     }
                 </div>
                 <div className='imageContainer'>
-                    <Image
-                        src={image}
-                        alt={name}
-                        fill
-                        quality={50}
-                        unoptimized
-                        style={{ objectFit: "contain" }}
-                    />
+                    {
+                        image == null
+                        ? <div style={{width: '200px', height: '200px', backgroundColor: 'grey'}}/>
+                        : <Image
+                            src={image}
+                            alt={name}
+                            fill
+                            quality={50}
+                            unoptimized
+                            style={{ objectFit: "contain" }}
+                        />
+                    }
                 </div>
                 <div className='ms-3 me-3 mt-3'>
                     <Subtitle className="name" title={name}>{name}</Subtitle>

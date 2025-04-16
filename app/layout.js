@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
       <body>
         <ClientProvider>
           {children}
-          {/* <LoginComp/> */}
+          <LoginComp/>
           <DigitalReceiptComp/>
           <ChatbotOpener/>
         </ClientProvider>

@@ -18,7 +18,7 @@ import Footer from "@/app/_components/footer/Footer";
 import Navbar from "@/app/_components/navbar/Navbar";
 import CartItem from '@/app/_components/cart/CartItem';
 import { handleChangeInOrders, prettifyDateFormat } from '@/lib/helpers';
-import { addOrderStatusHistory, fetchOrderDetails } from '@/lib/api';
+import { addOrderStatusHistory, fetchInvoice, fetchOrderDetails } from '@/lib/api';
 import { setLoading, setOrder } from '@/redux/slices/OrderSlice';
 import { shippingMethods } from '@/lib/constants';
 import ShippingMethodBadgeComp from '@/app/_components/shippingMethodBadgeComp/ShippingMethodBadgeComp';
@@ -50,10 +50,15 @@ export default function OrderDetailsPage({ params }) {
             console.log('result', result)
         }
     }
-    const onSeeReceiptClick = () => {
-        console.log('onSeeReceiptClick')
-        // TODO
-        dispatch(setOpenedInvoice({}))
+    const onSeeReceiptClick = async () => {
+        if(!orderDetails.invoiceId)
+            return
+        dispatch(setOpenedInvoice(null))
+        const invoice = await fetchInvoice(orderDetails.invoiceId)
+        if(invoice)
+            dispatch(setOpenedInvoice(invoice))
+        else    
+            alert("Couldn't get receipt data, try again later")
     }
 
     const listenToSSEUpdates = useCallback(() => {
