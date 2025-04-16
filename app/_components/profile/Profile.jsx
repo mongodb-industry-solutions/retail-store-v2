@@ -32,7 +32,9 @@ const Profile = () => {
                         <ListGroup.Item className={styles.listGroupItem}>
                             <div className="d-flex flex-row">
                                 <img src="/rsc/icons/circle-user-solid.svg" alt="Logo" width={18} className="me-1" />
-                                <div><p className={styles.textMyProfile}>My Profile</p><small>{selectedUser.name} {selectedUser.surname}</small></div>
+                                <div onClick={() => console.log('selectedUser: ', selectedUser)}>
+                                    <p className={styles.textMyProfile}>My Profile</p><small>{selectedUser.name} {selectedUser.surname}</small>
+                                </div>
                             </div>
                         </ListGroup.Item>
                         <ListGroup.Item className={styles.listGroupItem}>

@@ -11,6 +11,7 @@
 }
 
 .productList {
-  width: calc(100vw - 180px);
+  /* width: calc(100vw - 180px); */
+  padding: 0px 30px;
   overflow-y: auto;
 }
