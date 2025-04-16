@@ -1,4 +1,4 @@
-import { getChangeStream } from "@/lib/changeStream";
+import { getChangeStream } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
 const HEARTBEAT_INTERVAL = 5000; // Keep alive interval in milliseconds
