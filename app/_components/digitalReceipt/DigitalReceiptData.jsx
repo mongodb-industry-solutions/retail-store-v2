@@ -38,7 +38,7 @@ const DigitalReceiptData = () => {
                     openedInvoice?.items.map((prod, index) => (
                         <div className='product-price-list' key={index}>
                             <p >{index + 1}</p>
-                            <p className='ms-4'>{prod.name}</p>
+                            <p className='ms-4 w-100'>{prod.name}</p>
                             <p className='ms-4'>${prod?.price.amount}</p>
                         </div>
                     ))
@@ -58,9 +58,21 @@ const DigitalReceiptData = () => {
                 <div className='product-price-list'>
                     <p >SUBTOTAL</p>
                     <p className='ms-4'></p>
-                    <strong className='ms-4 text-danger'>${openedInvoice?.metadata?.erpDetails?.subtotal}</strong>
+                    <strong className='ms-4' style={{color: 'green'}}>${openedInvoice?.metadata?.erpDetails?.subtotal}</strong>
                 </div>
-                <hr></hr>
+                <strong className='m-0'>Loyalty</strong>
+                <hr className='mt-0'></hr>
+                <div className='product-price-list'>
+                    <p >Points earned</p>
+                    <p className='ms-4'></p>
+                    <p className='ms-4'>+{openedInvoice?.metadata?.loyaltyRewards?.pointsEarned}</p>
+                </div>
+                <div className='product-price-list'>
+                    <p >Tier</p>
+                    <p className='ms-4'></p>
+                    <p className='ms-4'>{openedInvoice?.metadata?.loyaltyRewards?.tier}</p>
+                </div>
+                <hr className='mt-0'></hr>
                 <div className='d-flex justify-content-center mb-3 w-100'>
                     <p className='fake-link' onClick={() => onDownloadInvoice()}>Download receipt as PDF <Icon glyph='Download' /></p>
                 </div>
@@ -69,7 +81,11 @@ const DigitalReceiptData = () => {
                 <Subtitle className="ms-0">Based on this order you might also like</Subtitle>
                 <div className='recommendations-list mt-3'>
                     {
-                        [0, 1, 2, 3, 4, 5].map((prod, index) => (
+                        openedInvoice?.recommendations.length > 0
+                        ? openedInvoice?.recommendations.map((prod, index) => (
+                            <PRCard key={index} product={prod} />
+                        ))
+                        : [0, 1, 2, 3, 4, 5].map((prod, index) => (
                             <PRCard key={index} product={prod} />
                         ))
                     }

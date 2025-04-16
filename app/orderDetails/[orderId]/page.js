@@ -187,7 +187,7 @@ export default function OrderDetailsPage({ params }) {
                                             <p className={styles.orderData}><strong>Address:</strong> {orderDetails.shipping_address}</p>
                                         </div>
                                         <div className='col'>
-                                            <p className={styles.orderData}><strong>Totak:</strong> ${orderDetails.totalPrice} </p>
+                                            <p className={styles.orderData}><strong>Total:</strong> ${orderDetails.totalPrice} </p>
                                             <p className={styles.orderData}><strong>Shipping:</strong> $0 </p>
                                             <p className={styles.orderData}><strong>Receipt:</strong> <a className={styles.seeReceipt} onClick={() => onSeeReceiptClick() }>See details</a></p>
                                         </div>
