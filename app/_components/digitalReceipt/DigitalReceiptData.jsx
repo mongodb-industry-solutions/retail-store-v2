@@ -9,7 +9,6 @@ import Icon from '@leafygreen-ui/icon';
 
 const DigitalReceiptData = () => {
     const openedInvoice = useSelector(state => state.Invoice.openedInvoice)
-<<<<<<< HEAD
     const invoiceEndpoint = useSelector(state => state.Invoice.invoiceEndpoint)
 
     const onDownloadInvoice = async () => {
@@ -24,11 +23,6 @@ const DigitalReceiptData = () => {
       } else{
         alert("Could not download invoice")
       }
-=======
-
-    const onDownloadInvoice = () => {
-        console.log('onDownloadInvoice')
->>>>>>> bde30159999e0699eb0425e539cb68277f6439e6
     }
 
     return (
@@ -56,45 +50,26 @@ const DigitalReceiptData = () => {
                         <div className='product-price-list' key={index}>
                             <p >{index + 1}</p>
                             <p className='ms-4 w-100'>{prod.name}</p>
-<<<<<<< HEAD
                             <p className='ms-4' style={{minWidth: 'fit-content'}}>{prod?.amount} x ${prod?.price.amount}</p>
-=======
-                            <p className='ms-4'>${prod?.price.amount}</p>
->>>>>>> bde30159999e0699eb0425e539cb68277f6439e6
                         </div>
                     ))
                 }
                 <strong className='m-0'>Details</strong>
                 <hr className='mt-0'></hr>
                 <div className='product-price-list'>
-<<<<<<< HEAD
                     <p >Subtotal</p>
                     <p className='ms-4'></p>
                     <p className='ms-4'>${openedInvoice?.metadata?.erpDetails?.subtotal?.toFixed(2)}</p>
-=======
-                    <p >Total</p>
-                    <p className='ms-4'></p>
-                    <p className='ms-4'>${openedInvoice?.metadata?.erpDetails?.totalAmount?.toFixed(2)}</p>
->>>>>>> bde30159999e0699eb0425e539cb68277f6439e6
                 </div>
                 <div className='product-price-list'>
                     <p >Tax</p>
                     <p className='ms-4'></p>
-<<<<<<< HEAD
                     <p className='ms-4'>${openedInvoice?.metadata?.erpDetails?.totalTax?.toFixed(2)}</p>
                 </div>
                 <div className='product-price-list'>
                     <p >TOTAL</p>
                     <p className='ms-4'></p>
                     <strong className='ms-4' style={{color: 'green'}}>${openedInvoice?.metadata?.erpDetails?.totalAmount}</strong>
-=======
-                    <p className='ms-4'>${openedInvoice?.metadata?.erpDetails?.totalTax}</p>
-                </div>
-                <div className='product-price-list'>
-                    <p >SUBTOTAL</p>
-                    <p className='ms-4'></p>
-                    <strong className='ms-4' style={{color: 'green'}}>${openedInvoice?.metadata?.erpDetails?.subtotal}</strong>
->>>>>>> bde30159999e0699eb0425e539cb68277f6439e6
                 </div>
                 <strong className='m-0'>Loyalty</strong>
                 <hr className='mt-0'></hr>
@@ -131,8 +106,4 @@ const DigitalReceiptData = () => {
     )
 }
 
-<<<<<<< HEAD
 export default DigitalReceiptData;
-=======
-export default DigitalReceiptData
->>>>>>> bde30159999e0699eb0425e539cb68277f6439e6
