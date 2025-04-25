@@ -197,4 +197,4 @@ Another highlight is the ability to create orders with different shipping method
 
 [Angie Guemes](https://www.mongodb.com/developer/author/angie-guemes-estrada/) – Developer & Maintainer 
 
-Florencia Arin – Developer & Maintainer 
+[Florencia Arin](https://www.mongodb.com/blog/authors/florencia-arin) – Developer & Maintainer
