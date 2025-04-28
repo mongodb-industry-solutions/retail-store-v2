@@ -17,8 +17,8 @@
 
 Make sure to have the following tools to follow along smoothly and run this demo on your own environment.
 * MongoDB Atlas Account. Create an Atlas account at https://cloud.mongodb.com and provision a Cluster. You can follow the instructions from this article to set up your Cluster.
-* Voyage AI account. TODO
-* Azure account. TODO
+* Voyage AI account. Required only if you wish to generate your own embeddings. A Voyage AI API key is needed to access and use their embedding models.
+* Azure account. Required to set up the microservices, as we use Azure components such as Functions and App Services. You will need an Azure account to provision and configure these components.
 * Install Node. This will be required to install the node modules which contain all the necessary packages to run our demo. 
 * Install Git. This will be required to clone the demo repository.
 
@@ -66,7 +66,7 @@ A MongoDB connection string is required to connect to the cluster you created in
 
 When choosing your connection method for MongoDB, select the option labeled ‘Drivers’, as illustrated in Figure 1.
 
-![image](./media/connection.png)
+![image](../omnichannel/media/connection.png)
 
 Figure 1. Atlas screen to choose a connection method.
 
@@ -119,51 +119,58 @@ Now you are all set to run the demo. Go back to the terminal, at the root of the
 npm run dev
 ```
 
-Then, open your browser and navigate to http://localhost:8080/cart and you should see the interface shown on Figure 3.
+Then, open your browser and navigate to http://localhost:8080/cart and you should see the interface shown on Figure 2.
 
-![image](./media/login.png)
-Figure 3. Omnichannel Ordering demo interface.
+![image](../omnichannel//media/login.png)
+Figure 2. Omnichannel Ordering demo interface.
 
 Congratulations, you have successfully set up the demo in your own environment! Select any user to see their cart and click on ‘Proceed to checkout’ to start your Omnichannel Ordering experience.
 
 
 ## Demo Overview
 
-When first accessing the demo you’ll be presented with the Login screen (Figure 4) where you can choose which user you want to login with. All users represent a customer and have the same privileges, the only variation between each user is that they have different pre-loaded data, such as their name, their address, their orders history and items in their cart. 
+When first accessing the demo you’ll be presented with the Login screen (Figure 3) where you can choose which user you want to login with. All users represent a customer and have the same privileges, the only variation between each user is that they have different pre-loaded data, such as their name, their address, their orders history and items in their cart. 
 
 ![image](../omnichannel/media/login.png)
-Figure 4. Login screen
+Figure 3. Login screen
 
- After choosing a Persona, navigate to ‘My cart’ screen (Figure 5) by clicking on the User icon in the top right corder and 'My Cart'. Here, you will see a few products already loaded to your cart. If you do not have any, don't worry we added a “Fill Cart” button to automatically add some random products to the cart so you can continue with the demo.
+ After choosing a user, navigate to ‘My cart’ screen (Figure 4) by clicking on the User icon in the top right corder and 'My Cart'. Here, you will see a few products already loaded to your cart. If you do not have any, don't worry we added a “Fill Cart” button to automatically add some random products to the cart so you can continue with the demo.
 
-TODO CART IMAGE!
-Figure 5. My Cart screen
+TODO IMAGE!
+Figure 4. My Cart screen
 
 Once you are ready to move forward click on the “Proceed to Checkout”.
 Select your preferred shipping method and click on “Confirm & order”. This will generate the new order and redirect you to the ”Order Details” page (Figure 5).
 
-TODO CART IMAGE!
-Figure 6. Order Details page
+TODO IMAGE!
+Figure 5. Order Details page
 
 At the top of the ‘Order details’ page you will see a Summary section with three columns. Click on "See details" inside the third column to open the digital receipt. 
 
 ### Undertanding the digital receipt
 
-The e-receipt contains relevant invoice details such as the transaction timestamp, the order id, items purchased, total amount and loyalty points. At the bottom of the receipt, there is a list of product recommendations based on the items of this specific order.
+The e-receipt contains relevant invoice details such as the transaction timestamp, the order id, items purchased, total amount and loyalty points. At the bottom of the receipt, there is a list of product recommendations based on the items of this specific order. (Figure 6)
 
-Each digital receipt shows different recommendations. This is because the algorithm takes the most expensive product in the order and performs a vector search query on the catalog to retrieve the top 6 similar items. This ensures every digital receipt contains a unique and relevant set of suggestions leading to a more engaging shopping experience.
+TODO IMAGE!
+Figure 6. Digital receipt, general information
+
+Each digital receipt shows different recommendations. This is because the algorithm takes the most expensive product in the order and performs a vector search query on the catalog to retrieve the top 6 similar items. This ensures every digital receipt contains a unique and relevant set of suggestions (Figure 7) leading to a more engaging shopping experience.
+
+TODO IMAGE!
+Figure 7. Order's relevant recommendations
 
 Additionally, shoppers can download their digital receipt at any point in time, as often as they need. This provides customers with easy access and organization of their expenses.
 
 ### Undertanding the personalized recommendations in landing page
 
-When navigating to the landing page (Figure X), users will see the latest product recommendations in a carousel. We use the extended reference pattern to store the latest product recommendations inside the user document, enabling fast retrieval and ensuring the most up-to-date suggestions load quickly.
+When navigating to the landing page (Figure 8), users will see the latest product recommendations in a carousel. We use the extended reference pattern to store the latest product recommendations inside the user document, enabling fast retrieval and ensuring the most up-to-date suggestions load quickly.
+
+TODO IMAGE!
+Figure 8. Landing Page
 
 All of this comes together to create a smarter, more personalized post-purchase experience.
 
-Figure X. Landing Page
-
-## Product embeddings
+## Product Embeddings
 The products in this demo include an embedding field called <code>vai_text_embedding</code>, which is essential for performing vector search. If you're replicating this demo, the provided dump file includes products with their embeddings already generated.
 
 However, if you'd like to use a different dataset and create the embeddings yourself, you might be wondering: Where do these come from, and how are they generated?
@@ -175,17 +182,83 @@ Voyage AI is a leader in embedding and reranking that dramatically improves the 
 
 To learn more about Voyage AI visit their [official website](https://www.voyageai.com/).
 
-## Generating the embeddings
+### Available Models from Voyage AI
+Voyage AI provides two main types of embedding models:
 
+| Model Type | Description |
+| :--- | :--- |
+| **Text Models** | Designed for encoding purely textual data (titles, descriptions, etc.). |
+| **Multimodal Models** | Handle both text and images together. *(Not used in this solution.)* |
 
+🔹 In this project, **we use the `voyage-3-large` text model**, as it offers an excellent balance between **accuracy** and **performance** for pure text embedding tasks.
 
+> For more details on Voyage AI models, visit [Voyage AI Documentation](https://docs.voyageai.com).
+
+### Fields Embedded from Product Documents
+When generating embeddings, we selectively embed certain fields from the product documents to capture the product's essence.
+
+Example of a product document:
+
+```json
+{
+  "_id": ObjectId("..."),
+  "name": "Amazon Brand - Solimo Designer Never Stop Dreaming 3D Printed Hard Back Case Mobile Cover for Lenovo Vibe K5 Plus",
+  "code": "gz8169-SL40322",
+  "gender": "Unisex",
+  "masterCategory": "Categories",
+  "subCategory": "Mobiles & Accessories",
+  "articleType": "CELLULAR_PHONE_CASE",
+  "baseColour": "Others",
+  "image": {
+    "url": "https://m.media-amazon.com/images/I/71W6WJAQ5pL.jpg"
+  },
+  "price": {
+    "amount": 97,
+    "currency": "USD"
+  },
+  "description": "This sleek and stylish phone case is designed to protect your device from scratches and drops, while also showcasing your unique personality with its vibrant design.",
+  "brand": "Amazon Brand - Solimo",
+
+}
+```
+🔹 **Embedded Fields**:
+
+- `name`
+- `description`
+- `brand`
+- `articleType`
+- `subCategory`
+
+> _We **concatenate** these fields into a single string before generating the embeddings._
+
+### How to Generate Product Embeddings
+
+We make it easy! 🎯
+
+1. Navigate to the folder:
+
+```bash
+cd microservices/productEmbeddings/
+```
+
+2. Populate your <code>.env</code> file with the required environment variables (like your Voyage AI API key and your Atlas connection string).
+
+3. Run the provided script:
+
+```bash
+node script.js
+```
+
+That's it! ✅  
+
+The script will automatically generate and store embeddings for your products in a field called <code>vai_text_embedding</code>.
 
 ## Authors & Contributors
 
 ### Lead Authors   
-[Prashant Juttukonda](https://www.mongodb.com/blog/authors/prashant-juttukonda) - Principal
+[Rodrigo Leal](https://www.mongodb.com/blog/authors/rodrigo-leal) - Retail Principal
 
-[Rodrigo Leal](https://www.mongodb.com/blog/authors/rodrigo-leal) - Principal
+[Prashant Juttukonda](https://www.mongodb.com/blog/authors/prashant-juttukonda) - Retail Principal
 
 [Genevieve Broadhead](https://www.mongodb.com/blog/authors/genevieve-broadhead) - Global lead, retail solutions
 
