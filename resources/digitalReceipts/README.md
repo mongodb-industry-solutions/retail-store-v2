@@ -7,8 +7,8 @@
   <ol>
     <li><a href="#prerequisites">Prerequisites</a></li>
     <li><a href="#initial-configuration">Initial Configuration</a></li>
-    <li><a href="#initial-configuration">Product Embeddings</a></li>
     <li><a href="#demo-overview">Demo Overview</a></li>
+    <li><a href="#product-embeddings">Product Embeddings</a></li>
     <li><a href="#authors-&-contributors">Authors & Contributors</a></li>
     </ol>
 </details>
@@ -83,6 +83,7 @@ MONGODB_URI=mongodb+srv://<username>:<password>@<clusterAddress>
 DATABASE_NAME="leafy_popup_store"
 COLLECTION_NAME="orders"
 NODE_ENV="development"
+NEXT_PUBLIC_GCP_INVOICE_URL=<url of the download PDF invoice url azure function>
 ```
 
 ###  Step 4. Populate your database
@@ -107,6 +108,10 @@ Perfect! You now have your application code with environment variables, all the 
 
 Curious about how the database dump was generated? Check out  the documentation for the mongodump command. 
 
+###  Step 5. Setup the backend
+
+To enable digital receipts and personalized recommendations, two microservices must be set up. These services are located in a separate backend repository. Please refer to that [repository's README](https://github.com/mongodb-industry-solutions/retail-digital-receipts-backend) for detailed setup instructions.
+
 ### Step 6. Run the demo
 Now you are all set to run the demo. Go back to the terminal, at the root of the application code execute the following command:
 
@@ -126,46 +131,54 @@ Congratulations, you have successfully set up the demo in your own environment! 
 
 When first accessing the demo you’ll be presented with the Login screen (Figure 4) where you can choose which user you want to login with. All users represent a customer and have the same privileges, the only variation between each user is that they have different pre-loaded data, such as their name, their address, their orders history and items in their cart. 
 
-![image](./media/login.png)
+![image](../omnichannel/media/login.png)
 Figure 4. Login screen
 
- After choosing a Persona, you will be taken to ‘My cart’ screen (Figure 5). Here, you will see a few products already loaded to your cart. If you do not have any, don't worry we added a “Fill Cart” button to automatically add some random products to the cart so you can continue with the demo.
+ After choosing a Persona, navigate to ‘My cart’ screen (Figure 5) by clicking on the User icon in the top right corder and 'My Cart'. Here, you will see a few products already loaded to your cart. If you do not have any, don't worry we added a “Fill Cart” button to automatically add some random products to the cart so you can continue with the demo.
 
-![image](./media/cart.png)
+TODO CART IMAGE!
 Figure 5. My Cart screen
 
 Once you are ready to move forward click on the “Proceed to Checkout”.
-From the ‘Checkout‘ screen you will notice the start of your Omnichannel experience. There are two shipping methods available ‘Buy Online, Pickup in store’ (BOPIS) which shows a list of available stores to pick up the order. And ‘Buy Online, Get Delivery At home’ which shows the address of that specific user.
+Select your preferred shipping method and click on “Confirm & order”. This will generate the new order and redirect you to the ”Order Details” page (Figure 5).
 
-![image](./media/shippingMethod.png)
-Figure 6. BOPIS shipping method
+TODO CART IMAGE!
+Figure 6. Order Details page
 
-![image](./media/shippingMethod2.png)
-Figure 7. Home delivery shipping method
+At the top of the ‘Order details’ page you will see a Summary section with three columns. Click on "See details" inside the third column to open the digital receipt. 
 
-Select your preferred shipping method and click on “Confirm & order”. This will generate the new order and redirect you to the ”Order Details” page.
-Inside the ‘Order details’ page you will see slight variations depending on the shipping method you selected.:
-In any order:  You first have the “Summary” section (Figure 14) which lists general info about the order. Below that, you have the “Status” showing a Stepper showing the order status progressing through each stage until the order is marked as Delivered/Completed. And at the bottom the list of products contained in the order.
-Every time an order moves forward with the next status the stepper circle will turn green and a new entry will show with the timestamp that status was logged into the database.
+### Undertanding the digital receipt
 
-![image](./media/status.png)
-Figure 8. Stepper on ‘Status’ section
+The e-receipt contains relevant invoice details such as the transaction timestamp, the order id, items purchased, total amount and loyalty points. At the bottom of the receipt, there is a list of product recommendations based on the items of this specific order.
 
-Every order will automatically move from status every 10 seconds thanks to an Atlas Trigger. The only status that depends on the user is the “Customer in store” status from the BOPIS orders. This status is to indicate to the store that the customer is physically at the store and ready to pick up the order. So the customer has to click on the “I am here” button to change of status
+Each digital receipt shows different recommendations. This is because the algorithm takes the most expensive product in the order and performs a vector search query on the catalog to retrieve the top 6 similar items. This ensures every digital receipt contains a unique and relevant set of suggestions leading to a more engaging shopping experience.
 
-![image](./media/status2.png)
-Figure 9. Customer alert to notify its presence to the store
+Additionally, shoppers can download their digital receipt at any point in time, as often as they need. This provides customers with easy access and organization of their expenses.
 
-‘BOPIS’ orders only: It has specific states displayed in Figure 10. 
-‘Buy Online, Get Delivery at Home’ orders only: It has specific states displayed in Figure 16.
+### Undertanding the personalized recommendations in landing page
 
-![image](./media/progressOrders.png)
-Figure 10. Progression of an order through various states
+When navigating to the landing page (Figure X), users will see the latest product recommendations in a carousel. We use the extended reference pattern to store the latest product recommendations inside the user document, enabling fast retrieval and ensuring the most up-to-date suggestions load quickly.
 
-To get the full glimpse of the power of change streams open two screens: One with the Order details and another one with the list of Orders. You will notice the order status changing in real time for both screens, providing a unified experience for the user. 
-Another highlight is the ability to create orders with different shipping methods having very different types and amounts of status. This is possible thanks to the flexibility of the document model. It’s schema-free and polymorphism allows to have documents on the same collection with different versions of a document schema.
+All of this comes together to create a smarter, more personalized post-purchase experience.
+
+Figure X. Landing Page
 
 ## Product embeddings
+The products in this demo include an embedding field called <code>vai_text_embedding</code>, which is essential for performing vector search. If you're replicating this demo, the provided dump file includes products with their embeddings already generated.
+
+However, if you'd like to use a different dataset and create the embeddings yourself, you might be wondering: Where do these come from, and how are they generated?
+
+In this section, we'll explore the embedding model used and the generation process in detail.
+
+### Voyage AI
+Voyage AI is a leader in embedding and reranking that dramatically improves the accuracy through AI-powered search and retrieval. Voyage AI has <strong>general purpose models</strong> ready for any purpose and language out-of-the-box, <strong>domain specific models</strong> that are highly optimized as well as <strong>Company specific models</strong> for companies to fine-tune.
+
+To learn more about Voyage AI visit their [official website](https://www.voyageai.com/).
+
+## Generating the embeddings
+
+
+
 
 ## Authors & Contributors
 
