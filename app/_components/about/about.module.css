@@ -36,6 +36,9 @@
     margin-top: 20px;
     margin-bottom: 20px;
 }
+.githubButton a{
+    margin-right: 10px;
+}
 
 .hr {
     height: 1px; /* Set desired height */
