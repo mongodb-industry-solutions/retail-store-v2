@@ -2,16 +2,20 @@ import React from 'react'
 import { useDispatch } from 'react-redux';
 
 import { setAllowChatbot } from '@/redux/slices/ChatbotSlice';
+import { chatbotLogin } from '@/lib/api';
 
 const ChatbotLogin = () => {
     const dispatch = useDispatch();
 
     const loginToChatbot = () => {
-        const password = document.getElementById('chatbotInput').value
-        if (password === process.env.NEXT_PUBLIC_CHATBOT_PASSWORD)
+        const email = document.getElementById('chatbotInput').value
+        if (email.length > 0 && email.includes('@mongodb.com')){
             dispatch(setAllowChatbot(true))
-        else
-            alert('wrong password')
+            chatbotLogin(email)
+        }
+        else{
+            alert('Please enter an email')
+        }
     }
     const onKeyDownInput = (e) => {
         if(e.key === 'Enter')
@@ -19,8 +23,9 @@ const ChatbotLogin = () => {
     }
     return (
         <div>
-            <p>If you are looking to showcase this demo to a client please contact prashant.juttukonda@mongodb.com or angie.guemes@mongodb.com to get the password.</p>
-            <input type='password' id='chatbotInput' onKeyDown={(e) => onKeyDownInput(e)}></input>
+            <p>Thanks for using our Leafy chatbot</p>
+            <p><strong>Please enter your e-mail</strong></p>
+            <input type='email' id='chatbotInput' placeholder='john.smith@mongodb.com' onKeyDown={(e) => onKeyDownInput(e)}></input>
             <button type='' onClick={() => loginToChatbot()}>Submit</button>
         </div>
     )
