@@ -92,7 +92,30 @@ Tech Stack:
 
 ### Personalized recommendations from digital receipts
 
-Comming soon!
+AI-powered product recommendations are everywhere, but we barely notice them anymore! Whether it’s in your inbox, on your favorite e-commerce sites, or streaming platforms, these recommendations are driving real impact. In fact, they account for [35% of Amazon sales and 75% of what people watch on Netflix](https://www.mckinsey.com/industries/retail/our-insights/how-retailers-can-keep-up-with-consumers).
+
+With this microservice we enable our e-commerce store to enhance the post-purchase experience for customers by:
+-  Analyzing digital receipt data to personalize product recommendations on the store’s landing page.
+- Embedding product suggestions directly in the digital receipt guaranteeing that every receipt includes a unique and relevant set of suggestions, leading to a more engaging shopping experience.
+- Allowing shoppers to download their digital receipts at any time, as often as needed. This provides customers with easy access and better organization of their expenses.
+
+
+See the full step by step [README](.//resources/digitalReceipts/README.md) to run this microservice from your own environment in the demo.
+
+<details>
+
+Tech Stack:
+
+- MongoDB Atlas Account
+- VoyageAI
+- Azure Account
+- Node
+
+Partners:
+- [Azure](https://azure.microsoft.com/)
+
+</details>
+
 
 ## Authors & Contributors
 
@@ -105,7 +128,7 @@ Comming soon!
 
 [Angie Guemes](https://www.mongodb.com/developer/author/angie-guemes-estrada/) – Developer & Maintainer 
 
-Florencia Arin – Developer & Maintainer 
+[Florencia Arin](https://www.mongodb.com/blog/authors/florencia-arin) – Developer & Maintainer 
 
 
 ### Contributors  
