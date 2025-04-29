@@ -14,6 +14,7 @@ import { Container } from "react-bootstrap";
 const About = () => {
 
   const githubRepoUrl = "https://github.com/mongodb-industry-solutions/retail-store-v2";
+  const githubRepoMSUrl = "https://github.com/mongodb-industry-solutions/retail-digital-receipts-backend";
 
   return (
 
@@ -88,6 +89,12 @@ const About = () => {
           <Button>
             <img src="/github.png" alt="GitHub" width={24} height={24} />
             Github Repo
+          </Button>
+        </a>
+        <a href={githubRepoMSUrl} target="_blank" rel="noopener noreferrer">
+          <Button>
+            <img src="/github.png" alt="GitHub" width={24} height={24} />
+            Github: Invoice & Recommendation MS
           </Button>
         </a>
       </div>
