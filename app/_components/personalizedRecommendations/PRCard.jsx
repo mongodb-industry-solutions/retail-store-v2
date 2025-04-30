@@ -10,7 +10,7 @@ import './prCard.css'
 
 const PRCard = (props) => {
     const { 
-        id = 1234, 
+        _id = 1234, 
         image = null, 
         name = 'Product Name', 
         brand = 'Brand Name', 
@@ -21,7 +21,7 @@ const PRCard = (props) => {
 
     const onProductClick = () => {
         dispatch(setOpenedProductDetails({
-            id,
+            id: _id,
             photo: image,
             name,
             brand,
