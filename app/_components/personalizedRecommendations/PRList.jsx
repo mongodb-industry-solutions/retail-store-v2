@@ -31,7 +31,7 @@ const PRList = (props) => {
                                 {
                                     section.items.length > 0
                                         ? section.items.map((product, i) => (
-                                            <PRCard key={i} product={product} />
+                                            <PRCard key={i} product={{_id: product.productId, ...product} } />
                                         ))
                                         : 'Loading recommendations... (feature under development)'
                                 }

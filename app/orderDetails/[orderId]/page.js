@@ -51,6 +51,7 @@ export default function OrderDetailsPage({ params }) {
         }
     }
     const onSeeReceiptClick = async () => {
+        console.log(orderDetails)
         if(!orderDetails.invoiceId)
             return
         dispatch(setOpenedInvoice(null))
@@ -98,7 +99,6 @@ export default function OrderDetailsPage({ params }) {
         return eventSource;
     }, [orderId]);
 
-
     useEffect(() => {
         const getOrderDetails = async () => {   // fetch the order 
             try {
@@ -113,6 +113,7 @@ export default function OrderDetailsPage({ params }) {
         getOrderDetails();
         return () => { }
     }, [orderId]);
+
 
     useEffect(() => {
         if (orderDetails._id !== orderId)
@@ -144,6 +145,8 @@ export default function OrderDetailsPage({ params }) {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
     }, [sseConnection]);
+
+
 
     return (
         <>
