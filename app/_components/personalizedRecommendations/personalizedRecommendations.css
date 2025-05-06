@@ -1,0 +1,13 @@
+.personalizedRecommendationsContainer{
+    margin-top: 1rem;
+}
+.scroll-container {
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .scroll-content {
+    display: flex;
+    gap: 10px;
+  }
+

@@ -17,5 +17,5 @@ export default function Home() {
       <HomeComp></HomeComp>
       <Footer></Footer>
     </>
-  );
+  )
 }

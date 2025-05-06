@@ -110,7 +110,7 @@ const LoginComp = () => {
                 </div>
             </Container>
         </Modal>
-    );
-};
+    )
+}
 
 export default LoginComp;

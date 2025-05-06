@@ -2,17 +2,17 @@
 "use client"
 
 import Banner from "../banner/Banner";
-import styles from "./homeComp.module.css";
+import PersonalizedRecommendationsContainer from "../personalizedRecommendations/PersonalizedRecommendationsContainer";
 import React, { useState } from 'react';
-
-
+import ProductDetailsModal from "../productDetailsModal/ProductDetailsModal";
 
 const HomeComp = () => {
-
 
   return (
     <div>
       <Banner />
+      <PersonalizedRecommendationsContainer/>
+      <ProductDetailsModal/>
     </div>
   );
 };

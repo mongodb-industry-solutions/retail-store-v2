@@ -33,7 +33,7 @@ const ChatbotModal = ({ isOpen, handleClose }) => {
                 <H3><Image width={25} height={25} alt="Chat Icon" src="/rsc/icons/headphones-solid.svg" /> RAG Chatbot </H3>
                 <Icon className='cursorPointer' onClick={() => handleClose()} glyph="X" />
             </ModalHeader>
-            <Tabs setSelected={setSelected} selected={selected}>
+            <Tabs id='tabs-chatbot' setSelected={setSelected} selected={selected}>
                 <Tab className={styles.backgroundGray} name="Chatbot">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         {
@@ -45,13 +45,13 @@ const ChatbotModal = ({ isOpen, handleClose }) => {
                         }
                     </Container>
                 </Tab>
-                <Tab className={styles.backgroundGray} name="How to demo">
+                <Tab  name="How to demo">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         <div className={styles.ArchitectureComp}>
                             <H3>How to demo? </H3>
                             <div className='mt-2'>
                                 This Agentic RAG chatbot has the ability to reply with custom responses based on
-                                the user’s order history + the policies of the e-commerce store. Because we
+                                the user's order history + the policies of the e-commerce store. Because we
                                 trained the Agent with a PDF policy document that contains the business
                                 rules of the e-commerce store (cancellation policy, shipping methods, return
                                 policy, etc…). PDF lives in Dataworkz, the embeddings of the PDF are stored
@@ -72,21 +72,26 @@ const ChatbotModal = ({ isOpen, handleClose }) => {
                                         can use this <Image width={35} height={25} alt="Chat Tooltip" src="/rsc/images/chatbotTooltip.png" /> insight to show the complete answer from the agent.
                                     </li>
                                     <li>
-                                        Example of conversation you could do
+                                        Feel free to ask anything you want, however if you are looking for inspiration here are some conversation questions you could do:
+                                        <ul className='text-secondary'>
+                                            <li>What can you do for me?</li>
+                                            <li>Products inside order 1</li>
+                                            <li>Can I still cancel that order?</li>
+                                            <li>Can I order online and pickup in store?</li>
+                                        </ul>
                                     </li>
                                 </ol>
-
                                 <p><strong>Note: </strong> If you wish to see what the PDF contains to tailor any question you can see it inside the <a href='https://github.com/mongodb-industry-solutions/retail-store-v2/blob/main/resources/LeafyCorpPolicy.pdf' target='_blank'>Github repository of the demo</a></p>
                             </div>
                         </div>
                     </Container>
                 </Tab>
-                <Tab className={styles.backgroundGray} name="Behind the scenes">
+                <Tab  name="Behind the scenes">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         <ArchitectureComp />
                     </Container>
                 </Tab>
-                <Tab className={styles.backgroundGray} name="Why MongoDB & Dataworkz">
+                <Tab  name="Why MongoDB & Dataworkz">
                     <Container className={`${styles.chatbotContainer} p-3 h-100`}>
                         <div className={styles.ArchitectureComp}>
                             <H3>Why MongoDB Atlas and Dataworkz? </H3>

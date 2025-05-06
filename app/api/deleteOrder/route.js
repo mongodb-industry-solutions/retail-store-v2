@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { closeDatabase, connectToDatabase } from "../../_db/connect";
+import { clientPromise, dbName } from "@/lib/mongodb";
 const { ObjectId } = require('mongodb');
 
 export async function POST(request) {
     try {
         let { orderId } = await request.json();
-        const db = await connectToDatabase();
+        const client = await clientPromise
+        const db = client.db(dbName);
         const ordersCollection = db.collection('orders');
 
         console.log('delete orderId', orderId)

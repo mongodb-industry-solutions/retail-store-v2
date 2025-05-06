@@ -1,6 +1,6 @@
 .bannerContainer{
     width: 100%;
-    min-height: 600px; 
+    min-height: 400px; 
     background-color: #001E2B;
     display: flex;
     border-bottom-left-radius: 100px; 
@@ -60,4 +60,10 @@
 .shopButton{
     margin-top: 40px;
     background-color: #00ED64;
+    color: black;
+    text-decoration: none;
+}
+.shopButton a{
+    color: inherit;
+    text-decoration: inherit;
 }

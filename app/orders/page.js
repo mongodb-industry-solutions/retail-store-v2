@@ -34,6 +34,7 @@ export default function Page() {
         }
 
         eventSource.onmessage = (event) => {
+            
             const data = JSON.parse(event.data);
             console.log('Received SSE Update:', data);
             const orderId = data.documentKey._id
