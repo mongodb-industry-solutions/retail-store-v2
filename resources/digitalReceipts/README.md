@@ -1,7 +1,5 @@
 # Omnichannel ordering solution
 
-# WORK IN PROGRESS NOT YET FINISHED!!! 
-
 ## Table of Contents
 <details>
   <ol>

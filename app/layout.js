@@ -5,6 +5,7 @@ import ClientProvider from './ClientProvider'; // Adjust the path if needed
 import LoginComp from './_components/login/LoginComp';
 import ChatbotOpener from './_components/chatbot/ChatbotOpener';
 import DigitalReceiptComp from './_components/digitalReceipt/DigitalReceiptComp';
+import AlertsContainer from './_components/alertsContainer/AlertsContainer';
 
 export const metadata = {
   title: 'Home',
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
           <LoginComp/>
           <DigitalReceiptComp/>
           <ChatbotOpener/>
+          <AlertsContainer/>
         </ClientProvider>
       </body>
     </html>
