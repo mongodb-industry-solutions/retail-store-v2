@@ -136,13 +136,13 @@ Figure 3. Login screen
 
  After choosing a user, navigate to ‘My cart’ screen (Figure 4) by clicking on the User icon in the top right corder and 'My Cart'. Here, you will see a few products already loaded to your cart. If you do not have any, don't worry we added a “Fill Cart” button to automatically add some random products to the cart so you can continue with the demo.
 
-TODO IMAGE!
+![image](./media/MyCart.png)
 Figure 4. My Cart screen
 
 Once you are ready to move forward click on the “Proceed to Checkout”.
 Select your preferred shipping method and click on “Confirm & order”. This will generate the new order and redirect you to the ”Order Details” page (Figure 5).
 
-TODO IMAGE!
+![image](./media/OrderDetails.png)
 Figure 5. Order Details page
 
 At the top of the ‘Order details’ page you will see a Summary section with three columns. Click on "See details" inside the third column to open the digital receipt. 
@@ -151,12 +151,12 @@ At the top of the ‘Order details’ page you will see a Summary section with t
 
 The e-receipt contains relevant invoice details such as the transaction timestamp, the order id, items purchased, total amount and loyalty points. At the bottom of the receipt, there is a list of product recommendations based on the items of this specific order. (Figure 6)
 
-TODO IMAGE!
+![image](./media/DigitalReceipt.png)
 Figure 6. Digital receipt, general information
 
 Each digital receipt shows different recommendations. This is because the algorithm takes the most expensive product in the order and performs a vector search query on the catalog to retrieve the top 6 similar items. This ensures every digital receipt contains a unique and relevant set of suggestions (Figure 7) leading to a more engaging shopping experience.
 
-TODO IMAGE!
+![image](./media/Recommendations.png)
 Figure 7. Order's relevant recommendations
 
 Additionally, shoppers can download their digital receipt at any point in time, as often as they need. This provides customers with easy access and organization of their expenses.
@@ -165,7 +165,7 @@ Additionally, shoppers can download their digital receipt at any point in time, 
 
 When navigating to the landing page (Figure 8), users will see the latest product recommendations in a carousel. We use the extended reference pattern to store the latest product recommendations inside the user document, enabling fast retrieval and ensuring the most up-to-date suggestions load quickly.
 
-TODO IMAGE!
+![image](./media/Landing.png)
 Figure 8. Landing Page
 
 All of this comes together to create a smarter, more personalized post-purchase experience.
