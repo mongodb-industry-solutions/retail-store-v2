@@ -78,7 +78,14 @@
     cursor: pointer;
     width: fit-content;
 }
+.fake-link.disabled{
+    color: rgb(137, 137, 137);
+    cursor: wait;
+}
 .fake-link:hover{
     color: blue;
     text-decoration: underline;
+}
+.fake-link.disabled:hover{
+    color: rgb(137, 137, 137);
 }

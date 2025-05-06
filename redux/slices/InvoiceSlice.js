@@ -18,7 +18,7 @@ const InvoiceSlice = createSlice({
             }
         },
         setLoading: (state, action) => {
-            return { ...state, searchIsLoading: action.payload }
+            return { ...state, invoiceIsLoading: action.payload }
         },
         setError: (state, action) => {
             if (error === null)
