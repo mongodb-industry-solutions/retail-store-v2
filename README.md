@@ -135,3 +135,10 @@ Partners:
 This demo was made possible with the contributions of:  
 [Sachin Smotra](https://www.dataworkz.com/) – Contributed to Agentic RAC chatbot  
 [Sachin Hejip](https://www.dataworkz.com/) – Contributed to Agentic RAC chatbot  
+
+## License
+
+© 2025 MongoDB. All rights reserved.
+
+This repository is intended solely for demonstration and educational purposes.  
+No support or warranty is provided. Use at your own risk.

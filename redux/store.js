@@ -4,6 +4,7 @@ import OrderReducer from './slices/OrderSlice'
 import ChatbotReducer from './slices/ChatbotSlice'
 import ProductsReducer from './slices/ProductsSlice.js'
 import InvoiceReducer from './slices/InvoiceSlice.js'
+import AlertReducer from './slices/AlertSlice.js'
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,9 @@ const store = configureStore({
         "Order": OrderReducer,
         "Chatbot": ChatbotReducer,
         "Products": ProductsReducer,
-        "Invoice": InvoiceReducer}
+        "Invoice": InvoiceReducer,
+        "Alerts": AlertReducer
+    }
 });
 
 export default store;
