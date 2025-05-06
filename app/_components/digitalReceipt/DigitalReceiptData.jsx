@@ -12,10 +12,13 @@ import { addOperationAlert, addSucAutoCloseAlertHnd, addWarnAutoCloseAlertHnd, c
 const DigitalReceiptData = () => {
     const dispatch = useDispatch();
     const openedInvoice = useSelector(state => state.Invoice.openedInvoice)
+    const invoiceIsLoading = useSelector(state => state.Invoice.invoiceIsLoading)
     const invoiceEndpoint = useSelector(state => state.Invoice.invoiceEndpoint)
 
     const onDownloadInvoice = async () => {
         console.log('onDownloadInvoice')
+        if(invoiceIsLoading === true)
+            return
         dispatch(setLoading(true))
         const downloadMDBRes = new Date()
         addOperationAlert({ id: downloadMDBRes.getMilliseconds(), title: 'Fetching Receipt', message: 'Downloading digital receipt' })
@@ -95,7 +98,9 @@ const DigitalReceiptData = () => {
                 </div>
                 <hr className='mt-0'></hr>
                 <div className='d-flex justify-content-center mb-3 w-100'>
-                    <p className='fake-link' onClick={() => onDownloadInvoice()}>Download receipt as PDF <Icon glyph='Download' /></p>
+                    <p className={`fake-link ${invoiceIsLoading ? 'disabled': ''}`} onClick={() => onDownloadInvoice()}>
+                        Download receipt as PDF <Icon glyph='Download' />
+                    </p>
                 </div>
             </div>
             <div className='products-container'>
