@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "../../_db/connect";
+import { clientPromise, dbName } from "@/lib/mongodb";
 
 export async function POST(request) {
-    
+
     const filters = await request.json();
-    
-    const db = await connectToDatabase();
+
+    const client = await clientPromise
+    const db = client.db(dbName);
     const collection = db.collection("products");
 
     let queryBrand = {};
@@ -23,9 +24,9 @@ export async function POST(request) {
 
 
     const products = await collection
-        .find({"$and":[queryBrand, queryCategory]}, { projection: { name: 1, price: 1, brand: 1, image:1, _id: 1}})
+        .find({ "$and": [queryBrand, queryCategory] }, { projection: { name: 1, price: 1, brand: 1, image: 1, _id: 1 } })
         .toArray();
 
-       //console.log(products.items.name);
+    //console.log(products.items.name);
     return NextResponse.json({ products }, { status: 200 });
 }

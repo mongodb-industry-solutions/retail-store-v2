@@ -3,7 +3,6 @@
 import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import ProductList from "../_components/productList/ProductList";
-import Sidebar from "../_components/sideBar/SideBar";
 
 import React, { useState } from 'react';
 
@@ -23,9 +22,6 @@ export default function Page() {
     <>
       <Navbar/>
         <div className={styles.pageContainer}>
-          {/* <div className={styles.sideBar}>
-            <Sidebar filters={filters} onFilterChange={handleFilterChange}></Sidebar>
-          </div> */}
           <div className={styles.productList}>
             <ProductList filters={filters}/>
           </div>

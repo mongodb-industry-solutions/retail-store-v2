@@ -1,9 +1,10 @@
-import { connectToDatabase } from "../../_db/connect";
+import { clientPromise, dbName } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const db = await connectToDatabase();
+    const client = await clientPromise
+    const db = client.db(dbName);
     const collection = db.collection("products");
 
     const products = await collection.find({}, { projection: { _id: 1, name: 1 } }).toArray();

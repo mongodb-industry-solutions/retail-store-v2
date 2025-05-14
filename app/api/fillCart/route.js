@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { closeDatabase, connectToDatabase } from "../../_db/connect";
+import { clientPromise, dbName } from "@/lib/mongodb";
 const { ObjectId } = require('mongodb');
 
 export async function POST(request) {
     try {
         let { userId, numProducts = 0, productsToAdd = [] } = await request.json();
-        const db = await connectToDatabase();
+        const client = await clientPromise
+        const db = client.db(dbName);
         const productsCollection = db.collection('products');
         const cartsCollection = db.collection('carts');
 
