@@ -17,7 +17,7 @@ const DigitalReceiptData = () => {
 
     const onDownloadInvoice = async () => {
         console.log('onDownloadInvoice')
-        if(invoiceIsLoading === true)
+        if (invoiceIsLoading === true)
             return
         dispatch(setLoading(true))
         const downloadMDBRes = new Date()
@@ -55,13 +55,42 @@ const DigitalReceiptData = () => {
                 <hr className='mt-0'></hr>
                 <div className='product-price-list'>
                     <p className='mt-0'>#</p>
+                    <p className='ms-4'></p>
                     <p className='ms-4'>Product</p>
                     <p className='ms-4'>Price</p>
                 </div>
                 {
                     openedInvoice?.items.map((prod, index) => (
-                        <div className='product-price-list' key={index}>
-                            <p >{index + 1}</p>
+                        <div className='product-price-list mb-1' key={index}>
+                            <p className='me-1' >{index + 1}</p>
+                            <div
+                                style={{
+                                    width: '50px',
+                                    height: '50px',
+                                    minWidth: '50px',
+                                    minHeight: '50px',
+                                    backgroundColor: 'lightgrey',
+                                    borderRadius: '5px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    overflow: 'hidden'
+                                }}
+                            >
+                                <Image
+                                    src={prod.image.url}
+                                    alt={'Img'}
+                                    width={49} // slightly smaller to leave padding
+                                    height={49}
+                                    quality={50}
+                                    unoptimized
+                                    style={{
+                                        objectFit: 'contain',
+                                        maxHeight: '100%',
+                                        maxWidth: '100%',
+                                    }}
+                                />
+                            </div>
                             <p className='ms-4 w-100'>{prod.name}</p>
                             <p className='ms-4' style={{ minWidth: 'fit-content' }}>{prod?.amount} x ${prod?.price.amount}</p>
                         </div>
@@ -98,7 +127,7 @@ const DigitalReceiptData = () => {
                 </div>
                 <hr className='mt-0'></hr>
                 <div className='d-flex justify-content-center mb-3 w-100'>
-                    <p className={`fake-link ${invoiceIsLoading ? 'disabled': ''}`} onClick={() => onDownloadInvoice()}>
+                    <p className={`fake-link ${invoiceIsLoading ? 'disabled' : ''}`} onClick={() => onDownloadInvoice()}>
                         Download receipt as PDF <Icon glyph='Download' />
                     </p>
                 </div>
