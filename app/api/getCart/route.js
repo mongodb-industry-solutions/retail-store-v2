@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "../../_db/connect";
+import { clientPromise, dbName } from "@/lib/mongodb";
 const { ObjectId } = require('mongodb');
 
 export async function POST(request) {
     const userId = await request.json(); 
-    const db = await connectToDatabase();
-    const collection = db.collection("carts");
+        const client = await clientPromise
+        const db = client.db(dbName);
+        const collection = db.collection("carts");
 
     const cart = await collection
         .find({user: new ObjectId(String(userId)) })

@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "../../_db/connect";
+import { clientPromise, dbName } from "@/lib/mongodb";
 
 export async function POST(request) {
     const { query, facets } = await request.json();
     console.log('HOLA', query, facets);
 
     try {
-        const db = await connectToDatabase();
+        const client = await clientPromise
+        const db = client.db(dbName);
         const collection = db.collection("products");
 
         // Build the aggregation pipeline
