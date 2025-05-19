@@ -1,4 +1,4 @@
-# Omnichannel ordering solution
+# Leveraging digital receipt data to generate product recommendations
 
 ## Table of Contents
 <details>
