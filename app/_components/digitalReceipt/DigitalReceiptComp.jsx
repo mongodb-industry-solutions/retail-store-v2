@@ -90,58 +90,90 @@ const DigitalReceiptComp = () => {
                 </Tab>
                 <Tab className={``} name="Behind the scenes">
                     <Container className={` p-3 h-100`}>
-                        <H3>Feature goal</H3>
-                        <p>The main goal of this feature is to deliver real-time personalized recommendations using <mark>Atlas Vector Search, Voyage AI embeddings, and Azure components</mark></p>
-                        <H3 className='mt-3'>Architecture Overview: Product recommendations </H3>
+                        <H3>What’s the Value of Digital Receipts — and How Do We Capture It in This Demo?</H3>
+                        <p>This demo shows how retailers can leverage digital receipt data to spark a personalized customer journey — and how MongoDB enables that journey to happen in real time, across both online and physical channels</p>
                         <Image
                             src="/rsc/diagrams/digital-receipts-high-level.png"
-                            alt="Dataworkz + MDB architecture"
+                            layout="responsive"
+                            width={100} // Arbitrary width for setting aspect ratio
+                            height={60} // Arbitrary height to set the aspect ratio
+                            style={{maxWidth: '650px'}}
+                        />
+                        <p>  </p>
+                        <p>This solution showcases an event-driven architecture where:
+                            <ul>
+                                <li>🧾 An <strong>invoice microservice</strong> captures order data and stores rich, flexible receipts in MongoDB Atlas</li>
+                                <li>⚡ A <strong>recommendation microservice</strong> reacts to each new purchase, generating personalized product suggestions using Vector Search</li>
+                                <li>👤 These recommendations are automatically written into both the invoice and the user profile, enabling a real-time experience that connects in-store and online activity</li>
+                            </ul>
+                        </p>
+                        <Image
+                            src="/rsc/diagrams/components-digital-receipts.png"
+                            layout="responsive"
+                            width={100} // Arbitrary width for setting aspect ratio
+                            height={60} // Arbitrary height to set the aspect ratio
+                            style={{maxWidth: '850px'}}
+                        />
+                        <p>Although the demo uses e-commerce, the architecture is designed to reflect real-world retail systems. The <strong>invoice microservice</strong> could easily ingest data from physical stores — using <strong>MongoDB</strong> as a single source of truth to centralize and activate all transaction data.</p>
+                        <p>In this demo, we deploy our microservices on <strong>Azure</strong> and simulate common external integrations involved in digital receipt generation — such as <em>tax calculation</em> and <em>loyalty programs</em> — using <strong>Azure Functions</strong>. When the customer downloads the invoice, it’s rendered as a PDF and stored in <strong>Azure Blob Storage</strong>, providing a scalable and easily linkable solution for unstructured files.</p>
+                        <H3>Build AI-powered recommendations using flexible data and easy vector search</H3>
+                        <p>  </p>
+                        <p>In this demo, our products collection stores not only traditional product attributes — like name, price, and category — but also AI-generated vector embeddings that capture the semantic meaning of each item.</p>
+                        <Image
+                            src="/rsc/diagrams/embeddings-and-vector-search.png"
+                            layout="responsive"
+                            width={100} // Arbitrary width for setting aspect ratio
+                            height={60} // Arbitrary height to set the aspect ratio
+                            style={{maxWidth: '750px'}}
+                        />
+                        <p>This allows us to use MongoDB Vector Search to find similar items based on meaning. The result: personalized product recommendations in real time, powered by the same flexible data model that stores your catalog.</p>
+                        <H3>Event-Driven Architecture and Seamless Integration with MongoDB</H3>
+                        <p>  </p>
+                        <p> Modern retailers need systems that react instantly, stay decoupled, and scale effectively. That’s the strength of event-driven architectures—where services communicate by producing and reacting to events that signal meaningful changes in the system.</p>
+                        <p> In this solution, MongoDB plays a central role in enabling that reactivity. With built-in Change Streams and Atlas Triggers, applications can respond to data changes as they happen, directly within the data layer.</p>
+                        <Image
+                            src="/rsc/diagrams/workflow-architecture.png"
                             layout="responsive"
                             width={100} // Arbitrary width for setting aspect ratio
                             height={60} // Arbitrary height to set the aspect ratio
                             style={{maxWidth: '800px'}}
                         />
-                    <table style={{width: '100%', borderCollapse: 'collapse'}}>
-                        <thead>
-                            <tr>
-                            <th style={{border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2'}}>Component</th>
-                            <th style={{border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2'}}>Cloud</th>
-                            <th style={{border: '1px solid #ddd', padding: '8px', backgroundColor: '#f2f2f2'}}>Role</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Frontend &amp; Order/User Management</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>GCP (Next.js)</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>User interface and order processing, hosted on GCP</td>
-                            </tr>
-                            <tr>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Invoice &amp; Recommendation Services</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Azure App Service (Python)</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Event-driven invoice creation and instant recommendations; microservices hosted on Azure App Service</td>
-                            </tr>
-                            <tr>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>MongoDB Atlas</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>MongoDB Atlas</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Centralized data layer for orders, invoices, users, and recommendations</td>
-                            </tr>
-                            <tr>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Azure Functions</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Azure (Python)</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Simulates external metadata service for invoices</td>
-                            </tr>
-                            <tr>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Azure Blob Storage</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Azure</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Secure, efficient storage of unstructured data</td>
-                            </tr>
-                            <tr>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Voyage AI</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>External AI Service</td>
-                            <td style={{border: '1px solid #ddd', padding: '8px'}}>Provides product vector embeddings</td>
-                            </tr>
-                        </tbody>
-                        </table>
+                        <p>  </p>
+                        <p>
+                         🛒 <strong>A customer places an order</strong>, and the invoice microservice immediately creates a new invoice, storing it in <strong>MongoDB</strong>. As soon as that happens, the recommendation microservice detects the event in real time using <strong>MongoDB Change Streams</strong>. It responds instantly by generating <strong>personalized product suggestions</strong> based on the most expensive item in the purchase.
+                        </p>
+                        <p>
+                         🔁 These <strong>AI-powered recommendations</strong> are saved in a dedicated collection. Then, <strong>Atlas Triggers</strong> automatically propagate them into the invoice document—so the customer receives a <strong>digital receipt with smart suggestions</strong>—and into the user profile, ensuring their homepage reflects their updated preferences right after the purchase.
+                        </p>
+                        <p>
+                         📊 At the same time, MongoDB retains the <strong>full history of purchases and recommendations</strong> across collections. This enables teams to run <strong>analytics</strong> or train smarter <strong>AI models</strong> based on real data.
+                        </p>
+                        <p>
+                        The result is a <strong>seamless, real-time personalization experience</strong> that delights customers and <strong>scales effortlessly</strong>—powered by MongoDB.
+                        </p>
+                    </Container>
+                </Tab>
+                <Tab className={``} name=" Why MongoDB">
+                    <Container className={` p-3 h-100`}>
+                    <h3>🧾 Why MongoDB for Digital Receipts?</h3>
+                        <h4>⚠️ The Challenge</h4>
+                            <p><strong>Retailers face several real-world challenges when managing receipt data:</strong></p>
+                            <ul className="list-disc pl-5 space-y-2">
+                            <li><strong>Fragmented data:</strong> Sales data is duplicated across disconnected tools and legacy systems.</li>
+                            <li><strong>Rigid schemas:</strong> Traditional databases spread complex XML receipt data across many tables—too inflexible for evolving needs.</li>
+                            <li><strong>Slow innovation:</strong> Without a unified view of operational data, real-time insights and AI use cases are hard to implement.</li>
+                            <li><strong>Scalability pressure:</strong> Growing volumes of receipt data can slow down performance, analytics, and customer-facing applications.</li>
+                            <li><strong>Compliance complexity:</strong> Sensitive customer information must meet privacy laws like GDPR—especially for global businesses operating across regions.</li>
+                            </ul>
+                        <h4>✅ How MongoDB Solves It</h4>
+                            <p><strong>MongoDB’s developer data platform is built to solve these exact challenges:</strong></p>
+                            <ul className="list-disc pl-5 space-y-2">
+                            <li><strong>Schema flexibility:</strong> Its document model fits the data, not the other way around. You can store receipts as-is and add fields (like recommendations) anytime—without downtime.</li>
+                            <li><strong>Centralized operational layer:</strong> Consolidates data from multiple sources into a single source of truth—breaking silos and simplifying integration.</li>
+                            <li><strong>Real-time activation:</strong> Supports Change Streams and Triggers to instantly react to purchases and personalize the customer experience.</li>
+                            <li><strong>Scalability & performance:</strong> Uses sharding for horizontal scaling and replica sets for high availability, while enabling workload isolation for analytics, AI, or reporting.</li>
+                            <li><strong>Security & compliance:</strong> Built-in features like encryption, auditing, and zone sharding help meet GDPR requirements and ensure data stays close to where it’s generated.</li>
+                            </ul>
                     </Container>
                 </Tab>
             </Tabs>
