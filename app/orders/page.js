@@ -90,6 +90,12 @@ export default function Page() {
     };
 
     useEffect(() => {
+        if (feature === "receipts") {
+            handleReset();
+        }
+    }, [feature]);
+
+    useEffect(() => {
         if (userId) {
             const eventSource = listenToSSEUpdates();
             return () => {
@@ -115,11 +121,6 @@ export default function Page() {
         };
     }, [sseConnection]);
 
-    useEffect(() => {
-        if (feature === "receipts") {
-            handleReset();
-        }
-    }, [feature]);
 
     return (
         <>
@@ -151,10 +152,12 @@ export default function Page() {
                                 <CardSkeleton className='mb-2' key={loadCard}></CardSkeleton>
                             ))
                             : orders.list.map((order, index) => (
-                                <OrderItemCard
+
+                                 <OrderItemCard
                                     key={index}
                                     order={order}
                                     updateToggle={orders.updateToggle}
+                                    triggerRef={index === 0 ? triggerRef3 : null}
                                 />
                             ))
                     }
