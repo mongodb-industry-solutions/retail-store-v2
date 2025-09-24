@@ -22,7 +22,7 @@ const DigitalReceiptComp = () => {
     const handleClose = () => {
         dispatch(setOpenedInvoice(null))
     }
-    console.log('openedInvoice: ', openedInvoice)
+
     return (
         <Modal
             show={openedInvoice !== null}
