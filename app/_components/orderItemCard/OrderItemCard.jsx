@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import Card from "@leafygreen-ui/card";
@@ -34,7 +34,7 @@ const prettifyDateFormat = (timestamp) => {
     return `${datePart} at ${timePart}`;
 }
 
-const OrderItemCard = ({ order, updateToggle }) => {
+const OrderItemCard = ({ order, updateToggle, triggerRef }) => {
     const dispatch = useDispatch();
     const router = useRouter();
     const [totalPrice, setTotalPrice] = useState(0)
@@ -113,6 +113,7 @@ const OrderItemCard = ({ order, updateToggle }) => {
                 <div className={`${styles.item} ${styles.fitContent}`}>
                     {
                         order.invoiceId && <Button
+                            ref={triggerRef}
                             className="me-2"
                             variant='default'
                             onClick={() => onSeeReceiptClick()}

@@ -20,6 +20,7 @@ const Navbar = () => {
   const sessionId = useRef(uuidv4());
   const ordersLoaded = useSelector(state => state.User.orders?.initialLoad)
   const userId = useSelector(state => state.User.selectedUser?._id)
+  const featureInStore = useSelector((state) => state.Global.feature);
 
     const listenToSSEUpdates = useCallback(() => {
       console.log('listenToSSEUpdates func: ', userId)
@@ -103,7 +104,7 @@ const Navbar = () => {
         <div className={styles.links}>
           <Link href="/">Home</Link>
           <Link href="/shop">Shop</Link>
-          <Link href="/about">About</Link>
+          <Link href={`/about?feature=${featureInStore}`}>About</Link>
           {/* <Link href="/contact">Contact</Link> */}
         </div>
         <SearchBar/>
