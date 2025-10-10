@@ -12,7 +12,7 @@ import Card from '@leafygreen-ui/card';
 import Stepper, { Step } from '@leafygreen-ui/stepper';
 import { CardSkeleton, Skeleton } from '@leafygreen-ui/skeleton-loader';
 import { v4 as uuidv4 } from "uuid";
-
+import FeatureListener from '@/app/_components/featureListener/FeatureListener';  
 import styles from '../orderDetails.module.css';
 import Footer from "@/app/_components/footer/Footer";
 import Navbar from "@/app/_components/navbar/Navbar";
@@ -25,223 +25,316 @@ import ShippingMethodBadgeComp from '@/app/_components/shippingMethodBadgeComp/S
 import { checkoutPage, orderDetailsPage } from '@/lib/talkTrack';
 import TalkTrackContainer from '@/app/_components/talkTrackContainer/talkTrackContainer';
 import { setOpenedInvoice } from '@/redux/slices/InvoiceSlice';
-
-export default function OrderDetailsPage({ params }) {
-    const dispatch = useDispatch();
-    const sseConnection = useRef(null);
-    const sessionId = useRef(uuidv4());
-    const { orderId } = params; // id from the dynamic URL
-    const orderDetails = useSelector(state => state.Order)
-    const [isBtnDisabled, setIsBtnDisabled] = useState(false)
-    const myStepperRef = useRef(null)
-
-    const onArrivedToStoreClick = async () => {
-        if (!orderDetails.packageIsInTheStore || isBtnDisabled)
-            return
-        setIsBtnDisabled(true)
-        let result = await addOrderStatusHistory(
-            orderId,
-            {
-                status: shippingMethods.bopis.steps[2].label,
-                timestamp: Number(Date.now())
-            }
-        );
-        if (result) {
-            console.log('result', result)
-        }
-    }
-    const onSeeReceiptClick = async () => {
-        console.log(orderDetails)
-        if(!orderDetails.invoiceId)
-            return
-        dispatch(setOpenedInvoice(null))
-        const invoice = await fetchInvoice(orderDetails.invoiceId)
-        if(invoice)
-            dispatch(setOpenedInvoice(invoice))
-        else    
-            alert("Couldn't get receipt data, try again later")
-    }
-
-    const listenToSSEUpdates = useCallback(() => {
-        console.log('listenToSSEUpdates func: ', orderId)
-        console.log('-- orderId', orderId)
-        console.log('-- sessionId', sessionId)
-        const collection = "orders";
-        const eventSource = new EventSource(
-            `/api/sse?sessionId=${sessionId.current}&colName=${collection}&_id=${orderId}`
-        )
-
-        eventSource.onopen = () => {
-            console.log('-- (onopen) SSE connection opened.')
-            // Save the SSE connection reference in the state
-        }
-
-        eventSource.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log('-- (onmessage) Received SSE Update:', data);
-            handleChangeInOrders(orderId, data.fullDocument)
-            dispatch(setOrder(data.fullDocument))
-        }
-
-        eventSource.onerror = (event) => {
-            console.error('-- (onerror) SSE Error:', event);
-            console.log('-- (onerror) SSE Error:', event);
-        }
-
-        // Close the previous connection if it exists
-        if (sseConnection.current) {
-            console.log(sseConnection.current)
-            sseConnection.current.close();
-            console.log("-- Previous SSE connection closed - dashboard sessionId.", sessionId);
-        }
-
-        sseConnection.current = eventSource;
-        return eventSource;
-    }, [orderId]);
-
-    useEffect(() => {
-        const getOrderDetails = async () => {   // fetch the order 
-            try {
-                const result = await fetchOrderDetails(orderId);
-                if (result) {
-                    dispatch(setOrder(result))
-                }
-                dispatch(setLoading(false))
-            } catch (err) {
-            }
-        };
-        getOrderDetails();
-        return () => { }
-    }, [orderId]);
-
-
-    useEffect(() => {
-        if (orderDetails._id !== orderId)
-            return
-        console.log('myStepperRef 1', myStepperRef.current, document.getElementById('myStepperRef'))
-        sseConnection?.current?.close();
-        const eventSource = listenToSSEUpdates();
-        console.log('myStepperRef 2', myStepperRef.current, document.getElementById('myStepperRef'))
-        // return () => {
-        //     // if (eventSource) {
-        //     //     eventSource.close();
-        //     //     console.log("SSE connection closed UEFF.");
-        //     // }
-        // };
-    }, [listenToSSEUpdates, orderDetails._id])
-
-
-    useEffect(() => {
-        const handleBeforeUnload = () => {
-            if (sseConnection.current) {
-                console.info("** Closing current SSE connection before unloading the page (order details).");
-                sseConnection.current.close();
-            }
-        };
-        window.addEventListener("beforeunload", handleBeforeUnload);
-        // Clean up the event listener when the component is unmounted
-        return () => {
-            console.log('CLEAN COMPONENT ORDER DETAILS')
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-    }, [sseConnection]);
-
-
-
-    return (
-        <>
-            <Navbar />
-            <Container className=''>
-                <div className='d-flex flex-row'>
-                    <div className='d-flex align-items-end w-100'>
-                        <H1 onClick={() => console.log(orderDetails)}>Order details</H1>
-                    </div>
-                    <TalkTrackContainer sections={orderDetailsPage} />
-                </div>
-                <div className='mt-3'>
-                    <H3 className="mb-2">Summary</H3>
-                    {
-                        orderDetails.loading
-                            ? <>
-                                <CardSkeleton className='mb-2' />
-                                <H3 className="mb-2">Status</H3>
-                                <Skeleton className='mb-2' />
-                                <Skeleton className='mb-2' />
-                                <H3 className="mb-2">Products</H3>
-                                <CardSkeleton className='mb-2' />
-                                <CardSkeleton />
-                            </>
-                            : orderDetails._id !== null
-                                ? <>
-                                    <Card className="row m-0 mb-2">
-                                        <div className='col'>
-                                            <p className={styles.orderData}><strong>Date:</strong> {prettifyDateFormat(orderDetails.status_history[0]?.timestamp)}</p>
-                                            <p className={styles.orderData}><strong>ID:</strong> {orderId}</p>
-                                            <p className={styles.orderData}><strong>Status:</strong> {
-                                                orderDetails.isCanceled
-                                                    ? <Badge variant="red">{orderDetails.status_history[orderDetails.status_history.length - 1]?.status}</Badge>
-                                                    : orderDetails.status_history[orderDetails.status_history.length - 1]?.status === shippingMethods.bopis.steps[3]?.label || orderDetails.status_history[orderDetails.status_history.length - 1]?.status === shippingMethods.home.steps[4]?.label
-                                                        ? <Badge variant="green">{orderDetails.status_history[orderDetails.status_history.length - 1]?.status}</Badge>
-                                                        : <Badge variant="gray">{orderDetails.status_history[orderDetails.status_history.length - 1]?.status}</Badge>
-                                            }</p>
-                                        </div>
-                                        <div className='col'>
-                                            <p className={styles.orderData}><strong>Type:</strong><ShippingMethodBadgeComp orderDetails={orderDetails} /></p>
-                                            <p className={styles.orderData}><strong>Address:</strong> {orderDetails.shipping_address}</p>
-                                        </div>
-                                        <div className='col'>
-                                            <p className={styles.orderData}><strong>Total:</strong> ${orderDetails.totalPrice} </p>
-                                            <p className={styles.orderData}><strong>Shipping:</strong> $0 </p>
-                                            <p className={styles.orderData}><strong>Receipt:</strong> <a className={styles.seeReceipt} onClick={() => onSeeReceiptClick() }>See details</a></p>
-                                        </div>
-                                    </Card>
-                                    <H3 className="mb-2">Status</H3>
-                                    {
-                                        !orderDetails.isCanceled &&
-                                        <Stepper
-                                            id='myStepperRef'
-                                            ref={myStepperRef}
-                                            className={`${orderDetails.isCanceled ? styles.isCanceled : ''}`}
-                                            // if the order is canceled it means that only the first step was completed. 
-                                            // because we defined by business rule that we can only cancel an order if the order is in the first stage (a.k.a: In progress)
-                                            currentStep={orderDetails.isCanceled ? 1 : orderDetails.status_history.length}
-                                        >
-                                            {
-                                                orderDetails.shippingMethod?.steps.map(step =>
-                                                    <Step key={step.id}>{step.label}</Step>
-                                                )
-                                            }
-                                        </Stepper>
-                                    }
-                                    {
-                                        (orderDetails.packageIsInTheStore === true) &&
-                                        <Banner className='mb-2 mt-2' image={<Icon glyph="Bell"></Icon>}>
-                                            <div className='d-flex flex-row align-items-center justify-content-between'>
-                                                <strong className='m-0'>Let the store know you have arrived for your package.</strong>
-                                                <Button disabled={isBtnDisabled} onClick={() => onArrivedToStoreClick()}>I am here</Button>
-                                            </div>
-                                        </Banner>
-                                    }
-                                    {
-                                        orderDetails.status_history.map((statusHistory, index) => (
-                                            <div key={`${index}-sh`}>
-                                                <p><strong>{statusHistory.status}: </strong>{prettifyDateFormat(statusHistory.timestamp)}</p>
-                                            </div>
-                                        ))
-                                    }
-                                    <H3 className="mb-2">Products</H3>
-                                    {orderDetails.products?.map((product, index) => (
-                                        <CartItem
-                                            key={`cart-product-${index}`}
-                                            product={product}
-                                        />
-                                    ))}
-                                </>
-                                : 'error'
-                    }
-                </div>
-            </Container>
-            <Footer />
-        </>
-    );
-}
+import { GuideCue } from '@leafygreen-ui/guide-cue'; 
+import { GUIDE_CUE_MESSAGES } from '@/lib/constants';  
+  
+export default function OrderDetailsPage({ params }) {  
+    const dispatch = useDispatch();  
+    const sseConnection = useRef(null);  
+    const sessionId = useRef(uuidv4());  
+    const { orderId } = params;  
+    const orderDetails = useSelector(state => state.Order)  
+    const feature = useSelector(state => state.Global.feature);  
+    const [isBtnDisabled, setIsBtnDisabled] = useState(false)  
+    const myStepperRef = useRef(null)  
+  
+    const [guideCueOpen, setGuideCueOpen] = useState(false);  
+    const [currentStep, setCurrentStep] = useState(1);  
+  
+    // --- Receipts walkthrough refs (single step) ---  
+    const triggerRefReceipts1 = useRef(null); // Receipt link  
+  
+    // --- OmnichannelOrdering walkthrough refs ---  
+    const triggerRefOmnichannel1 = useRef(null); // Order details heading  
+    const triggerRefOmnichannel2 = useRef(null); // Products section  
+    const triggerRefOmnichannel3 = useRef(null); // Status stepper  
+  
+    // ✅ Guide configs using constants  
+    const guideConfigs = {  
+        receipts: {  
+            messages: GUIDE_CUE_MESSAGES.orderDetails.receipts.messages,  
+            triggers: [triggerRefReceipts1]  
+        },  
+        omnichannelOrdering: {  
+            messages: GUIDE_CUE_MESSAGES.orderDetails.omnichannelOrdering.messages,  
+            triggers: [triggerRefOmnichannel1, triggerRefOmnichannel2, triggerRefOmnichannel3]  
+        }  
+    };  
+  
+    const currentConfig = guideConfigs[feature] || { messages: [], triggers: [] };  
+    const messages = currentConfig.messages;  
+    const triggers = currentConfig.triggers;  
+    const steps = triggers.length;  
+  
+    const handleNext = () => {  
+        if (currentStep < steps) {  
+            setCurrentStep(n => n + 1);  
+            setGuideCueOpen(true);  
+        } else {  
+            setGuideCueOpen(false);  
+        }  
+    };  
+  
+    const handleDismiss = () => {  
+        console.log("Guide dismissed");  
+        setGuideCueOpen(false);  
+    };  
+  
+    const handleReset = () => {  
+        setCurrentStep(1);  
+        setGuideCueOpen(true);  
+    };  
+  
+    const onArrivedToStoreClick = async () => {  
+        if (!orderDetails.packageIsInTheStore || isBtnDisabled)  
+            return  
+        setIsBtnDisabled(true)  
+        let result = await addOrderStatusHistory(  
+            orderId,  
+            {  
+                status: shippingMethods.bopis.steps[2].label,  
+                timestamp: Number(Date.now())  
+            }  
+        );  
+        if (result) {  
+            console.log('result', result)  
+        }  
+    }  
+  
+    const onSeeReceiptClick = async () => {  
+        console.log(orderDetails)  
+        if (!orderDetails.invoiceId)  
+            return  
+        dispatch(setOpenedInvoice(null))  
+        const invoice = await fetchInvoice(orderDetails.invoiceId)  
+        if (invoice)  
+            dispatch(setOpenedInvoice(invoice))  
+        else  
+            alert("Couldn't get receipt data, try again later")  
+    }  
+  
+    const listenToSSEUpdates = useCallback(() => {  
+        console.log('listenToSSEUpdates func: ', orderId)  
+        console.log('-- orderId', orderId)  
+        console.log('-- sessionId', sessionId)  
+        const collection = "orders";  
+        const eventSource = new EventSource(  
+            `/api/sse?sessionId=${sessionId.current}&colName=${collection}&_id=${orderId}`  
+        )  
+  
+        eventSource.onopen = () => {  
+            console.log('-- (onopen) SSE connection opened.')  
+        }  
+  
+        eventSource.onmessage = (event) => {  
+            const data = JSON.parse(event.data);  
+            console.log('-- (onmessage) Received SSE Update:', data);  
+            handleChangeInOrders(orderId, data.fullDocument)  
+            dispatch(setOrder(data.fullDocument))  
+        }  
+  
+        eventSource.onerror = (event) => {  
+            console.error('-- (onerror) SSE Error:', event);  
+            console.log('-- (onerror) SSE Error:', event);  
+        }  
+  
+        if (sseConnection.current) {  
+            console.log(sseConnection.current)  
+            sseConnection.current.close();  
+            console.log("-- Previous SSE connection closed - dashboard sessionId.", sessionId);  
+        }  
+  
+        sseConnection.current = eventSource;  
+        return eventSource;  
+    }, [orderId]);  
+  
+    useEffect(() => {  
+        const getOrderDetails = async () => {  
+            try {  
+                const result = await fetchOrderDetails(orderId);  
+                if (result) {  
+                    dispatch(setOrder(result))  
+                }  
+                dispatch(setLoading(false))  
+            } catch (err) {  
+            }  
+        };  
+        getOrderDetails();  
+        return () => { }  
+    }, [orderId]);  
+  
+    useEffect(() => {  
+        if (orderDetails._id !== orderId)  
+            return  
+        console.log('myStepperRef 1', myStepperRef.current, document.getElementById('myStepperRef'))  
+        sseConnection?.current?.close();  
+        const eventSource = listenToSSEUpdates();  
+        console.log('myStepperRef 2', myStepperRef.current, document.getElementById('myStepperRef'))  
+    }, [listenToSSEUpdates, orderDetails._id])  
+  
+    useEffect(() => {  
+        const handleBeforeUnload = () => {  
+            if (sseConnection.current) {  
+                console.info("** Closing current SSE connection before unloading the page (order details).");  
+                sseConnection.current.close();  
+            }  
+        };  
+        window.addEventListener("beforeunload", handleBeforeUnload);  
+        return () => {  
+            console.log('CLEAN COMPONENT ORDER DETAILS')  
+            window.removeEventListener("beforeunload", handleBeforeUnload);  
+        };  
+    }, [sseConnection]);  
+  
+    // Auto-start guide cue if feature matches  
+    useEffect(() => {  
+        console.log('🛠 Feature from Redux:', feature);  
+        if (feature && guideConfigs[feature]) {  
+            setTimeout(() => {  
+                handleReset();  
+                console.log('🚀 Starting walkthrough for feature:', feature);  
+            }, 500);  
+        }  
+    }, [feature]);  
+  
+    return (  
+        <>  
+            <FeatureListener />  
+            <Navbar />  
+            <Container className=''>  
+                {/* GuideCue component */}  
+                <GuideCue  
+                    open={guideCueOpen}  
+                    setOpen={setGuideCueOpen}  
+                    refEl={triggers[currentStep - 1]}  
+                    numberOfSteps={steps}  
+                    currentStep={currentStep}  
+                    onPrimaryButtonClick={handleNext}  
+                    onDismiss={handleDismiss}  
+                    title={messages[currentStep - 1]}  
+                >  
+                    {messages[currentStep - 1]}  
+                </GuideCue>  
+  
+                <div className='d-flex flex-row'>  
+                    <div className='d-flex align-items-end w-100'>  
+                        <H1 onClick={() => console.log(orderDetails)}>Order details</H1>  
+                    </div>  
+                    <TalkTrackContainer sections={orderDetailsPage} />  
+                </div>  
+                <div className='mt-3'>  
+                    <H3 className="mb-2">Summary</H3>  
+                    {  
+                        orderDetails.loading  
+                            ? <>  
+                                <CardSkeleton className='mb-2' />  
+                                <H3 className="mb-2">Status</H3>  
+                                <Skeleton className='mb-2' />  
+                                <Skeleton className='mb-2' />  
+                                <H3 className="mb-2">Products</H3>  
+                                <CardSkeleton className='mb-2' />  
+                                <CardSkeleton />  
+                            </>  
+                            : orderDetails._id !== null  
+                                ? <>  
+                                    <Card className="row m-0 mb-2">  
+                                        <div  
+                                            className='col'  
+                                            ref={  
+                                                feature === 'omnichannelOrdering' ? triggerRefOmnichannel1 : null  
+                                            }  
+                                        >  
+                                            <p className={styles.orderData}><strong>Date:</strong> {prettifyDateFormat(orderDetails.status_history[0]?.timestamp)}</p>  
+                                            <p className={styles.orderData}><strong>ID:</strong> {orderId}</p>  
+                                            <p className={styles.orderData}><strong>Status:</strong> {  
+                                                orderDetails.isCanceled  
+                                                    ? <Badge variant="red">{orderDetails.status_history[orderDetails.status_history.length - 1]?.status}</Badge>  
+                                                    : orderDetails.status_history[orderDetails.status_history.length - 1]?.status === shippingMethods.bopis.steps[3]?.label || orderDetails.status_history[orderDetails.status_history.length - 1]?.status === shippingMethods.home.steps[4]?.label  
+                                                        ? <Badge variant="green">{orderDetails.status_history[orderDetails.status_history.length - 1]?.status}</Badge>  
+                                                        : <Badge variant="gray">{orderDetails.status_history[orderDetails.status_history.length - 1]?.status}</Badge>  
+                                            }</p>  
+                                        </div>  
+                                        <div className='col'>  
+                                            <p className={styles.orderData}><strong>Type:</strong><ShippingMethodBadgeComp orderDetails={orderDetails} /></p>  
+                                            <p className={styles.orderData}><strong>Address:</strong> {orderDetails.shipping_address}</p>  
+                                        </div>  
+                                        <div className='col'>  
+                                            <p className={styles.orderData}><strong>Total:</strong> ${orderDetails.totalPrice} </p>  
+                                            <p className={styles.orderData}><strong>Shipping:</strong> $0 </p>  
+                                            <p className={styles.orderData}>  
+                                                <strong>Receipt:</strong>  
+                                                <a  
+                                                    className={styles.seeReceipt}  
+                                                    onClick={() => onSeeReceiptClick()}  
+                                                    ref={  
+                                                        feature === 'receipts' ? triggerRefReceipts1 : null  
+                                                    }  
+                                                >  
+                                                    See details  
+                                                </a>  
+                                            </p>  
+                                        </div>  
+                                    </Card>  
+  
+                                    <div  
+                                        ref={  
+                                            feature === 'omnichannelOrdering' ? triggerRefOmnichannel3 : null  
+                                        }  
+                                    >  
+                                        <H3 className="mb-2">Status</H3>  
+                                        {  
+                                            !orderDetails.isCanceled &&  
+                                            <Stepper  
+                                                id='myStepperRef'  
+                                                ref={myStepperRef}  
+                                                className={`${orderDetails.isCanceled ? styles.isCanceled : ''}`}  
+                                                currentStep={orderDetails.isCanceled ? 1 : orderDetails.status_history.length}  
+                                            >  
+                                                {  
+                                                    orderDetails.shippingMethod?.steps.map(step =>  
+                                                        <Step key={step.id}>{step.label}</Step>  
+                                                    )  
+                                                }  
+                                            </Stepper>  
+                                        }  
+                                    </div>  
+  
+                                    {  
+                                        (orderDetails.packageIsInTheStore === true) &&  
+                                        <Banner className='mb-2 mt-2' image={<Icon glyph="Bell"></Icon>}>  
+                                            <div className='d-flex flex-row align-items-center justify-content-between'>  
+                                                <strong className='m-0'>Let the store know you have arrived for your package.</strong>  
+                                                <Button disabled={isBtnDisabled} onClick={() => onArrivedToStoreClick()}>I am here</Button>  
+                                            </div>  
+                                        </Banner>  
+                                    }  
+                                    {  
+                                        orderDetails.status_history.map((statusHistory, index) => (  
+                                            <div key={`${index}-sh`}>  
+                                                <p><strong>{statusHistory.status}: </strong>{prettifyDateFormat(statusHistory.timestamp)}</p>  
+                                            </div>  
+                                        ))  
+                                    }  
+                                    <H3  
+                                        className="mb-2"  
+                                        ref={  
+                                            feature === 'omnichannelOrdering' ? triggerRefOmnichannel2 : null  
+                                        }  
+                                    >  
+                                        Products  
+                                    </H3>  
+                                    {orderDetails.products?.map((product, index) => (  
+                                        <CartItem  
+                                            key={`cart-product-${index}`}  
+                                            product={product}  
+                                        />  
+                                    ))}  
+                                </>  
+                                : 'error'  
+                    }  
+                </div>  
+            </Container>  
+            <Footer />  
+        </>  
+    );  
+}  

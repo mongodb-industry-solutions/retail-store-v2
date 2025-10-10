@@ -14,9 +14,12 @@ export default function FeatureListener() {
 
   useEffect(() => {
     const featureParam = searchParams.get('feature') || null;
+    console.log('🛠 FeatureListener read feature param:', featureParam); // <-- debug  
+
 
     if (featureParam !== featureInStore) {
       dispatch(setFeature({feature: featureParam}));
+      console.log('🛠 FeatureListener dispatched setFeature:', featureParam);  
     }
   }, [searchParams.toString(), pathname]);
 
