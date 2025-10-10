@@ -34,7 +34,7 @@ const prettifyDateFormat = (timestamp) => {
     return `${datePart} at ${timePart}`;
 }
 
-const OrderItemCard = ({ order, updateToggle, triggerRef }) => {
+const OrderItemCard = ({ order, updateToggle, triggerRef, feature }) => {
     const dispatch = useDispatch();
     const router = useRouter();
     const [totalPrice, setTotalPrice] = useState(0)
@@ -42,7 +42,10 @@ const OrderItemCard = ({ order, updateToggle, triggerRef }) => {
     const [keysPressed, setKeysPressed] = useState(new Set());
 
     const onSeeOrderClick = () => {
-        router.push(`/orderDetails/${order._id}`);
+        const url = feature   
+            ? `/orderDetails/${order._id}?feature=${feature}`  
+            : `/orderDetails/${order._id}`;  
+        router.push(url);
         dispatch(clearOrder())
     }
     const onOrderClick = async () => {
