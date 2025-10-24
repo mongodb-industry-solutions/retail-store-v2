@@ -127,6 +127,20 @@ export default function CartPage() {
             }, 500);  
         }  
     }, [feature]);  
+
+    // Autofill cart if empty & feature = omnichannelOrdering  
+    useEffect(() => {  
+        const autoFillFeatures = ['omnichannelOrdering', 'receipts'];  // More features can be added to this array
+        
+        if (  
+          autoFillFeatures.includes(feature) &&  
+          (!cart.products || cart.products.length === 0)  
+        ) {  
+          console.log(`✅ Autofilling cart for feature: ${feature}`);  
+          onFillCart();  
+        }  
+      }, [feature, cart.products]); 
+  
   
     return (  
         <>  
