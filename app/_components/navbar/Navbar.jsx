@@ -102,9 +102,10 @@ const Navbar = () => {
         </div>
 
         <div className={styles.links}>
-          <Link href="/">Home</Link>
-          <Link href="/shop">Shop</Link>
-          <Link href={`/about?feature=${featureInStore}`}>About</Link>
+        <Link href={`/?feature=${featureInStore}`}>Home</Link>  
+        <Link href={`/shop?feature=${featureInStore}`}>Shop</Link>  
+        <Link href={`/about?feature=${featureInStore}`}>About</Link>  
+
           {/* <Link href="/contact">Contact</Link> */}
         </div>
         <SearchBar/>

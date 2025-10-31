@@ -26,7 +26,7 @@ import { setCartProductsList, setCartLoading, clearCartProductsList } from '@/re
 import { handleCreateNewOrder } from '@/lib/helpers';  
 import TalkTrackContainer from '../_components/talkTrackContainer/talkTrackContainer';  
 import { checkoutPage } from '@/lib/talkTrack';  
-import { GUIDE_CUE_MESSAGES } from '@/lib/constants';  
+import { GUIDE_CUE_MESSAGES,FEATURES } from '@/lib/constants';  
   
 export default function Page() {  
     const router = useRouter();  
@@ -34,7 +34,7 @@ export default function Page() {
     const cart = useSelector(state => state.User.cart);  
     const selectedUser = useSelector(state => state.User.selectedUser);  
     const feature = useSelector(state => state.Global.feature);  
-      
+    const [showStoreSelectionAlert, setShowStoreSelectionAlert] = useState(false);  
     const [shippingMethod, setShippingMethod] = useState(shippingMethods.bopis);  
     const [storeLocations, setStoreLocations] = useState([]);  
     const [selectedStoreLocation, setSelectedStoreLocation] = useState(null);  
@@ -57,11 +57,11 @@ export default function Page() {
   
     // ✅ Guide configs using constants  
     const guideConfigs = {  
-        receipts: {  
+        [FEATURES.RECEIPTS]: {  
             messages: GUIDE_CUE_MESSAGES.checkout.receipts.messages,  
             triggers: [triggerRefReceipts1, triggerRefReceipts2, triggerRefReceipts3]  
         },  
-        omnichannelOrdering: {  
+        [FEATURES.OMNICHANNEL_ORDERING]: {  
             messages: GUIDE_CUE_MESSAGES.checkout.omnichannelOrdering.messages,  
             triggers: [triggerRefOmnichannel1, triggerRefOmnichannel2, triggerRefOmnichannel3]  
         }  
@@ -103,6 +103,12 @@ export default function Page() {
     }, [feature]);  
   
     const onConfirmOrder = async () => {  
+        // Check for BOPIS without store  
+        if (shippingMethod.id === shippingMethods.bopis.id && !selectedStoreLocation) {  
+            setShowStoreSelectionAlert(true); // Show popup  
+            return; // Stop order processing  
+        }  
+          
         setProcessingNewOrder(true);  
         let order = await createNewOrder(  
             selectedUser._id,  
@@ -119,7 +125,7 @@ export default function Page() {
             router.push(`/orderDetails/${order._id}?feature=${feature}`);  
             await clearCart(selectedUser._id);  
         }  
-    };  
+    };   
   
     const onShippingMethodChange = (e) => {  
         setShippingMethod(shippingMethods[e.target.value]);  
@@ -180,8 +186,8 @@ export default function Page() {
                     <div className='d-flex align-items-end w-100'>  
                         <H1  
                             ref={  
-                                feature === 'receipts' ? triggerRefReceipts1 :  
-                                feature === 'omnichannelOrdering' ? triggerRefOmnichannel1 : null  
+                                feature === FEATURES.RECEIPTS ? triggerRefReceipts1 :  
+                                feature === FEATURES.OMNICHANNEL_ORDERING  ? triggerRefOmnichannel1 : null  
                             }  
                         >  
                             Checkout  
@@ -207,7 +213,7 @@ export default function Page() {
                         <Card  
                             className={styles.cardInfo}  
                             ref={  
-                                feature === 'receipts' ? triggerRefReceipts2 : null  
+                                feature === FEATURES.RECEIPTS ? triggerRefReceipts2 : null  
                             }  
                         >  
                             <Body><strong>Order: </strong>${cart.totalPrice}</Body>  
@@ -219,7 +225,7 @@ export default function Page() {
                         <Card  
                             className={styles.cardInfo}  
                             ref={  
-                                feature === 'omnichannelOrdering' ? triggerRefOmnichannel2 : null  
+                                feature === FEATURES.OMNICHANNEL_ORDERING ? triggerRefOmnichannel2 : null  
                             }  
                         >  
                                 <RadioBoxGroup onChange={(e) => onShippingMethodChange(e)} className="radio-box-group-style mb-3">  
@@ -254,8 +260,8 @@ export default function Page() {
                         <div className='d-flex flex-row-reverse mt-3'>  
                             <Button  
                                 ref={  
-                                    feature === 'receipts' ? triggerRefReceipts3 :  
-                                    feature === 'omnichannelOrdering' ? triggerRefOmnichannel3 : null  
+                                    feature === FEATURES.RECEIPTS ? triggerRefReceipts3 :  
+                                    feature === FEATURES.OMNICHANNEL_ORDERING  ? triggerRefOmnichannel3 : null  
                                 }  
                                 variant='primary'  
                                 disabled={cart.products?.length === 0 ||  
@@ -267,6 +273,19 @@ export default function Page() {
                         </div>  
                     </div>  
                 )}  
+                {/* Alert modal for missing store selection */}  
+                <Modal open={showStoreSelectionAlert} setOpen={setShowStoreSelectionAlert}>  
+                 <H3>Please select a store</H3>  
+                 <Body>  
+                 You have chosen <strong>Buy Online, Pickup In Store</strong> but you have not selected a store location.  
+                 Please choose a store before confirming your order.  
+                </Body>  
+                  <div className="mt-3 d-flex justify-content-end">  
+                 <Button variant="primary" onClick={() => setShowStoreSelectionAlert(false)}>  
+                  OK  
+                 </Button>  
+                </div>  
+                </Modal> 
             </Container>  
             <Footer />  
             <ProductsModalComp  

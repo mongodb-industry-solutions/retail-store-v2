@@ -3,7 +3,8 @@ import { Subtitle, Description } from '@leafygreen-ui/typography';
 import React, { useEffect } from 'react'; // ✅ Remove forwardRef, add useEffect  
 import Image from 'next/image'  
 import PRCard from '../personalizedRecommendations/PRCard';  
-import { prettifyDateFormat } from '@/lib/helpers';  
+import { prettifyDateFormat } from '@/lib/helpers';
+import { FEATURES } from '@/lib/constants';  
 import Icon from '@leafygreen-ui/icon';  
 import { setLoading } from '@/redux/slices/InvoiceSlice';  
 import { addOperationAlert, addSucAutoCloseAlertHnd, addWarnAutoCloseAlertHnd, closeAlertWithDelay } from '@/lib/alerts';  
@@ -54,7 +55,7 @@ const DigitalReceiptData = ({ feature, currentStep, triggerRefs }) => {
             {/* ✅ STEP 2: Items section with conditional ref */}  
             <div   
                 className='products-container mt-3'   
-                ref={(feature === 'digitalReceipts' || feature === 'receipts') ? triggerRefs?.step2 : null}  
+                ref={(feature === FEATURES.RECEIPTS) ? triggerRefs?.step2 : null}  
             >  
                 <strong className='m-0'>Items</strong>  
                 <hr className='mt-0'></hr>  
