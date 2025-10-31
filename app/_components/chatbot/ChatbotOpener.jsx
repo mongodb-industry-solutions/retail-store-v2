@@ -9,7 +9,7 @@ import styles from "./chatbotComp.module.css";
 import ChatbotModal from './ChatbotModal';
 import { calculateInitialMessage, getMinimizedSchemaForDataworkz } from '@/lib/helpers';
 import { addMessage, setInitialMessage, setMinimizedOrderSchema } from '@/redux/slices/ChatbotSlice';
-import { ROLE } from '@/lib/constants';
+import { ROLE,FEATURES } from '@/lib/constants';
 import Image from 'next/image';
 
 const ChatbotOpener = () => {
@@ -61,7 +61,7 @@ const ChatbotOpener = () => {
 
             {/* ✅ Only show GuideCue hint if feature is NOT chatbot */}  
 
-             {feature !== 'chatbot' && (  
+             {feature !== FEATURES.CHATBOT && (  
             <GuideCue  
                 open={openHint}  
                 setOpen={setOpenHint}  

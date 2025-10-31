@@ -14,7 +14,7 @@ import { CardSkeleton } from '@leafygreen-ui/skeleton-loader';
 import { handleChangeInOrders, handleCreateNewOrder } from '@/lib/helpers';  
 import TalkTrackContainer from '../_components/talkTrackContainer/talkTrackContainer';  
 import { ordersPage } from '@/lib/talkTrack';  
-import { GUIDE_CUE_MESSAGES } from '@/lib/constants';  
+import { GUIDE_CUE_MESSAGES,FEATURES } from '@/lib/constants';  
   
 export default function Page() {  
     const sseConnection = useRef(null);  
@@ -38,11 +38,11 @@ export default function Page() {
   
     // ✅ Guide configs using constants  
     const guideConfigs = {  
-        receipts: {  
+        [FEATURES.RECEIPTS]: {  
             messages: GUIDE_CUE_MESSAGES.orders.receipts.messages,  
             triggers: [triggerRefReceipts1, triggerRefReceipts2, triggerRefReceipts3]  
         },  
-        chatbot: {  
+        [FEATURES.AI_CHATBOT]: {  
             messages: GUIDE_CUE_MESSAGES.orders.chatbot.messages,  
             triggers: [triggerRefChatbot1, triggerRefChatbot2] // Only 2 refs needed  
         }  
@@ -111,7 +111,7 @@ export default function Page() {
         if (feature && guideConfigs[feature]) {  
             setTimeout(() => {  
                 // Set up refs for chatbot walkthrough  
-                if (feature === 'chatbot') {  
+                if (feature === FEATURES.AI_CHATBOT) {  
                     // Step 2: Find the green headphone icon  
                     const chatbotButton = document.getElementById('chatbot-opener-button');  
                     if (chatbotButton) {  
@@ -170,7 +170,7 @@ export default function Page() {
                 <div className='d-flex flex-row'>  
                     <div   
                         ref={  
-                            feature === 'receipts' ? triggerRefReceipts1 : null  
+                            feature === FEATURES.RECEIPTS ? triggerRefReceipts1 : null  
                         }   
                         className='d-flex align-items-end w-100'  
                     >  
@@ -185,8 +185,8 @@ export default function Page() {
                 <div  
                     className='mt-3 mb-2'  
                     ref={  
-                        feature === 'receipts' ? triggerRefReceipts2 :  
-                        feature === 'chatbot' ? triggerRefChatbot1 : null  
+                        feature === FEATURES.RECEIPTS ? triggerRefReceipts2 :  
+                        feature === FEATURES.AI_CHATBOT ? triggerRefChatbot1 : null  
                     }  
                 >  
                     {orders.loading === true  
@@ -200,7 +200,7 @@ export default function Page() {
                                 updateToggle={orders.updateToggle}  
                                 feature={feature}  
                                 triggerRef={  
-                                    feature === 'receipts' && index === 0  
+                                    feature === FEATURES.RECEIPTS && index === 0  
                                         ? triggerRefReceipts3  
                                         : null  
                                 }  

@@ -15,7 +15,7 @@ import DigitalReceiptData from './DigitalReceiptData';
 import { GuideCue } from '@leafygreen-ui/guide-cue';  
 import { useEffect, useRef } from 'react';  
   
-import { GUIDE_CUE_MESSAGES } from '@/lib/constants';  
+import { GUIDE_CUE_MESSAGES, FEATURES } from '@/lib/constants';  
   
 const DigitalReceiptComp = () => {  
     const [selected, setSelected] = useState(0);  
@@ -36,15 +36,11 @@ const DigitalReceiptComp = () => {
   
     // ✅ Guide configs using constants  
     const guideConfigs = {  
-        receipts: {  
-            messages: GUIDE_CUE_MESSAGES.digitalReceipt.receipts.messages,  
-            triggers: [triggerRef1, triggerRef2, triggerRef3, triggerRef4]  
-        },  
-        digitalReceipts: {  
-            messages: GUIDE_CUE_MESSAGES.digitalReceipt.digitalReceipts.messages,  
-            triggers: [triggerRef1, triggerRef2, triggerRef3, triggerRef4]  
+        [FEATURES.RECEIPTS]: {  
+          messages: GUIDE_CUE_MESSAGES.digitalReceipt.receipts.messages,  
+          triggers: [triggerRef1, triggerRef2, triggerRef3, triggerRef4]  
         }  
-    };  
+      };  
   
     const currentConfig = guideConfigs[feature] || { messages: [], triggers: [] };  
     const messages = currentConfig.messages;  

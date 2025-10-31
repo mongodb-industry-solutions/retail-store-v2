@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Icon from '@leafygreen-ui/icon';  
 import { Modal, Container } from 'react-bootstrap';  
 import { H2, Subtitle, Description } from '@leafygreen-ui/typography';  
-  
+import { FEATURES } from '@/lib/constants';    
 import styles from "./loginComp.module.css";  
 import UserComp from '../user/UserComp';  
 import { fetchUserData, setLoadingUsersList, setUsersList, setSelectedUser } from '@/redux/slices/UserSlice';  
@@ -22,9 +22,8 @@ const LoginComp = () => {
     const feature = useSelector(state => state.Global.feature);
     const [localSelectedUser, setLocalSelectedUser] = useState(null);  
     // ✅ Features that should auto-select Claude  
-    const autoSelectFeatures = ['chatbot', 'receipts', 'digitalReceipts'];  
+    const autoSelectFeatures = [FEATURES.CHATBOT, FEATURES.RECEIPTS]; 
     const shouldAutoSelect = autoSelectFeatures.includes(feature);  
-  
   
     useEffect(() => {  
         const getAllUsers = async () => {  
@@ -60,7 +59,7 @@ const LoginComp = () => {
             }  
         };  
         getAllUsers();  
-    }, [feature, dispatch]); // ✅ Add feature as dependency  
+    }, [dispatch]); 
   
     useEffect(() => {  
         if (selectedUser !== null) {  
@@ -68,19 +67,24 @@ const LoginComp = () => {
         }  
     }, [selectedUser, dispatch]);  
   
-    useEffect(() => {  
-        // ✅ Only show modal if not chatbot feature  
-        if (feature !== 'chatbot') {  
-            setOpen(true);  
-        }  
-    }, [feature]);  
+    + useEffect(() => {  
+          // ✅ If feature is chatbot and no user is selected, assign a default user from the loaded list  
+           if (feature === FEATURES.CHATBOT && selectedUser === null && users.length > 0) {  
+             dispatch(setSelectedUser(users[0]));  
+           }  
+         
+           // ✅ Show modal only when NOT chatbot and user not yet selected  
+           if (feature !== FEATURES.CHATBOT && selectedUser === null) {  
+             setOpen(true);  
+           }  
+         }, [users, selectedUser, feature, dispatch]);  
   
     const handleClose = () => {  
         setOpen(false);  
     };  
   
     // ✅ Don't render modal at all for chatbot feature  
-    if (feature === 'chatbot') {  
+    if (feature === FEATURES.CHATBOT) {  
         return null;  
     }  
   
