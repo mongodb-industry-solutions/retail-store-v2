@@ -1,20 +1,21 @@
-"use client";  
-  
-import React, { useState, useCallback, useEffect, useRef } from 'react';  
-import { useSelector } from 'react-redux';  
-import { Container } from 'react-bootstrap';  
-import { H1 } from '@leafygreen-ui/typography';  
-import { v4 as uuidv4 } from "uuid";  
-import { GuideCue } from '@leafygreen-ui/guide-cue';  
-  
-import Footer from "../_components/footer/Footer";  
-import Navbar from "../_components/navbar/Navbar";  
-import OrderItemCard from '../_components/orderItemCard/OrderItemCard';  
-import { CardSkeleton } from '@leafygreen-ui/skeleton-loader';  
-import { handleChangeInOrders, handleCreateNewOrder } from '@/lib/helpers';  
+"use client";
+
+import React, { useState, useCallback, useEffect, useRef,useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { Container } from 'react-bootstrap';
+import { H1 } from '@leafygreen-ui/typography';
+import { v4 as uuidv4 } from "uuid";
+import { GuideCue } from '@leafygreen-ui/guide-cue';
+
+import Footer from "../_components/footer/Footer";
+import Navbar from "../_components/navbar/Navbar";
+import OrderItemCard from '../_components/orderItemCard/OrderItemCard';
+import { CardSkeleton } from '@leafygreen-ui/skeleton-loader';
+import { handleChangeInOrders, handleCreateNewOrder } from '@/lib/helpers';
 import TalkTrackContainer from '../_components/talkTrackContainer/talkTrackContainer';  
 import { ordersPage } from '@/lib/talkTrack';  
-import { GUIDE_CUE_MESSAGES,FEATURES } from '@/lib/constants';  
+import { GUIDE_CUE_MESSAGES_2, FEATURES } from '@/lib/constants';  
+import GuideCueContainer from '../_components/guideCueContainer/GuideCuecontainer';  
   
 export default function Page() {  
     const sseConnection = useRef(null);  
@@ -26,32 +27,43 @@ export default function Page() {
     const [currentStep, setCurrentStep] = useState(1);  
     const [open, setOpen] = useState(false);  
   
-    // --- Receipts walkthrough refs ---  
-    const triggerRefReceipts1 = useRef(null); // My Orders heading  
-    const triggerRefReceipts2 = useRef(null); // Orders list container  
-    const triggerRefReceipts3 = useRef(null); // First order card  
+    // --- Receipts walkthrough refs ---    
+    const triggerRefReceipts1 = useRef(null); // My Orders heading    
+    const triggerRefReceipts2 = useRef(null); // Orders list container    
+    const triggerRefReceipts3 = useRef(null); // First order card    
   
-    // --- Chatbot walkthrough refs ---  
-    const triggerRefChatbot1 = useRef(null); // Orders list  
-    const triggerRefChatbot2 = useRef(null); // Green headphone icon  
-    const triggerRefChatbot3 = useRef(null); // Chatbot input textbox  
+    // --- Chatbot walkthrough refs ---    
+    const triggerRefChatbot1 = useRef(null); // Orders list    
+    const triggerRefChatbot2 = useRef(null); // Green headphone icon    
+    const triggerRefChatbot3 = useRef(null); // Chatbot input textbox    
   
-    // ✅ Guide configs using constants  
-    const guideConfigs = {  
-        [FEATURES.RECEIPTS]: {  
-            messages: GUIDE_CUE_MESSAGES.orders.receipts.messages,  
-            triggers: [triggerRefReceipts1, triggerRefReceipts2, triggerRefReceipts3]  
-        },  
-        [FEATURES.AI_CHATBOT]: {  
-            messages: GUIDE_CUE_MESSAGES.orders.chatbot.messages,  
-            triggers: [triggerRefChatbot1, triggerRefChatbot2] // Only 2 refs needed  
-        }  
-    };  
+    // ✅ Guide configs using constants    
+    const triggers = {  
+        [FEATURES.RECEIPTS]: [  
+          triggerRefReceipts1,  
+          triggerRefReceipts2,  
+          triggerRefReceipts3,  
+        ],  
+        [FEATURES.AI_CHATBOT]: [  
+          triggerRefChatbot1,  
+          triggerRefChatbot2,  
+        ],  
+      };  
+      
+      const currentConfig = useMemo(  
+        () =>  
+          GUIDE_CUE_MESSAGES_2.orders[feature]  
+            ? {  
+                ...GUIDE_CUE_MESSAGES_2.orders[feature],  
+                triggers: triggers[feature],  
+                steps: triggers[feature].length,  
+              }  
+            : null,  
+        [feature, triggers]  
+      );  
+      console.log("🛠 Orders Page currentConfig:", currentConfig);  
   
-    const currentConfig = guideConfigs[feature] || { messages: [], triggers: [] };  
-    const messages = currentConfig.messages;  
-    const triggers = currentConfig.triggers;  
-    const steps = triggers.length;  
+     
   
     const listenToSSEUpdates = useCallback(() => {  
         const collection = "orders";  
@@ -86,41 +98,20 @@ export default function Page() {
         return eventSource;  
     }, [userId]);  
   
-    const handleNext = () => {  
-        if (currentStep < steps) {  
-            setCurrentStep(n => n + 1);  
-            setOpen(true);  
-        } else {  
-            setOpen(false);  
-        }  
-    };  
-  
-    const handleDismiss = () => {  
-        console.log("Guide dismissed");  
-        setOpen(false);  
-    };  
-  
-    const handleReset = () => {  
-        setCurrentStep(1);  
-        setOpen(true);  
-    };  
-  
-    // Auto-start guide cue if feature matches  
+    // Auto-start guide cue if feature matches    
     useEffect(() => {  
         console.log('🛠 Feature from Redux:', feature);  
-        if (feature && guideConfigs[feature]) {  
+        if (feature && currentConfig) {  
             setTimeout(() => {  
-                // Set up refs for chatbot walkthrough  
+                // Set up refs for chatbot walkthrough    
                 if (feature === FEATURES.AI_CHATBOT) {  
-                    // Step 2: Find the green headphone icon  
+                    // Step 2: Find the green headphone icon    
                     const chatbotButton = document.getElementById('chatbot-opener-button');  
                     if (chatbotButton) {  
                         triggerRefChatbot2.current = chatbotButton;  
                     }  
                 }  
   
-                handleReset();  
-                console.log('🚀 Starting walkthrough for feature:', feature);  
             }, 500);  
         }  
     }, [feature]);  
@@ -154,24 +145,14 @@ export default function Page() {
             <Navbar />  
             <Container className=''>  
                 {/* GuideCue component */}  
-                <GuideCue  
-                    open={open}  
-                    setOpen={setOpen}  
-                    refEl={triggers[currentStep - 1]}  
-                    numberOfSteps={steps}  
-                    currentStep={currentStep}  
-                    onPrimaryButtonClick={handleNext}  
-                    onDismiss={handleDismiss}  
-                    title={messages[currentStep - 1]}  
-                >  
-                    {messages[currentStep - 1]}  
-                </GuideCue>  
+            <GuideCueContainer config={currentConfig} feature={feature} />  
+  
   
                 <div className='d-flex flex-row'>  
-                    <div   
+                    <div  
                         ref={  
                             feature === FEATURES.RECEIPTS ? triggerRefReceipts1 : null  
-                        }   
+                        }  
                         className='d-flex align-items-end w-100'  
                     >  
                         <H1>  
@@ -186,7 +167,7 @@ export default function Page() {
                     className='mt-3 mb-2'  
                     ref={  
                         feature === FEATURES.RECEIPTS ? triggerRefReceipts2 :  
-                        feature === FEATURES.AI_CHATBOT ? triggerRefChatbot1 : null  
+                            feature === FEATURES.AI_CHATBOT ? triggerRefChatbot1 : null  
                     }  
                 >  
                     {orders.loading === true  

@@ -1,6 +1,6 @@
 "use client" // app/order-details/[id]/page.js
 
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef,useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { H1, H3 } from '@leafygreen-ui/typography';
 import Banner from "@leafygreen-ui/banner";
@@ -26,7 +26,8 @@ import { checkoutPage, orderDetailsPage } from '@/lib/talkTrack';
 import TalkTrackContainer from '@/app/_components/talkTrackContainer/talkTrackContainer';
 import { setOpenedInvoice } from '@/redux/slices/InvoiceSlice';
 import { GuideCue } from '@leafygreen-ui/guide-cue'; 
-import { GUIDE_CUE_MESSAGES } from '@/lib/constants';  
+import { GUIDE_CUE_MESSAGES_2,FEATURES } from '@/lib/constants';  
+import GuideCueContainer from '@/app/_components/guideCueContainer/GuideCuecontainer';
   
 export default function OrderDetailsPage({ params }) {  
     const dispatch = useDispatch();  
@@ -48,42 +49,31 @@ export default function OrderDetailsPage({ params }) {
     const triggerRefOmnichannel1 = useRef(null); // Order details heading  
     const triggerRefOmnichannel2 = useRef(null); // Products section  
     const triggerRefOmnichannel3 = useRef(null); // Status stepper  
+
+    // ✅ Define triggers mapping  
+    const triggers = useMemo(() => ({  
+        [FEATURES.RECEIPTS]: [triggerRefReceipts1],  
+        [FEATURES.OMNICHANNEL_ORDERING]: [  
+            triggerRefOmnichannel1,  
+            triggerRefOmnichannel2,  
+            triggerRefOmnichannel3,  
+        ],  
+    }), []);  
   
-    // ✅ Guide configs using constants  
-    const guideConfigs = {  
-        receipts: {  
-            messages: GUIDE_CUE_MESSAGES.orderDetails.receipts.messages,  
-            triggers: [triggerRefReceipts1]  
-        },  
-        omnichannelOrdering: {  
-            messages: GUIDE_CUE_MESSAGES.orderDetails.omnichannelOrdering.messages,  
-            triggers: [triggerRefOmnichannel1, triggerRefOmnichannel2, triggerRefOmnichannel3]  
-        }  
-    };  
-  
-    const currentConfig = guideConfigs[feature] || { messages: [], triggers: [] };  
-    const messages = currentConfig.messages;  
-    const triggers = currentConfig.triggers;  
-    const steps = triggers.length;  
-  
-    const handleNext = () => {  
-        if (currentStep < steps) {  
-            setCurrentStep(n => n + 1);  
-            setGuideCueOpen(true);  
-        } else {  
-            setGuideCueOpen(false);  
-        }  
-    };  
-  
-    const handleDismiss = () => {  
-        console.log("Guide dismissed");  
-        setGuideCueOpen(false);  
-    };  
-  
-    const handleReset = () => {  
-        setCurrentStep(1);  
-        setGuideCueOpen(true);  
-    };  
+// ✅ Build currentConfig using useMemo  
+const currentConfig = useMemo(  
+    () =>  
+        GUIDE_CUE_MESSAGES_2.orderDetails[feature]  
+            ? {  
+                ...GUIDE_CUE_MESSAGES_2.orderDetails[feature],  
+                triggers: triggers[feature],  
+                steps: triggers[feature]?.length || 0,  
+            }  
+            : null,  
+    [feature, triggers]  
+);  
+console.log("🛠 Order Details Page currentConfig:", currentConfig);  
+
   
     const onArrivedToStoreClick = async () => {  
         if (!orderDetails.packageIsInTheStore || isBtnDisabled)  
@@ -185,36 +175,20 @@ export default function OrderDetailsPage({ params }) {
             window.removeEventListener("beforeunload", handleBeforeUnload);  
         };  
     }, [sseConnection]);  
-  
-    // Auto-start guide cue if feature matches  
-    useEffect(() => {  
-        console.log('🛠 Feature from Redux:', feature);  
-        if (feature && guideConfigs[feature]) {  
-            setTimeout(() => {  
-                handleReset();  
-                console.log('🚀 Starting walkthrough for feature:', feature);  
-            }, 500);  
-        }  
-    }, [feature]);  
-  
+
+    const isPageReady = !orderDetails.loading && orderDetails._id !== null;  
+
     return (  
         <>  
             <FeatureListener />  
             <Navbar />  
             <Container className=''>  
                 {/* GuideCue component */}  
-                <GuideCue  
-                    open={guideCueOpen}  
-                    setOpen={setGuideCueOpen}  
-                    refEl={triggers[currentStep - 1]}  
-                    numberOfSteps={steps}  
-                    currentStep={currentStep}  
-                    onPrimaryButtonClick={handleNext}  
-                    onDismiss={handleDismiss}  
-                    title={messages[currentStep - 1]}  
-                >  
-                    {messages[currentStep - 1]}  
-                </GuideCue>  
+               <GuideCueContainer  
+                    config={currentConfig}  
+                    feature={feature}  
+                    ready={isPageReady}  
+                />  
   
                 <div className='d-flex flex-row'>  
                     <div className='d-flex align-items-end w-100'>  
@@ -241,7 +215,7 @@ export default function OrderDetailsPage({ params }) {
                                         <div  
                                             className='col'  
                                             ref={  
-                                                feature === 'omnichannelOrdering' ? triggerRefOmnichannel1 : null  
+                                                feature === FEATURES.OMNICHANNEL_ORDERING  ? triggerRefOmnichannel1 : null  
                                             }  
                                         >  
                                             <p className={styles.orderData}><strong>Date:</strong> {prettifyDateFormat(orderDetails.status_history[0]?.timestamp)}</p>  
@@ -267,7 +241,7 @@ export default function OrderDetailsPage({ params }) {
                                                     className={styles.seeReceipt}  
                                                     onClick={() => onSeeReceiptClick()}  
                                                     ref={  
-                                                        feature === 'receipts' ? triggerRefReceipts1 : null  
+                                                        feature === FEATURES.RECEIPTS  ? triggerRefReceipts1 : null  
                                                     }  
                                                 >  
                                                     See details  
@@ -278,7 +252,7 @@ export default function OrderDetailsPage({ params }) {
   
                                     <div  
                                         ref={  
-                                            feature === 'omnichannelOrdering' ? triggerRefOmnichannel3 : null  
+                                            feature === FEATURES.OMNICHANNEL_ORDERING ? triggerRefOmnichannel3 : null  
                                         }  
                                     >  
                                         <H3 className="mb-2">Status</H3>  
@@ -318,7 +292,7 @@ export default function OrderDetailsPage({ params }) {
                                     <H3  
                                         className="mb-2"  
                                         ref={  
-                                            feature === 'omnichannelOrdering' ? triggerRefOmnichannel2 : null  
+                                            feature === FEATURES.OMNICHANNEL_ORDERING   ? triggerRefOmnichannel2 : null  
                                         }  
                                     >  
                                         Products  

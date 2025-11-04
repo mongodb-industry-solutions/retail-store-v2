@@ -1,6 +1,6 @@
 
 "use client"
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef,useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { H1, H3, Disclaimer, Body } from '@leafygreen-ui/typography';
@@ -19,18 +19,19 @@ import CartIndexModal from '../_components/whereMDB_cartIndex/CartIndexModal';
 import TalkTrackContainer from '../_components/talkTrackContainer/talkTrackContainer';
 import { cartPage } from '@/lib/talkTrack';
 import { GuideCue } from '@leafygreen-ui/guide-cue';
-import { GUIDE_CUE_MESSAGES,FEATURES } from '@/lib/constants';  
-  
+import { GUIDE_CUE_MESSAGES_2, FEATURES } from '@/lib/constants';
+import GuideCueContainer from '../_components/guideCueContainer/GuideCuecontainer';  
+
+
 export default function CartPage() {  
     const router = useRouter();  
     const dispatch = useDispatch();  
     const selectedUser = useSelector(state => state.User.selectedUser);  
     const cart = useSelector(state => state.User.cart);  
     const feature = useSelector(state => state.Global.feature);  
-      
+    const isCartReady = !cart.loading;  
+
     const [open, setOpen] = useState(false);  
-    const [currentStep, setCurrentStep] = useState(1);  
-    const [guideCueOpen, setGuideCueOpen] = useState(false);  
   
     // --- Receipts walkthrough refs ---  
     const triggerRefReceipts1 = useRef(null); // My Cart heading  
@@ -42,23 +43,36 @@ export default function CartPage() {
     const triggerRefOmnichannel2 = useRef(null); // Fill Cart button  
     const triggerRefOmnichannel3 = useRef(null); // Checkout button  
   
-    // ✅ Guide configs using constants  
-    const guideConfigs = {  
-        [FEATURES.RECEIPTS]: {  
-            messages: GUIDE_CUE_MESSAGES.cart.receipts.messages,  
-            triggers: [triggerRefReceipts1, triggerRefReceipts2, triggerRefReceipts3]  
-        },  
-        [FEATURES.OMNICHANNEL_ORDERING]: {  
-            messages: GUIDE_CUE_MESSAGES.cart.omnichannelOrdering.messages,  
-            triggers: [triggerRefOmnichannel1, triggerRefOmnichannel2, triggerRefOmnichannel3]  
-        }  
-    };  
+    // ✅ Define triggers mapping  
+    const triggers = useMemo(() => ({  
+        [FEATURES.RECEIPTS]: [  
+            triggerRefReceipts1,  
+            triggerRefReceipts2,  
+            triggerRefReceipts3,  
+        ],  
+        [FEATURES.OMNICHANNEL_ORDERING]: [  
+            triggerRefOmnichannel1,  
+            triggerRefOmnichannel2,  
+            triggerRefOmnichannel3,  
+        ],  
+    }), []);  
   
-    const currentConfig = guideConfigs[feature] || { messages: [], triggers: [] };  
-    const messages = currentConfig.messages;  
-    const triggers = currentConfig.triggers;  
-    const steps = triggers.length;  
+    // ✅ Build currentConfig using useMemo  
+    const currentConfig = useMemo(  
+        () =>  
+            GUIDE_CUE_MESSAGES_2.cart[feature]  
+                ? {  
+                    ...GUIDE_CUE_MESSAGES_2.cart[feature],  
+                    triggers: triggers[feature],  
+                    steps: triggers[feature].length,  
+                }  
+                : null,  
+        [feature, triggers]  
+    );  
   
+    console.log("🛠 Cart Page currentConfig:", currentConfig);  
+  
+    // ✅ Checkout handler  
     const onCheckout = () => {  
         if (!selectedUser || !selectedUser._id) {  
             alert("Please select a user before proceeding to checkout.");  
@@ -70,96 +84,53 @@ export default function CartPage() {
             return;  
         }  
   
-        // Close any guide cues first  
-        setGuideCueOpen(false);  
-  
         const checkoutUrl = feature  
             ? `/checkout?feature=${feature}`  
             : '/checkout';  
   
         console.log("Proceeding to:", checkoutUrl);  
-        console.log("selectedUser:", selectedUser?._id);  
-        console.log("cart products:", cart?.products?.length);  
         router.push(checkoutUrl);  
     };  
   
+    // ✅ Fill cart handler  
     const onFillCart = async () => {  
-        if (selectedUser !== null && cart.products?.length < 1) {  
+        if (selectedUser !== null && (!cart.products || cart.products.length < 1)) {  
             try {  
-                dispatch(setCartLoading(true))  
-                const cart = await fillCartRandomly(selectedUser._id);  
-                console.log('result', cart)  
-                if (cart)  
-                    dispatch(setCartProductsList(cart))  
-                dispatch(setCartLoading(false))  
+                dispatch(setCartLoading(true));  
+                const cartData = await fillCartRandomly(selectedUser._id);  
+                console.log('Fill cart result:', cartData);  
+                if (cartData) {  
+                    dispatch(setCartProductsList(cartData));  
+                }  
+                dispatch(setCartLoading(false));  
             } catch (err) {  
-                console.log(`Error filling cart ${err}`)  
+                console.log(`Error filling cart: ${err}`);  
+                dispatch(setCartLoading(false));  
             }  
         }  
     };  
   
-    const handleNext = () => {  
-        if (currentStep < steps) {  
-            setCurrentStep(n => n + 1);  
-            setGuideCueOpen(true);  
-        } else {  
-            setGuideCueOpen(false);  
-        }  
-    };  
-  
-    const handleDismiss = () => {  
-        console.log("Guide dismissed");  
-        setGuideCueOpen(false);  
-    };  
-  
-    const handleReset = () => {  
-        setCurrentStep(1);  
-        setGuideCueOpen(true);  
-    };  
-  
-    // Auto-start guide cue if feature matches  
+    // ✅ Autofill cart if empty & feature matches  
     useEffect(() => {  
-        console.log('🛠 Feature from Redux:', feature);  
-        if (feature && guideConfigs[feature]) {  
-            setTimeout(() => {  
-                handleReset();  
-                console.log('🚀 Starting walkthrough for feature:', feature);  
-            }, 500);  
-        }  
-    }, [feature]);  
-
-    // Autofill cart if empty & feature = omnichannelOrdering  
-    useEffect(() => {  
-        const autoFillFeatures = [FEATURES.OMNICHANNEL_ORDERING, FEATURES.RECEIPTS];  // More features can be added to this array
-        
+        const autoFillFeatures = [FEATURES.OMNICHANNEL_ORDERING, FEATURES.RECEIPTS];  
+  
         if (  
-          autoFillFeatures.includes(feature) &&  
-          (!cart.products || cart.products.length === 0)  
+            autoFillFeatures.includes(feature) &&  
+            selectedUser !== null &&  
+            (!cart.products || cart.products.length === 0)  
         ) {  
-          console.log(`✅ Autofilling cart for feature: ${feature}`);  
-          onFillCart();  
+            console.log(`✅ Autofilling cart for feature: ${feature}`);  
+            onFillCart();  
         }  
-      }, [feature, cart.products]); 
-  
+    }, [feature, cart.products, selectedUser]);  
   
     return (  
         <>  
             <FeatureListener />  
-            <Navbar></Navbar>  
+            <Navbar />  
             <Container className=''>  
-                {/* GuideCue component */}  
-                <GuideCue  
-                    open={guideCueOpen}  
-                    setOpen={setGuideCueOpen}  
-                    refEl={triggers[currentStep - 1]}  
-                    numberOfSteps={steps}  
-                    currentStep={currentStep}  
-                    onPrimaryButtonClick={handleNext}  
-                    onDismiss={handleDismiss}  
-                    title={messages[currentStep - 1]}  
-                >  
-                    {messages[currentStep - 1]}  
-                </GuideCue>  
+                {/* ✅ GuideCue component */}  
+                <GuideCueContainer config={currentConfig} feature={feature} ready={isCartReady}  />  
   
                 <div className='d-flex flex-row'>  
                     <div className='d-flex align-items-end w-100'>  
@@ -239,7 +210,7 @@ export default function CartPage() {
                     }  
                 </div>  
             </Container>  
-            <Footer></Footer>  
+            <Footer />  
   
             <CartIndexModal  
                 open={open}  

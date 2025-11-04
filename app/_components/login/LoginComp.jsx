@@ -31,7 +31,7 @@ const LoginComp = () => {
   const [localSelectedUser, setLocalSelectedUser] = useState(null);  
   
   // ✅ Features that should auto-select Claude  
-  const autoSelectFeatures = [FEATURES.CHATBOT, FEATURES.RECEIPTS];  
+  const autoSelectFeatures = [FEATURES.AI_CHATBOT, FEATURES.RECEIPTS];  
   
   //---------------------------------------------  
   // Fetch all users ONCE at mount  
