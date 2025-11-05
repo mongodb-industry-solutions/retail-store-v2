@@ -2,25 +2,41 @@
 
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import axios from "axios";
 
 import styles from "./productList.module.css";
 import ProductCard from "../productCard/ProductCard";
 import Pagination from "@leafygreen-ui/pagination";
-import { setInitialLoad, setLoading, setProducts, updateProductPrice } from "../../../redux/slices/ProductsSlice";
+import { setCurrentPage, setInitialLoad, setLoading, setProducts, updateProductPrice } from "../../../redux/slices/ProductsSlice";
 import { getProductsWithSearch } from "@/lib/api";
+import { PAGINATION_PER_PAGE } from "@/lib/constants";
 
 
-const itemsPerPage = 40;
+const itemsPerPage = PAGINATION_PER_PAGE;
 
-const ProductList = ({ filters }) => {
+const ProductList = () => {
   const dispatch = useDispatch();
-  const initialLoad = useSelector(state => state.Products.initialLoad)
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [paginationLength, setPaginationLength] = useState(0)
-  const [currentPage, setCurrentPage] = useState(1);
-  const [firstIndex, setFirstIndex] = useState(0);
-  const [lastIndex, setLastIndex] = useState(itemsPerPage - 1);
+  const {
+    initialLoad, 
+    currentPage, 
+    products,
+    totalItems
+  } = useSelector(state => state.Products)
+
+
+    const getProducts = async () => {
+    console.log('- SOMETHING CHANGED')
+    try {
+      dispatch(setLoading(true))
+      let result = await getProductsWithSearch();
+        if(result){
+          setLoading(false)
+          dispatch(setProducts({products: result.products, totalItems: result.totalItems}))
+        }
+    } catch (err) {
+        console.log(`Error getting all products, ${err}`)
+    }
+  }
+
 
   useEffect(() => {
     const getAllProducts = async () => {
@@ -28,9 +44,8 @@ const ProductList = ({ filters }) => {
         dispatch(setLoading(true))
         let result = await getProductsWithSearch();
         if(result){
-            //console.log('getAllProducts result', Object.keys(result).length)
             dispatch(setInitialLoad(true))
-            dispatch(setProducts(result))
+            dispatch(setProducts({products: result.products, totalItems: result.totalItems}))
         }
       } catch (err) {
           console.log(`Error getting all products, ${err}`)
@@ -42,51 +57,28 @@ const ProductList = ({ filters }) => {
     }
   }, [initialLoad]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.post("/api/getProducts", filters);
-        const transformedProducts = response.data.products.map((product) => ({
-          ...product,
-          photo: product.image.url,
-          name: product.name,
-          brand: product.brand,
-          price: `${product.price.amount.toFixed(2)}`,
-        }));
-        setFilteredProducts(transformedProducts);
-        setPaginationLength(transformedProducts.length)
-      } catch (error) {
-        console.error("There was a problem with your fetch operation:", error);
-      }
-    };
+  console.log('products in ProductList: ', products)
 
-    fetchProducts();
-  }, [filters]);
 
   useEffect(() => {
-    let firstIndex = (currentPage - 1) * itemsPerPage
-    let lastIndex = firstIndex + itemsPerPage
-    setFirstIndex(firstIndex)
-    setLastIndex(lastIndex)
+    console.log('currentPage changed: ', currentPage)
+    if(initialLoad === true)
+      getProducts()
   }, [currentPage])
 
   return (
     <div>
       <div className={styles.productContainer}>
-        {filteredProducts
-          .slice(firstIndex, lastIndex)
-          .map((product, index) => (
+        {products?.length > 0
+        ? products.map((product, index) => (
             <div key={index}>
               <ProductCard
                 id={product._id}
-                photo={product.photo}
-                name={product.name}
-                brand={product.brand}
-                price={product.price}
-                items={product.items}
+                product={product}
               />
             </div>
-          ))}
+          ))
+        : 'no products found'}
       </div>
       <br></br>
       <hr className={styles.hr}></hr>
@@ -94,9 +86,9 @@ const ProductList = ({ filters }) => {
         currentPage={currentPage}
         itemsPerPage={itemsPerPage}
         itemsPerPageOptions={[8, 16, itemsPerPage]}
-        numTotalItems={paginationLength}
-        onForwardArrowClick={ () => setCurrentPage(currentPage + 1) }
-        onBackArrowClick={ () => setCurrentPage(currentPage - 1) }
+        numTotalItems={totalItems}
+        onForwardArrowClick={ () => dispatch(setCurrentPage(currentPage + 1)) }
+        onBackArrowClick={ () => dispatch(setCurrentPage(currentPage - 1)) }
       ></Pagination>
     </div>
   );

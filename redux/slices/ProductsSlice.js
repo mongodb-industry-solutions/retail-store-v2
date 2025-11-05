@@ -4,10 +4,12 @@ import { createSlice } from "@reduxjs/toolkit";
 const ProductsSlice = createSlice({
     name: "Products",
     initialState: {
-        products: {}, // {id: {...}, id: {...}, ...}
+        products: [],
         query: '', 
         filters: {}, // {selectedBrands: {String, String...}, selectedCategories: {String, String...} }
         //searchType: SEARCH_TYPES.atlasSearch,
+        totalItems: 0,
+        currentPage: 1,
         searchIsLoading: false,
         initialLoad: false,
         error: null,         // null or {msg: ""}
@@ -36,22 +38,11 @@ const ProductsSlice = createSlice({
             }
         },
         setProducts: (state, action) => {
+            console.log('action.payload in setProducts: ', action.payload)
             return {
                 ...state,
-                products: {...action.payload},
-                searchIsLoading: false,
-                error: null,
-
-            }
-        },
-        updateProductPrice: (state, action) => {
-            let newProducts = {...state.products}
-            newProducts[action.payload.objectId] = {
-                ...state.products[action.payload.objectId]
-            }
-            return {
-                ...state,
-                products: {...newProducts},
+                products: [...action.payload.products],
+                totalItems: action.payload.totalItems,
                 searchIsLoading: false,
                 error: null,
 
@@ -72,7 +63,13 @@ const ProductsSlice = createSlice({
                 ...state,
                 openedProductDetails: newOpenedProductDetails,
             }
-        }
+        },
+        setCurrentPage: (state, action) => {
+            return {
+                ...state,
+                currentPage: action.payload
+            }
+        },
 
     }
 })
@@ -86,7 +83,8 @@ export const {
     setFilters,
     setQuery,
     updateProductPrice,
-    setOpenedProductDetails
+    setOpenedProductDetails,
+    setCurrentPage
 } = ProductsSlice.actions
 
 export default ProductsSlice.reducer

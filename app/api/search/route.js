@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { clientPromise, dbName } from "@/lib/mongodb";
+import { PAGINATION_PER_PAGE } from "@/lib/constants";
 
 export async function POST(request) {
-    const { query, facets } = await request.json();
-    console.log('HOLA', query, facets);
+    const { query, facets, pagination_page } = await request.json();
+    console.log('HOLA', pagination_page, query, facets);
 
     try {
         const client = await clientPromise
@@ -59,27 +60,20 @@ export async function POST(request) {
             }
         );
 
-        // Perform the aggregation query
-        const products = await collection.aggregate(pipeline).toArray();
+        // Get total count of matching documents
+        const totalCount = await collection.aggregate(pipeline.concat([{ $count: "total" }])).toArray();
+        const totalItems = totalCount.length > 0 ? totalCount[0].total : 0;
 
-        // Transform the array of products into an object with _id as the key
-        const transformedProducts = products.reduce((acc, product) => {
-            acc[product._id] = {
-                ...product,
-                _id: product._id,
-                id: product.id,
-                photo: product.image.url,
-                name: product.name,
-                brand: product.brand,
-                price: `${product.price.amount.toFixed(2)}`,
-                items: product.items,
-                searchScore: product.searchScore
-            };
-            return acc;
-        }, {});
+        // Perform the aggregation query
+        const products = await collection
+            .aggregate(pipeline)
+            .skip(PAGINATION_PER_PAGE * pagination_page)
+            .limit(PAGINATION_PER_PAGE)
+            .toArray();
+
 
         console.log('RESULTS LENGTH: ', products.length);
-        return NextResponse.json({ products: transformedProducts }, { status: 200 });
+        return NextResponse.json({ products: products, totalItems: totalItems }, { status: 200 });
 
     } catch (error) {
         console.error(error);
