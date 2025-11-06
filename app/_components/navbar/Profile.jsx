@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useSelector } from 'react-redux';
 import Link from "next/link";
 
-import styles from "./profile.module.css";
 import IconButton from "@leafygreen-ui/icon-button";
 import LeafyGreenProvider from "@leafygreen-ui/leafygreen-provider";
 import Icon from "@leafygreen-ui/icon";
@@ -19,25 +18,25 @@ const Profile = () => {
     };
 
     return (
-        <div id="Profile" className={styles.profileContainer}>
+        <div id="Profile" className={'profileContainer'}>
             <LeafyGreenProvider onClick={toggleProfile}>
-                <IconButton className={styles.profileIcon} onClick={toggleProfile} aria-label="Toggle Profile">
+                <IconButton className={'profileIcon'} onClick={toggleProfile} aria-label="Toggle Profile">
                     <Icon glyph="Person" />
                 </IconButton>
             </LeafyGreenProvider>
 
             {isProfileOpen && (
-                <div className={styles.profilePopup}>
+                <div className={'profilePopup'}>
                     <ListGroup>
-                        <ListGroup.Item className={styles.listGroupItem}>
+                        <ListGroup.Item className={'listGroupItem'}>
                             <div className="d-flex flex-row">
                                 <img src="/rsc/icons/circle-user-solid.svg" alt="Logo" width={18} className="me-1" />
                                 <div onClick={() => console.log('selectedUser: ', selectedUser)}>
-                                    <p className={styles.textMyProfile}>My Profile</p><small>{selectedUser.name} {selectedUser.surname}</small>
+                                    <p className={'textMyProfile'}>My Profile</p><small>{selectedUser.name} {selectedUser.surname}</small>
                                 </div>
                             </div>
                         </ListGroup.Item>
-                        <ListGroup.Item className={styles.listGroupItem}>
+                        <ListGroup.Item className={'listGroupItem'}>
                             <Link href="/orders">
                                 <div className="d-flex flex-row">
                                     <img src="/rsc/icons/file-lines-solid.svg" alt="Logo" width={15} className="me-1" />
@@ -45,7 +44,7 @@ const Profile = () => {
                                 </div>
                             </Link>
                         </ListGroup.Item>
-                        <ListGroup.Item className={styles.listGroupItem}>
+                        <ListGroup.Item className={'listGroupItem'}>
                             <Link href="/cart">
                                 <div className="d-flex flex-row">
                                     <img src="/rsc/icons/cart-shopping-solid.svg" alt="Shopping cart" width={18} className="me-1" />

@@ -6,7 +6,6 @@ import { Container } from 'react-bootstrap';
 import { H1 } from '@leafygreen-ui/typography';
 import { v4 as uuidv4 } from "uuid";
 
-import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import OrderItemCard from '../_components/orderItemCard/OrderItemCard';
 import { CardSkeleton } from '@leafygreen-ui/skeleton-loader';
@@ -111,7 +110,6 @@ export default function Page() {
                     }
                 </div>
             </Container>
-            <Footer />
         </>
     );
 }

@@ -8,7 +8,6 @@ import Tooltip from "@leafygreen-ui/tooltip";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 
-import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import { Container } from 'react-bootstrap';
 import Button from "@leafygreen-ui/button";
@@ -106,7 +105,6 @@ export default function CartPage() {
                     }
                 </div>
             </Container>
-            <Footer></Footer>
 
             <CartIndexModal
                 open={open}

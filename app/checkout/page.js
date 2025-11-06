@@ -7,7 +7,6 @@ import { H1, H3, Body } from '@leafygreen-ui/typography';
 import Icon from '@leafygreen-ui/icon';
 import { RadioBox, RadioBoxGroup } from '@leafygreen-ui/radio-box-group';
 
-import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import { Container } from 'react-bootstrap';
 import Button from "@leafygreen-ui/button";
@@ -196,7 +195,6 @@ export default function Page() {
                             </div>
                 }
             </Container>
-            <Footer></Footer>
             <ProductsModalComp
                 open={productDetailsOpened}
                 handleClose={() => setProductDetailsOpened(false)}

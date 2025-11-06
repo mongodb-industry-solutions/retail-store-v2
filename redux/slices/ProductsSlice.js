@@ -7,7 +7,7 @@ const ProductsSlice = createSlice({
         products: [],
         query: '', 
         filters: {}, // {selectedBrands: {String, String...}, selectedCategories: {String, String...} }
-        //searchType: SEARCH_TYPES.atlasSearch,
+        query: '', 
         totalItems: 0,
         currentPage: 1,
         searchIsLoading: false,

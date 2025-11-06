@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Body } from '@leafygreen-ui/typography';
 import { GuideCue } from '@leafygreen-ui/guide-cue';
+import { usePathname } from 'next/navigation';
 
 import styles from "./chatbotComp.module.css";
 import ChatbotModal from './ChatbotModal';
@@ -14,6 +15,7 @@ import Image from 'next/image';
 
 const ChatbotOpener = () => {
     const dispatch = useDispatch();
+    const pathname = usePathname();
     const ordersInitialLoad = useSelector(state => state.User.orders.initialLoad)
     const ordersList = useSelector(state => state.User.orders.list)
     const [isOpen, setIsOpen] = useState(false);
@@ -59,6 +61,7 @@ const ChatbotOpener = () => {
         <>
             <ChatbotModal isOpen={isOpen} handleClose={handleClose} />
 
+{pathname !== '/shop' && <>
             <GuideCue
                 open={openHint}
                 setOpen={setOpenHint}
@@ -71,7 +74,7 @@ const ChatbotOpener = () => {
                 tooltipClassName={styles.tooltipClass}
                 className={styles.guideCue}
                 beaconAlign="bottom"
-            ></GuideCue>;
+            ></GuideCue>
             <div
                 className={`${styles.chatbotButton}`}
                 onClick={() => setIsOpen(true)}
@@ -84,7 +87,7 @@ const ChatbotOpener = () => {
                         <strong>How can I help?</strong>
                     </Body>
                 </span>
-            </div>
+            </div></>}
         </>
     );
 };

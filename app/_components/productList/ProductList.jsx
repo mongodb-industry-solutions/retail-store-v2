@@ -19,15 +19,15 @@ const ProductList = () => {
     initialLoad, 
     currentPage, 
     products,
-    totalItems
+    totalItems,
+    query
   } = useSelector(state => state.Products)
 
 
-    const getProducts = async () => {
-    console.log('- SOMETHING CHANGED')
+  const getProducts = async () => {
     try {
       dispatch(setLoading(true))
-      let result = await getProductsWithSearch();
+      let result = await getProductsWithSearch(query);
         if(result){
           setLoading(false)
           dispatch(setProducts({products: result.products, totalItems: result.totalItems}))
@@ -44,11 +44,12 @@ const ProductList = () => {
         dispatch(setLoading(true))
         let result = await getProductsWithSearch();
         if(result){
-            dispatch(setInitialLoad(true))
             dispatch(setProducts({products: result.products, totalItems: result.totalItems}))
         }
       } catch (err) {
           console.log(`Error getting all products, ${err}`)
+      } finally {
+            dispatch(setInitialLoad(true))
       }
     }
 
@@ -57,14 +58,10 @@ const ProductList = () => {
     }
   }, [initialLoad]);
 
-  console.log('products in ProductList: ', products)
-
-
   useEffect(() => {
-    console.log('currentPage changed: ', currentPage)
     if(initialLoad === true)
       getProducts()
-  }, [currentPage])
+  }, [currentPage, query])
 
   return (
     <div>
@@ -78,7 +75,10 @@ const ProductList = () => {
               />
             </div>
           ))
-        : 'no products found'}
+        : initialLoad == false
+        ? 'loading...'
+        : 'no products found'
+        }
       </div>
       <br></br>
       <hr className={styles.hr}></hr>

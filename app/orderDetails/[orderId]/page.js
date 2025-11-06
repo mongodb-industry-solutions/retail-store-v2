@@ -14,7 +14,6 @@ import { CardSkeleton, Skeleton } from '@leafygreen-ui/skeleton-loader';
 import { v4 as uuidv4 } from "uuid";
 
 import styles from '../orderDetails.module.css';
-import Footer from "@/app/_components/footer/Footer";
 import Navbar from "@/app/_components/navbar/Navbar";
 import CartItem from '@/app/_components/cart/CartItem';
 import { handleChangeInOrders, prettifyDateFormat } from '@/lib/helpers';
@@ -241,7 +240,6 @@ export default function OrderDetailsPage({ params }) {
                     }
                 </div>
             </Container>
-            <Footer />
         </>
     );
 }
