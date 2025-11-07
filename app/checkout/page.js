@@ -51,17 +51,6 @@ export default function Page() {
     const triggerRefOmnichannel2 = useRef(null); // Shipping method selector  
     const triggerRefOmnichannel3 = useRef(null); // Confirm button  
 
-    // ✅ Guide configs using constants  
-    const guideConfigs = {
-        [FEATURES.RECEIPTS]: {
-            messages: GUIDE_CUE_MESSAGES_2.checkout.receipts.messages,
-            triggers: [triggerRefReceipts1, triggerRefReceipts2, triggerRefReceipts3]
-        },
-        [FEATURES.OMNICHANNEL_ORDERING]: {
-            messages: GUIDE_CUE_MESSAGES_2.checkout.omnichannelOrdering.messages,
-            triggers: [triggerRefOmnichannel1, triggerRefOmnichannel2, triggerRefOmnichannel3]
-        }
-    };
     const triggers = useMemo(() => ({  
         [FEATURES.RECEIPTS]: [  
             triggerRefReceipts1,  

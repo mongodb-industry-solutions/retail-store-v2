@@ -5,8 +5,6 @@ import { useSelector } from 'react-redux';
 import { Container } from 'react-bootstrap';
 import { H1 } from '@leafygreen-ui/typography';
 import { v4 as uuidv4 } from "uuid";
-import { GuideCue } from '@leafygreen-ui/guide-cue';
-
 import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import OrderItemCard from '../_components/orderItemCard/OrderItemCard';
@@ -24,8 +22,6 @@ export default function Page() {
     const orders = useSelector(state => state.User.orders);  
   
     const feature = useSelector((state) => state.Global.feature);  
-    const [currentStep, setCurrentStep] = useState(1);  
-    const [open, setOpen] = useState(false);  
   
     // --- Receipts walkthrough refs ---    
     const triggerRefReceipts1 = useRef(null); // My Orders heading    

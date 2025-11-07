@@ -25,7 +25,6 @@ import ShippingMethodBadgeComp from '@/app/_components/shippingMethodBadgeComp/S
 import { checkoutPage, orderDetailsPage } from '@/lib/talkTrack';
 import TalkTrackContainer from '@/app/_components/talkTrackContainer/talkTrackContainer';
 import { setOpenedInvoice } from '@/redux/slices/InvoiceSlice';
-import { GuideCue } from '@leafygreen-ui/guide-cue'; 
 import { GUIDE_CUE_MESSAGES_2,FEATURES } from '@/lib/constants';  
 import GuideCueContainer from '@/app/_components/guideCueContainer/GuideCuecontainer';
   
@@ -38,9 +37,6 @@ export default function OrderDetailsPage({ params }) {
     const feature = useSelector(state => state.Global.feature);  
     const [isBtnDisabled, setIsBtnDisabled] = useState(false)  
     const myStepperRef = useRef(null)  
-  
-    const [guideCueOpen, setGuideCueOpen] = useState(false);  
-    const [currentStep, setCurrentStep] = useState(1);  
   
     // --- Receipts walkthrough refs (single step) ---  
     const triggerRefReceipts1 = useRef(null); // Receipt link  
