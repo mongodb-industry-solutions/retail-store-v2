@@ -18,6 +18,9 @@
     height: 200px;
     overflow-y: auto;
 }
+.list-container.longer{
+    height: 400px;
+}
 .log-item{
     background-color: #e8f5e9;
     color: #2e7d32;
@@ -30,4 +33,15 @@
     overflow-wrap: break-word;
     border-radius: 6px;
     margin-bottom: 5px;
+
+}
+.log-item.blue{
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+.top{
+ 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }

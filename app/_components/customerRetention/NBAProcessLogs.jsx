@@ -1,28 +1,151 @@
 import { FontSize } from '@leafygreen-ui/button'
 import Card from '@leafygreen-ui/card'
 import { H3 } from '@leafygreen-ui/typography'
-import React from 'react'
+import React, { useState } from 'react'
 import SectionHeader from './SectionHeader'
+import { next_best_actions } from '@/lib/constants'
+import Icon from '@leafygreen-ui/icon'
+import IconButton from '@leafygreen-ui/icon-button'
+
+const LogItem = ({ log }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const getBehaviorLabel = (type) => {
+    return type?.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()) || ""
+  };
+
+  const getActionIcon = (actionType) => {
+    switch (actionType) {
+      case "social-proof-notification":
+        return "Person";
+      case "product-recommendation":
+        return "Sparkle";
+      case "free-delivery":
+        return "Home";
+      default:
+        return "Bell";
+    }
+  };
+
+  const behaviorLabel = getBehaviorLabel(log?.trigger?.behaviourType);
+  const timeAgo = new Date(Date.now() - new Date(log?.createdAt)).getMinutes();
+
+  return (
+    <div 
+      style={{
+        backgroundColor: "white",
+        border: "1px solid #e0e0e0",
+        borderRadius: "12px",
+        padding: "16px",
+        marginBottom: "12px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
+      }}
+    >
+      <div className="d-flex justify-content-between align-items-start">
+        <div className="d-flex align-items-start">
+          <div 
+            style={{
+              backgroundColor: "#f5f5f5",
+              borderRadius: "8px",
+              padding: "8px",
+              marginRight: "12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <Icon
+              glyph={getActionIcon(log?.action?.type)}
+              size={20}
+              style={{ color: "#666" }}
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <h4 style={{ 
+              margin: "0 0 4px 0", 
+              fontSize: "16px", 
+              fontWeight: 600,
+              color: "#333"
+            }}>
+              {log?.action?.type?.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+            </h4>
+            <p style={{ 
+              margin: "0 0 8px 0", 
+              fontSize: "14px", 
+              color: "#666"
+            }}>
+              Triggered by: {behaviorLabel}
+            </p>
+            <div style={{
+              display: "inline-block",
+              backgroundColor: log.redeemed ? "#4CAF50" : "#f44336",
+              color: "white",
+              padding: "4px 12px",
+              borderRadius: "16px",
+              fontSize: "12px",
+              fontWeight: 500
+            }}>
+              {log.redeemed ? "Redeemed" : "Not redeemed"}
+            </div>
+          </div>
+        </div>
+        <div className="d-flex align-items-center">
+          <span style={{ 
+            fontSize: "13px", 
+            color: "#666",
+          }}>
+            {timeAgo}m ago
+          </span>
+          <IconButton 
+            onClick={() => setIsOpen(!isOpen)} 
+            aria-label="Toggle Details"
+            size="small"
+          >
+            <Icon glyph="CurlyBraces" size="small" />
+          </IconButton>
+        </div>
+      </div>
+      {isOpen && (
+        <pre style={{
+          backgroundColor: "#f8f9fa",
+          padding: "12px",
+          borderRadius: "6px",
+          fontSize: "12px",
+          marginTop: "12px",
+          overflow: "auto"
+        }}>
+          {JSON.stringify(log, null, 2)}
+        </pre>
+      )}
+    </div>
+  );
+};
 
 const NBAProcessLogs = () => {
   return (
     <Card className="mt-2">
-        <div className='mb-2'>
-            <H3 className={'text-center'} style={{fontSize:'20px'}}>Next Best Action Process</H3>
-        </div>
+      <div className='mb-2'>
+        <H3 className={'text-center'} style={{fontSize:'20px'}}>Next Best Action Process</H3>
+      </div>
       <SectionHeader
         title="Agent reasoning"
         learnMoreElement={
           <p className="m-0">Shows how the agent is processing information and making decisions in real time</p>
         }
       />
-    <br></br>
-    <SectionHeader
+      <br></br>
+      <SectionHeader
         title="Next Best Action decisions"
         learnMoreElement={
           <p className="m-0">The Next Best Action outputted by the agent</p>
         }
       />
+
+      <div className="list-container longer">
+        {next_best_actions.map((log) => (
+          <LogItem key={`log-${log?._id}`} log={log} />
+        ))}
+      </div>
     </Card>
   )
 }

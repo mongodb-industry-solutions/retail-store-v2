@@ -20,6 +20,7 @@ const CustomerRetentionContainer = () => {
         aria-label="Customer retention tabs"
         setSelected={setSelected}
         selected={selected}
+        style={{marginBottom:'60px'}}
       >
         <Tab name="Next Best Action">
             <div className="ms-1 me-1 mt-2">
