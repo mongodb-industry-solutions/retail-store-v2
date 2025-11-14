@@ -68,7 +68,7 @@ The MONGODB_URI has the format: `mongodb+src://<username>:<pwd>@agenticrag.8inaw
 
 Please replace these values for `<username>` and `<pwd>` in the MONGODB_URI line below when you edit your `.env.local`
 ```bash
-MONGODB_URI=mongodb+srv://<username>:<pwd>@agenticrag.8inaw.mongodb.net
+MONGODB_URI=
 DATABASE_NAME="leafy_popup_store"
 COLLECTION_NAME="orders"
 NODE_ENV="development"
@@ -83,7 +83,7 @@ Then, a MongoDB connection string is required to connect to the cluster you crea
 
 You can now edit your `.env.local`
 ```bash
-MONGODB_URI=<connection-string>
+MONGODB_URI=
 DATABASE_NAME="leafy_popup_store"
 COLLECTION_NAME="orders"
 NODE_ENV="development"
@@ -97,7 +97,7 @@ Use the [mongorestore](https://www.mongodb.com/docs/database-tools/mongorestore/
 Let's go back to your terminal, navigate to the directory /retail-store-v2 (the root level of the application code), and run the following command:
 
 ```
-mongorestore --gzip --dir=dump/leafy_popup_store --db=leafy_popup_store --uri "mongodb+srv://<user>:<password>@<cluster-url>"
+mongorestore --gzip --dir=dump/leafy_popup_store --db=leafy_popup_store --uri "mongodb+srv..."
 ```
 This command will create the database and collections and log its progress. 
 
@@ -145,8 +145,8 @@ Deployment Type: AmazonBedrock
 Model: meta.llama3-70b-instruct-v1:0
 Name: llama3_70b
 AWS Region: <your aws region>
-AWS Key: <your aws key>
-AWS Secret: <your aws secret>
+AWS Key:
+AWS Secret:
 Max Response Length: 600
 Temperature: 0.0
 ```
@@ -441,7 +441,7 @@ We will need the following values -
 NODE_ENV="development"
 DATAWORKZ_SERVICE=https://ragapps.dataworkz.com
 DATAWORKZ_LLM_ID=<Set the llm id from (2) here>
-DATAWORKZ_TOKEN=<Set the dataworkz api token from (3) here>
+DATAWORKZ_TOKEN=(3)
 DATAWORKZ_AGENT_ID=<Set the dataworkz agent id from (1) here>
 ```
 At this point all values must be filled in and we are ready to run the demo!
