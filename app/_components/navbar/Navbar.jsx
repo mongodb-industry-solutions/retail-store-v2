@@ -91,7 +91,7 @@ const Navbar = () => {
     <nav className={styles.navbar}>
       <Container className='d-flex justify-content-between'>
         <div className={styles.logo}>
-          <Link href="/">
+          <Link href={`/?feature=${featureInStore}`}>
             <Image
               src="/leafyLogo.png"
               alt="MongoDB logo"

@@ -26,8 +26,9 @@ import { setCartProductsList, setCartLoading, clearCartProductsList } from '@/re
 import { handleCreateNewOrder } from '@/lib/helpers';
 import TalkTrackContainer from '../_components/talkTrackContainer/talkTrackContainer';
 import { checkoutPage } from '@/lib/talkTrack';
-import { GUIDE_CUE_MESSAGES_2, FEATURES } from '@/lib/constants';
+import { GUIDE_CUE_MESSAGES, FEATURES } from '@/lib/constants';
 import GuideCueContainer from '../_components/guideCueContainer/GuideCuecontainer';
+import Banner from '@leafygreen-ui/banner';
 export default function Page() {
     const router = useRouter();
     const dispatch = useDispatch();
@@ -66,9 +67,9 @@ export default function Page() {
 
     const currentConfig = useMemo(  
         () =>  
-            GUIDE_CUE_MESSAGES_2.checkout[feature]  
+            GUIDE_CUE_MESSAGES.checkout[feature]  
                 ? {  
-                    ...GUIDE_CUE_MESSAGES_2.checkout[feature],  
+                    ...GUIDE_CUE_MESSAGES.checkout[feature],  
                     triggers: triggers[feature],  
                     steps: triggers[feature]?.length || 0,  
                 }  
@@ -210,6 +211,9 @@ export default function Page() {
                                     </RadioBox>
                                 ))}
                             </RadioBoxGroup>
+                                  <Banner className='mb-3 mt-3'>
+                                    With the right omnichannel ordering strategy, powered by a flexible database like MongoDB Atlas, retailers can unify these touchpoints to offer customers a personalized, convenient, and efficient shopping experience across all channels.
+                                  </Banner>
 
                             {shippingMethod.id === shippingMethods.bopis.id && (
                                 <BopisComp

@@ -18,8 +18,7 @@ import { setCartLoading, setCartProductsList } from '@/redux/slices/UserSlice';
 import CartIndexModal from '../_components/whereMDB_cartIndex/CartIndexModal';
 import TalkTrackContainer from '../_components/talkTrackContainer/talkTrackContainer';
 import { cartPage } from '@/lib/talkTrack';
-import { GuideCue } from '@leafygreen-ui/guide-cue';
-import { GUIDE_CUE_MESSAGES_2, FEATURES } from '@/lib/constants';
+import { GUIDE_CUE_MESSAGES, FEATURES } from '@/lib/constants';
 import GuideCueContainer from '../_components/guideCueContainer/GuideCuecontainer';  
 
 
@@ -35,34 +34,30 @@ export default function CartPage() {
   
     // --- Receipts walkthrough refs ---  
     const triggerRefReceipts1 = useRef(null); // My Cart heading  
-    const triggerRefReceipts2 = useRef(null); // Products section  
-    const triggerRefReceipts3 = useRef(null); // Checkout button  
+    const triggerRefReceipts2 = useRef(null); // Checkout button  
   
     // --- OmnichannelOrdering walkthrough refs ---  
     const triggerRefOmnichannel1 = useRef(null); // My Cart heading  
-    const triggerRefOmnichannel2 = useRef(null); // Fill Cart button  
-    const triggerRefOmnichannel3 = useRef(null); // Checkout button  
+    const triggerRefOmnichannel2 = useRef(null); // Checkout button  
   
     // ✅ Define triggers mapping  
     const triggers = useMemo(() => ({  
         [FEATURES.RECEIPTS]: [  
             triggerRefReceipts1,  
-            triggerRefReceipts2,  
-            triggerRefReceipts3,  
+            triggerRefReceipts2  
         ],  
         [FEATURES.OMNICHANNEL_ORDERING]: [  
             triggerRefOmnichannel1,  
-            triggerRefOmnichannel2,  
-            triggerRefOmnichannel3,  
+            triggerRefOmnichannel2  
         ],  
     }), []);  
   
     // ✅ Build currentConfig using useMemo  
     const currentConfig = useMemo(  
         () =>  
-            GUIDE_CUE_MESSAGES_2.cart[feature]  
+            GUIDE_CUE_MESSAGES.cart[feature]  
                 ? {  
-                    ...GUIDE_CUE_MESSAGES_2.cart[feature],  
+                    ...GUIDE_CUE_MESSAGES.cart[feature],  
                     triggers: triggers[feature],  
                     steps: triggers[feature].length,  
                 }  
@@ -134,13 +129,7 @@ export default function CartPage() {
   
                 <div className='d-flex flex-row'>  
                     <div className='d-flex align-items-end w-100'>  
-                        <H1  
-                            ref={  
-                                feature === FEATURES.RECEIPTS ? triggerRefReceipts1 :  
-                                feature === FEATURES.OMNICHANNEL_ORDERING ? triggerRefOmnichannel1 : null  
-                            }  
-                            className=''  
-                        >  
+                        <H1>  
                             My cart  
                         </H1>  
                         <Tooltip  
@@ -153,9 +142,6 @@ export default function CartPage() {
                             Learn more  
                         </Tooltip>  
                         <Button  
-                            ref={  
-                                feature === FEATURES.OMNICHANNEL_ORDERING ? triggerRefOmnichannel2 : null  
-                            }  
                             size='small'  
                             className='ms-3 mb-2'  
                             disabled={cart.loading || cart.error || cart.products?.length > 0}  
@@ -169,9 +155,10 @@ export default function CartPage() {
   
                 <div  
                     className='mt-3'  
-                    ref={  
-                        feature === FEATURES.RECEIPTS ? triggerRefReceipts2 : null  
-                    }  
+                    ref={
+                         feature === FEATURES.OMNICHANNEL_ORDERING ? triggerRefOmnichannel1 
+                         : feature === FEATURES.RECEIPTS ? triggerRefReceipts1 : null  }  
+           
                 >  
                     <H3 className="mb-2">Products</H3>  
                     {  
@@ -196,8 +183,8 @@ export default function CartPage() {
                                     <div className='d-flex flex-row-reverse mt-3'>  
                                         <Button  
                                             ref={  
-                                                feature === FEATURES.RECEIPTS ? triggerRefReceipts3 :  
-                                                feature === FEATURES.OMNICHANNEL_ORDERING ? triggerRefOmnichannel3 : null  
+                                                feature === FEATURES.RECEIPTS ? triggerRefReceipts2:  
+                                                feature === FEATURES.OMNICHANNEL_ORDERING ? triggerRefOmnichannel2 : null  
                                             }  
                                             variant='primary'  
                                             onClick={() => onCheckout()}  

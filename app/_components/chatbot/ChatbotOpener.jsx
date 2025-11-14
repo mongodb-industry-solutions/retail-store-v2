@@ -61,8 +61,9 @@ const ChatbotOpener = () => {
 
             {/* ✅ Only show GuideCue hint if feature is NOT chatbot */}  
 
-             {feature !== FEATURES.CHATBOT && (  
+             {feature !== FEATURES.AI_CHATBOT && (  
             <GuideCue  
+                style={{zIndex: 0}}
                 open={openHint}  
                 setOpen={setOpenHint}  
                 title="Chat with our AI Assistant"  

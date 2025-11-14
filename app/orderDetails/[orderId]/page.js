@@ -25,7 +25,7 @@ import ShippingMethodBadgeComp from '@/app/_components/shippingMethodBadgeComp/S
 import { checkoutPage, orderDetailsPage } from '@/lib/talkTrack';
 import TalkTrackContainer from '@/app/_components/talkTrackContainer/talkTrackContainer';
 import { setOpenedInvoice } from '@/redux/slices/InvoiceSlice';
-import { GUIDE_CUE_MESSAGES_2,FEATURES } from '@/lib/constants';  
+import { GUIDE_CUE_MESSAGES,FEATURES } from '@/lib/constants';  
 import GuideCueContainer from '@/app/_components/guideCueContainer/GuideCuecontainer';
   
 export default function OrderDetailsPage({ params }) {  
@@ -59,9 +59,9 @@ export default function OrderDetailsPage({ params }) {
 // ✅ Build currentConfig using useMemo  
 const currentConfig = useMemo(  
     () =>  
-        GUIDE_CUE_MESSAGES_2.orderDetails[feature]  
+        GUIDE_CUE_MESSAGES.orderDetails[feature]  
             ? {  
-                ...GUIDE_CUE_MESSAGES_2.orderDetails[feature],  
+                ...GUIDE_CUE_MESSAGES.orderDetails[feature],  
                 triggers: triggers[feature],  
                 steps: triggers[feature]?.length || 0,  
             }  

@@ -48,14 +48,14 @@ const InfoWizard = ({
             tabs.length > 0
               ? <Tabs aria-label="info wizard tabs" setSelected={setSelected} selected={selected}>
                 {tabs.map((tab, tabIndex )=> (
-                  <Tab key={tabIndex} name={tab.heading}>
+                <Tab key={`tab1-${tabIndex}`} name={tab.heading}>
                     {tab.content}
                   </Tab>
                 ))}
               </Tabs>
             : <Tabs aria-label="info wizard tabs" setSelected={setSelected} selected={selected}>
                 {sections.map((tab, tabIndex) => (
-                  <Tab key={tabIndex} name={tab.heading}>
+                  <Tab key={`tab2-${tabIndex}`} name={tab.heading}>
                     {tab.content.map((section, sectionIndex) => (
                       <div key={sectionIndex} className={styles.section}>
                         {section.heading && <H3 className={styles.modalH3}>{section.heading}</H3>}
@@ -67,7 +67,7 @@ const InfoWizard = ({
                                 {
                                   section.body.map((item, idx) => (
                                     typeof (item) == 'object'
-                                      ? <li>
+                                      ? <li key={`sec-${idx}`}>
                                         {item.heading}
                                         <ul className={styles.list}>
                                           {
