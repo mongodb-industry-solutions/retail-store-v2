@@ -24,15 +24,12 @@ html{
       border-radius: 0px;
     }
 }
-/* .modal-content, .modalLeafyFeel */
-/* .modal-content{
-    max-height: 300px !important;
-    min-height: 300px !important;
-    background-color: red;
-
-    display: flex;
-} */
-#tabs-chatbot > div:nth-child(2){
-    /* max-height: 590px;
-    overflow-y: auto; */
+[role="dialog"][aria-labelledby="guide-cue-label"] {
+    z-index: 9999; /* Set a high z-index */
+}
+.fade.modal-backdrop.show, [role="dialog"][aria-modal="true"] {
+    z-index: 0; /* Ensure the backdrop is below the dialog */
+}
+#myStepperRef > li{
+    z-index: 0 !important;
 }

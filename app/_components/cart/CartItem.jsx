@@ -40,27 +40,3 @@ const CartItem = ({ product = null }) => {
 };
 
 export default CartItem;
-
-/*
-{
-    "amount": {
-        "$numberInt": "2"
-    },
-    "brand": "Indigo",
-    "code": "INMPBT-MDB0001",
-    "description": "Indigo Nation Men Printed Black T-shirt",
-    "id": {
-        "$oid": "65e1e313cffbb90f3409a3cf"
-    },
-    "image": {
-        "url": "http://assets.myntassets.com/v1/images/style/properties/7a1bc7d255671c7f4b85f1b1b35e945b_images.jpg"
-    },
-    "name": "Indigo Nation Men Printed Black T-shirt",
-    "price": {
-        "amount": {
-        "$numberDouble": "20.0"
-        },
-        "currency": "USD"
-    }
-}
-*/

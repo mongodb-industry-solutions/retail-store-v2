@@ -3,7 +3,6 @@ import { clientPromise, dbName } from "@/lib/mongodb";
 
 export async function POST(request) {
     const { query, facets } = await request.json();
-    console.log('HOLA', query, facets);
 
     try {
         const client = await clientPromise
