@@ -13,6 +13,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 const Profile = () => {
     const [isProfileOpen, setProfileOpen] = useState(false);
     const selectedUser = useSelector(state => state.User.selectedUser)
+    const featureInStore = useSelector((state) => state.Global.feature);
 
     const toggleProfile = () => {
         setProfileOpen(!isProfileOpen);
@@ -38,7 +39,7 @@ const Profile = () => {
                             </div>
                         </ListGroup.Item>
                         <ListGroup.Item className={styles.listGroupItem}>
-                            <Link href="/orders">
+                            <Link href={`/orders?feature=${featureInStore}`}>
                                 <div className="d-flex flex-row">
                                     <img src="/rsc/icons/file-lines-solid.svg" alt="Logo" width={15} className="me-1" />
                                     <p>My Orders</p>
@@ -46,7 +47,7 @@ const Profile = () => {
                             </Link>
                         </ListGroup.Item>
                         <ListGroup.Item className={styles.listGroupItem}>
-                            <Link href="/cart">
+                            <Link href={`/cart?feature=${featureInStore}`}>
                                 <div className="d-flex flex-row">
                                     <img src="/rsc/icons/cart-shopping-solid.svg" alt="Shopping cart" width={18} className="me-1" />
                                     <p>My Cart</p>

@@ -6,6 +6,7 @@ import LoginComp from './_components/login/LoginComp';
 import ChatbotOpener from './_components/chatbot/ChatbotOpener';
 import DigitalReceiptComp from './_components/digitalReceipt/DigitalReceiptComp';
 import AlertsContainer from './_components/alertsContainer/AlertsContainer';
+import FeatureListener from './_components/featureListener/FeatureListener';
 
 export const metadata = {
   title: 'Home',
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
       <body>
         <ClientProvider>
           {children}
+          <FeatureListener/>
           <LoginComp/>
           <DigitalReceiptComp/>
           <ChatbotOpener/>

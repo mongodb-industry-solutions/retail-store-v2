@@ -17,6 +17,7 @@ const PRCard = (props) => {
         price = 0.00, 
         vectorSearchScore = null
     } = props.product;
+    const {triggerRef} = props;
     const dispatch = useDispatch();
 
     const onProductClick = () => {
@@ -32,7 +33,7 @@ const PRCard = (props) => {
 
     return (
         <div className='PRCard cursorPointer' onClick={() => onProductClick()}>
-            <div className='d-flex flex-column'>
+            <div className='d-flex flex-column' ref={triggerRef}>
                 <div className='scoreContainer'>
                     {
                         vectorSearchScore &&

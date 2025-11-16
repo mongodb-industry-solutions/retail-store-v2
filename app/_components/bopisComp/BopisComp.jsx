@@ -12,10 +12,6 @@ const BopisComp = ({storeLocations, setSelectedStoreLocation}) => {
 
   return (
     <div>
-      <Banner className='mb-3 mt-3'>
-        With the right omnichannel ordering strategy, powered by a flexible database like MongoDB Atlas, retailers can unify these touchpoints to offer customers a personalized, convenient, and efficient shopping experience across all channels.
-      </Banner>
-
       <Combobox
         label="Pick your prefered store location"
         description="Your order will be delivered to this store."
@@ -28,7 +24,7 @@ const BopisComp = ({storeLocations, setSelectedStoreLocation}) => {
             return <ComboboxOption 
               key={`${_id}-${index}`} 
               value={`${index}-store`} 
-              displayName={`${name} - ${street_and_number}, ${cp} ${city}. ${country}`}
+              displayName={`${name} - ${street_and_number}, ${cp} ${city || state}. ${country}`}
             />
           }
           )
