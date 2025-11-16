@@ -15,7 +15,8 @@ import AssistantMessageComp from './AssistantMessageComp';
 
 const suggestions = [
     "What can you do for me?",
-    "How much time do I have to cancel an order?"
+    "How much time do I have to cancel an order?",
+    "Products inside order 3"
 ]
 
 const ChatbotComp = () => {

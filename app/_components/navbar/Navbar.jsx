@@ -20,6 +20,7 @@ const Navbar = () => {
   const sessionId = useRef(uuidv4());
   const ordersLoaded = useSelector(state => state.User.orders?.initialLoad)
   const userId = useSelector(state => state.User.selectedUser?._id)
+  const featureInStore = useSelector((state) => state.Global.feature);
 
     const listenToSSEUpdates = useCallback(() => {
       console.log('listenToSSEUpdates func: ', userId)
@@ -90,7 +91,7 @@ const Navbar = () => {
     <nav className={styles.navbar}>
       <Container className='d-flex justify-content-between'>
         <div className={styles.logo}>
-          <Link href="/">
+          <Link href={`/?feature=${featureInStore}`}>
             <Image
               src="/leafyLogo.png"
               alt="MongoDB logo"
@@ -101,9 +102,10 @@ const Navbar = () => {
         </div>
 
         <div className={styles.links}>
-          <Link href="/">Home</Link>
-          <Link href="/shop">Shop</Link>
-          <Link href="/about">About</Link>
+        <Link href={`/?feature=${featureInStore}`}>Home</Link>  
+        <Link href={`/shop?feature=${featureInStore}`}>Shop</Link>  
+        <Link href={`/about?feature=${featureInStore}`}>About</Link>  
+
           {/* <Link href="/contact">Contact</Link> */}
         </div>
         <SearchBar/>

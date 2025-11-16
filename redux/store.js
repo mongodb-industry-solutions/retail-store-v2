@@ -5,6 +5,7 @@ import ChatbotReducer from './slices/ChatbotSlice'
 import ProductsReducer from './slices/ProductsSlice.js'
 import InvoiceReducer from './slices/InvoiceSlice.js'
 import AlertReducer from './slices/AlertSlice.js'
+import GlobalReducer from './slices/GlobalSlice.js'
 
 const store = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
         "Chatbot": ChatbotReducer,
         "Products": ProductsReducer,
         "Invoice": InvoiceReducer,
-        "Alerts": AlertReducer
+        "Alerts": AlertReducer,
+        "Global": GlobalReducer
     }
 });
 
