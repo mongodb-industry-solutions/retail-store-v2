@@ -30,3 +30,6 @@ html{
 .fade.modal-backdrop.show, [role="dialog"][aria-modal="true"] {
     z-index: 0; /* Ensure the backdrop is below the dialog */
 }
+#myStepperRef > li{
+    z-index: 0 !important;
+}

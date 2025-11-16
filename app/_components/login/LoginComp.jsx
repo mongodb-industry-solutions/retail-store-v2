@@ -113,6 +113,7 @@ const LoginComp = () => {
       show={open}
       onHide={handleClose}
       size="lg"
+      id="loginModal"
       aria-labelledby="contained-modal-title-vcenter"
       centered
       fullscreen={"md-down"}

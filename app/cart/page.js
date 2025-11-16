@@ -7,7 +7,6 @@ import { H1, H3, Disclaimer, Body } from '@leafygreen-ui/typography';
 import Tooltip from "@leafygreen-ui/tooltip";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
-import FeatureListener from '../_components/featureListener/FeatureListener';
 import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import { Container } from 'react-bootstrap';
@@ -121,7 +120,6 @@ export default function CartPage() {
   
     return (  
         <>  
-            <FeatureListener />  
             <Navbar />  
             <Container className=''>  
                 {/* ✅ GuideCue component */}  

@@ -1,18 +1,21 @@
 import { GuideCue } from "@leafygreen-ui/guide-cue";
 import { useGuideCue } from "@/hooks/useGuideCue";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 // GuideCueContainer.jsx
 export default function GuideCueContainer({ config, feature }) {
   const { currentStep, open, setOpen, handleNext, handleDismiss, handleReset } =
     useGuideCue(config?.steps || 0);
+  const selectedUser = useSelector((state) => state.User.selectedUser);
+
   // Auto-start logic here
   useEffect(() => {
-    if (config) {
+    if (config && selectedUser !==null) {
       handleReset();
       console.log("🚀 Starting walkthrough for feature:", feature);
     }
-  }, [config]);
+  }, [config, selectedUser]);
 
   if (!config) return null;
   const currentMessage = config.messages[currentStep - 1];
