@@ -1,4 +1,3 @@
-// app/_components/FeatureListener.js
 'use client';
 
 import { useEffect } from 'react';
