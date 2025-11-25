@@ -87,30 +87,6 @@ const About = () => {
         />
         {/* Add more TeamMemberCard components as needed */}
       </div>
-      <hr></hr>
-      <H3>Special thanks</H3>
-      <div className={styles.teamcards}>
-        <TeamCard
-          photo="/rsc/images/team/prashant.png"
-          name="Prashant Juttukonda"
-          title="Retail Principal, Industry Solutions"
-          subtitle="Product Owner"
-        />
-
-        <TeamCard
-          photo="/rsc/images/team/pedro.png"
-          name="Pedro Bereilh"
-          title="Sr. Specialist, Industry Solutions"
-          subtitle="Cloud Engineer"
-        />
-        <TeamCard
-          photo="/rsc/images/team/ainhoa.png"
-          name="Ainhoa Mugica"
-          title="Consultant, Industry Solutions"
-          subtitle="Project Manager"
-        />
-        {/* Add more TeamMemberCard components as needed */}
-      </div>
     </Container>
   );
 };

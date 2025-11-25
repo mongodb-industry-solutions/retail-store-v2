@@ -130,6 +130,8 @@ Partners:
 
 [Florencia Arin](https://www.mongodb.com/blog/authors/florencia-arin) – Developer & Maintainer 
 
+[Rakshit Joshi] – Maintainer 
+
 
 ### Contributors  
 This demo was made possible with the contributions of:  
