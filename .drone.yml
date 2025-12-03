@@ -39,10 +39,12 @@ steps:
       namespace: industrysolutions
       release: retail-store-v2-staging
 
-      values_file: environment/staging.yaml
+      # 👇 plural + array
+      values_files: ["environment/staging.yaml"]
 
       values:
-        - "sidecarContainers[0].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-store-v2-frontend:git-${DRONE_COMMIT_SHA:0:7}"
+        # 👇 QUITADO: causaba el contenedor sin name
+        # - "sidecarContainers[0].image=7952508.../retail-store-v2-frontend:git-${DRONE_COMMIT_SHA:0:7}"
         - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
         - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-store-v2-frontend"
         - "ingress.enabled=true"
@@ -101,10 +103,10 @@ steps:
       namespace: industrysolutions
       release: retail-store-v2-prod
 
-      values_file: environment/production.yaml
+      values_files: ["environment/production.yaml"]
 
       values:
-        - "sidecarContainers[0].image=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-store-v2-frontend:git-${DRONE_COMMIT_SHA:0:7}"
+        # - "sidecarContainers[0].image=..."
         - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
         - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/retail-store-v2-frontend"
         - "ingress.enabled=true"
