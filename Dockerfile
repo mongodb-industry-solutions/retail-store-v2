@@ -14,14 +14,14 @@ RUN npm ci --legacy-peer-deps
 COPY ./ ./
 
 # 🔐 Env DUMMY para que Next.js no falle en el build
-# (NINGUNO de estos valores es real, son placeholders)
-ENV MONGODB_URI="placeholder" \
-    DATABASE_NAME="" \
-    COLLECTION_NAME=""
- ENV DATAWORKZ_SERVICE="" \
-     DATAWORKZ_TOKEN="" \
-     DATAWORKZ_AGENT_ID="" \
-     DATAWORKZ_LLM_ID=""
+ENV MONGODB_URI="mongodb://placeholder" \
+    DATABASE_NAME="placeholder" \
+    COLLECTION_NAME="placeholder" \
+    DATAWORKZ_SERVICE="https://placeholder" \
+    DATAWORKZ_TOKEN="placeholder" \
+    DATAWORKZ_AGENT_ID="placeholder" \
+    DATAWORKZ_LLM_ID="placeholder"
+
 
 RUN npm run build
 
