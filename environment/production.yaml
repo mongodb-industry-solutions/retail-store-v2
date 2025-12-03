@@ -1,0 +1,47 @@
+# Service Account Configuration (GCP Workload Identity) - PRODUCTION
+serviceAccount:
+  enabled: true
+  name: retail-kanopy-sa-prod  # KSA_NAME en prod
+
+extraVolumes:
+  - name: gcp-creds
+    configMap:
+      name: gcp-wif-config-retail-prod  # ConfigMap de prod
+  - name: gcp-token
+    projected:
+      sources:
+        - serviceAccountToken:
+            path: token
+            expirationSeconds: 3600
+            audience: "//iam.googleapis.com/projects/531154772515/locations/global/workloadIdentityPools/kanopy-retail-wif-pool-prod/providers/kanopy-retail-provider-prod"
+
+extraVolumeMounts:
+  - name: gcp-creds
+    mountPath: /etc/gcp
+    readOnly: true
+  - name: gcp-token
+    mountPath: /var/run/service-account
+    readOnly: true
+
+envSecrets:
+  # Mongo / app core
+  MONGODB_URI: retail-store-v2-production
+  DATABASE_NAME: retail-store-v2-production
+  COLLECTION_NAME: retail-store-v2-production
+
+  # Frontend
+  NEXT_PUBLIC_CHATBOT_PASSWORD: retail-store-v2-production
+  NEXT_PUBLIC_GCP_INVOICE_URL: retail-store-v2-production
+
+  # Dataworkz
+  DATAWORKZ_SERVICE: retail-store-v2-production
+  DATAWORKZ_TOKEN: retail-store-v2-production
+  DATAWORKZ_AGENT_ID: retail-store-v2-production
+  DATAWORKZ_LLM_ID: retail-store-v2-production
+
+env:
+  NODE_ENV: "production"
+  GOOGLE_APPLICATION_CREDENTIALS: /etc/gcp/credential-configuration.json
+  GCP_PROJECT_ID: ist-retail-demo
+  GCP_LOCATION: us-central1
+  #VERTEXAI_COMPLETIONS_MODEL: gemini-2.0-flash-001
