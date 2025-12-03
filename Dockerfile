@@ -15,7 +15,7 @@ COPY ./ ./
 
 # 🔐 Env DUMMY para que Next.js no falle en el build
 # (NINGUNO de estos valores es real, son placeholders)
-ENV MONGODB_URI="" \
+ENV MONGODB_URI="placeholder" \
     DATABASE_NAME="" \
     COLLECTION_NAME=""
  ENV DATAWORKZ_SERVICE="" \
