@@ -48,6 +48,8 @@ security_check.sh
 
 # --- security essentials ---
 .venv
+.env/
+.env.local
 env/
 venv/
 ENV/
