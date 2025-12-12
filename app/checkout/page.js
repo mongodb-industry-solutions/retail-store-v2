@@ -177,7 +177,7 @@ export default function Page() {
             <CardSkeleton />
           </div>
         ) : cart.products?.length < 1 ? (
-          <div>Fill cart randomly</div>
+          <div>Loading...</div>
         ) : (
           <div className="mt-3">
             <H3 className="mb-2">Payment details</H3>
