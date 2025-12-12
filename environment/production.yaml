@@ -1,0 +1,52 @@
+# Service Account Configuration (GCP Workload Identity) - PRODUCTION
+serviceAccount:
+  enabled: true
+  name: retail-kanopy-sa-prod  # KSA_NAME en prod (debe existir en el cluster prod)
+
+extraVolumes:
+  - name: gcp-creds
+    configMap:
+      # ConfigMap en prod con la config de WIF
+      # kubectl create configmap gcp-wif-config-retail-prod \
+      #   --from-file=credential-configuration.json=gcp-credential-config.json
+      name: gcp-wif-config-retail-prod
+  - name: gcp-token
+    projected:
+      sources:
+        - serviceAccountToken:
+            path: token
+            expirationSeconds: 3600
+            audience: "//iam.googleapis.com/projects/531154772515/locations/global/workloadIdentityPools/kanopy-retail-wif-pool-prod/providers/kanopy-retail-provider-prod"
+
+extraVolumeMounts:
+  - name: gcp-creds
+    mountPath: /etc/gcp
+    readOnly: true
+  - name: gcp-token
+    mountPath: /var/run/service-account
+    readOnly: true
+
+# Secret references for sensitive data (equivalente a .env.local, pero en prod)
+envSecrets:
+  # Mongo / app core
+  MONGODB_URI: retail-store-v2-prod
+  DATABASE_NAME: retail-store-v2-prod
+  COLLECTION_NAME: retail-store-v2-prod
+
+  # Frontend
+  NEXT_PUBLIC_CHATBOT_PASSWORD: retail-store-v2-prod
+  NEXT_PUBLIC_GCP_INVOICE_URL: retail-store-v2-prod
+
+  # Dataworkz
+  DATAWORKZ_SERVICE: retail-store-v2-prod
+  DATAWORKZ_TOKEN: retail-store-v2-prod
+  DATAWORKZ_AGENT_ID: retail-store-v2-prod
+  DATAWORKZ_LLM_ID: retail-store-v2-prod
+
+# Environment variables NO sensibles
+env:
+  NODE_ENV: "production"
+  GOOGLE_APPLICATION_CREDENTIALS: /etc/gcp/credential-configuration.json
+  GCP_PROJECT_ID: ist-retail-demo
+  GCP_LOCATION: us-central1
+  #VERTEXAI_COMPLETIONS_MODEL: gemini-2.0-flash-001

@@ -130,6 +130,8 @@ Partners:
 
 [Florencia Arin](https://www.mongodb.com/blog/authors/florencia-arin) – Developer & Maintainer 
 
+[Rakshit Joshi] – Maintainer 
+
 
 ### Contributors  
 This demo was made possible with the contributions of:  
@@ -142,3 +144,4 @@ This demo was made possible with the contributions of:
 
 This repository is intended solely for demonstration and educational purposes.  
 No support or warranty is provided. Use at your own risk.
+.
