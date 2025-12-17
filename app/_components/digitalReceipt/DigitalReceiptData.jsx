@@ -50,8 +50,11 @@ const DigitalReceiptData = () => {
   const onDownloadInvoice = async () => {
     console.log("onDownloadInvoice");
     if (invoiceIsLoading === true) return;
-    if(!invoiceEndpoint)
+    if(!invoiceEndpoint){
       alert('Invoice download is not available at the moment. Sorry for the inconvenience')
+      return
+    }
+      
     dispatch(setLoading(true));
     const downloadMDBRes = new Date();
     addOperationAlert({

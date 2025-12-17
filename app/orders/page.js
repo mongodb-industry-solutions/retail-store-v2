@@ -6,7 +6,7 @@ import React, {
   useRef,
   useMemo,
 } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Container } from "react-bootstrap";
 import { H1 } from "@leafygreen-ui/typography";
 import { v4 as uuidv4 } from "uuid";
@@ -19,14 +19,23 @@ import TalkTrackContainer from "../_components/talkTrackContainer/talkTrackConta
 import { ordersPage } from "@/lib/talkTrack";
 import { GUIDE_CUE_MESSAGES, FEATURES } from "@/lib/constants";
 import GuideCueContainer from "../_components/guideCueContainer/GuideCuecontainer";
+import { fetchInvoiceUrl } from "@/redux/slices/InvoiceSlice";
 
 export default function Page() {
+  const dispatch = useDispatch();
   const sseConnection = useRef(null);
   const sessionId = useRef(uuidv4());
   const userId = useSelector((state) => state.User.selectedUser?._id);
   const orders = useSelector((state) => state.User.orders);
-
   const feature = useSelector((state) => state.Global.feature);
+  const { baseInvoiceUrl } = useSelector((state) => state.Invoice);
+
+  // Fetch invoice URL when component mounts
+  useEffect(() => {
+    if (!baseInvoiceUrl) {
+      dispatch(fetchInvoiceUrl());
+    }
+  }, [dispatch, baseInvoiceUrl]);
 
   // --- Receipts walkthrough refs ---
   const triggerRefReceipts1 = useRef(null); // My Orders heading
