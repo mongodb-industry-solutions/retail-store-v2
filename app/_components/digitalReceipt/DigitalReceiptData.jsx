@@ -22,7 +22,7 @@ const DigitalReceiptData = () => {
   const invoiceIsLoading = useSelector(
     (state) => state.Invoice.invoiceIsLoading
   );
-  const invoiceEndpoint = useSelector((state) => state.Invoice.invoiceEndpoint);
+  const invoiceEndpoint = useSelector((state) => state.Invoice?.invoiceEndpoint) || null;
   const feature = useSelector((state) => state.Global.feature);
 
   // ✅ Create refs for guide steps
@@ -50,6 +50,11 @@ const DigitalReceiptData = () => {
   const onDownloadInvoice = async () => {
     console.log("onDownloadInvoice");
     if (invoiceIsLoading === true) return;
+    if(!invoiceEndpoint){
+      alert('Invoice download is not available at the moment. Sorry for the inconvenience')
+      return
+    }
+      
     dispatch(setLoading(true));
     const downloadMDBRes = new Date();
     addOperationAlert({

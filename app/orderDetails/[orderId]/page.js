@@ -33,7 +33,7 @@ import { shippingMethods } from "@/lib/constants";
 import ShippingMethodBadgeComp from "@/app/_components/shippingMethodBadgeComp/ShippingMethodBadgeComp";
 import { orderDetailsPage } from "@/lib/talkTrack";
 import TalkTrackContainer from "@/app/_components/talkTrackContainer/talkTrackContainer";
-import { setOpenedInvoice } from "@/redux/slices/InvoiceSlice";
+import { setOpenedInvoice, fetchInvoiceUrl } from "@/redux/slices/InvoiceSlice";
 import { GUIDE_CUE_MESSAGES, FEATURES } from "@/lib/constants";
 import GuideCueContainer from "@/app/_components/guideCueContainer/GuideCuecontainer";
 
@@ -44,8 +44,16 @@ export default function OrderDetailsPage({ params }) {
   const { orderId } = params;
   const orderDetails = useSelector((state) => state.Order);
   const feature = useSelector((state) => state.Global.feature);
+  const { baseInvoiceUrl } = useSelector((state) => state.Invoice);
   const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const myStepperRef = useRef(null);
+
+  // Fetch invoice URL when component mounts
+  useEffect(() => {
+    if (!baseInvoiceUrl) {
+      dispatch(fetchInvoiceUrl());
+    }
+  }, [dispatch, baseInvoiceUrl]);
 
   // --- Receipts walkthrough refs (single step) ---
   const triggerRefReceipts1 = useRef(null); // Receipt link
