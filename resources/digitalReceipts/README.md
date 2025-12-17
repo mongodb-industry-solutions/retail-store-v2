@@ -44,12 +44,12 @@ MONGODB_URI=
 DATABASE_NAME="leafy_popup_store"
 COLLECTION_NAME="orders"
 NODE_ENV="development"
-NEXT_PUBLIC_GCP_INVOICE_URL=<url of the download PDF invoice url azure function>
+GCP_INVOICE_URL=<url of the download PDF invoice url azure function>
 ```
 
 Leave the MONGODB_URI blank for now, you will retrieve its value on Step 3. 
 
-The instructions to obtain the NEXT_PUBLIC_GCP_INVOICE_URL variable are defined inside the [invoice microservice backend README](https://github.com/mongodb-industry-solutions/retail-digital-receipts-backend/blob/main/services/invoice-ms/README.md#2-pdf-rendering-on-demand)
+The instructions to obtain the GCP_INVOICE_URL variable are defined inside the [invoice microservice backend README](https://github.com/mongodb-industry-solutions/retail-digital-receipts-backend/blob/main/services/invoice-ms/README.md#2-pdf-rendering-on-demand)
 
 Install the node modules executing the following command:
 
@@ -81,7 +81,7 @@ MONGODB_URI=
 DATABASE_NAME="leafy_popup_store"
 COLLECTION_NAME="orders"
 NODE_ENV="development"
-NEXT_PUBLIC_GCP_INVOICE_URL=<url of the download PDF invoice url azure function>
+GCP_INVOICE_URL=<url of the download PDF invoice url azure function>
 ```
 
 ###  Step 4. Populate your database

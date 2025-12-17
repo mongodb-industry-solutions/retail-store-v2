@@ -61,6 +61,7 @@ const OrderItemCard = ({ order, updateToggle, triggerRef, feature }) => {
             return
         dispatch(setOpenedInvoice(null))
         const invoice = await fetchInvoice(order.invoiceId)
+        console.log('fetched invoice: ', invoice)
         if(invoice)
             dispatch(setOpenedInvoice(invoice))
         else    
