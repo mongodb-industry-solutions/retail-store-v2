@@ -7,14 +7,16 @@ const InvoiceSlice = createSlice({
         invoiceIsLoading: false,
         error: null,         // null or {msg: ""}
         openedInvoice: null, // null or {...} este es el 
-        invoiceEndpoint: process.env.NEXT_PUBLIC_GCP_INVOICE_URL
+        invoiceEndpoint: process.env.GCP_INVOICE_URL
     },
     reducers: {
         setOpenedInvoice: (state, action) => {
+            console.log('setting opened invoice: ', action.payload)
+            console.log('invoice endpoint set to: ', process.env.GCP_INVOICE_URL.replaceAll('invoiceId', action.payload?._id))
             return { 
                 ...state, 
                 openedInvoice: action.payload, 
-                invoiceEndpoint: process.env.NEXT_PUBLIC_GCP_INVOICE_URL.replaceAll('invoiceId', action.payload?._id)
+                invoiceEndpoint: process.env.GCP_INVOICE_URL?.replaceAll('invoiceId', action.payload?._id)
             }
         },
         setLoading: (state, action) => {

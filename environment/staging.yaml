@@ -36,7 +36,7 @@ envSecrets:
 
   # Frontend
   NEXT_PUBLIC_CHATBOT_PASSWORD: retail-store-v2-staging
-  NEXT_PUBLIC_GCP_INVOICE_URL: retail-store-v2-staging
+  GCP_INVOICE_URL: retail-store-v2-staging
 
   # Dataworkz (RAG)
   DATAWORKZ_SERVICE: retail-store-v2-staging
