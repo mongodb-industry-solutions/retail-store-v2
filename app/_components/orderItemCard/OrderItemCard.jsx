@@ -49,12 +49,14 @@ const OrderItemCard = ({ order, updateToggle, triggerRef, feature }) => {
         dispatch(clearOrder())
     }
     const onOrderClick = async () => {
+        console.log(order)
         if (!keysPressed.has('d'))
             return
         const result = await deleteOrder(order._id);
 
     }
     const onSeeReceiptClick = async () => {
+        console.log('invoice id: ', order.invoiceId)
         if(!order.invoiceId)
             return
         dispatch(setOpenedInvoice(null))
