@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFeature } from '@/redux/slices/GlobalSlice';
+import { FEATURES } from '@/lib/constants';
+import { setIsCustomerRetentionEnabled } from '@/redux/slices/CustomerRetentionSlice';
 
 export default function FeatureListener() {
   const dispatch = useDispatch();
@@ -20,6 +22,7 @@ export default function FeatureListener() {
       dispatch(setFeature({feature: featureParam}));
       console.log('🛠 FeatureListener dispatched setFeature:', featureParam);  
     }
+    dispatch(setIsCustomerRetentionEnabled({ isCustomerRetentionEnabled: featureParam === FEATURES.CUSTOMER_RETENTION }) );
   }, [searchParams.toString(), pathname]);
 
   return null; // no UI, just listener

@@ -15,7 +15,8 @@ import CustomerRetentionContainer from "../_components/customerRetention/Custome
 export default function Page() {
   const dispatch = useDispatch();
   const [openHelpModal, setOpenHelpModal] = useState(false);
-  const { isDrawerOpen } = useSelector(state => state.CustomerRetention)
+  const { isDrawerOpen, isCustomerRetentionEnabled } = useSelector(state => state.CustomerRetention)
+
   const tabs = [
     {
       heading: "How to demo",
@@ -30,6 +31,26 @@ export default function Page() {
       content: <></>,
     },
   ];
+  if(!isCustomerRetentionEnabled){
+    return <main>
+          <Navbar />
+          <div className="container mx-auto px-4 my-4 d-flex justify-content-between">
+            <SearchBar />
+            <InfoWizard
+              open={openHelpModal}
+              setOpen={setOpenHelpModal}
+              tooltipText="Talk track!"
+              iconGlyph="Wizard"
+              tabs={tabs}
+              openModalIsButton={true}
+            />
+          </div>
+          <div className="container mx-auto px-4">
+            <ProductList />
+          </div>
+          <ProductDetailsModal />
+        </main>
+  }
   return (
       <DrawerLayout
         className="drawer-layout"

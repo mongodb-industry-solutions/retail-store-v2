@@ -3,18 +3,22 @@ import { createSlice } from "@reduxjs/toolkit";
 const CustomerRetentionSlice = createSlice({
     name: "CustomerRetention",
     initialState: {
-        isDrawerOpen: false,
+        isCustomerRetentionEnabled: false,
+        isDrawerOpen: true,
     },
     reducers: {
         setIsDrawerOpen: (state, action) => {
             return { ...state, isDrawerOpen: action.payload }
         },
-       
+        setIsCustomerRetentionEnabled: (state, action) => {
+            return { ...state, isCustomerRetentionEnabled: action.payload.isCustomerRetentionEnabled }
+        },
     }
 })
 
 export const {
-    setIsDrawerOpen
+    setIsDrawerOpen,
+    setIsCustomerRetentionEnabled
 } = CustomerRetentionSlice.actions
 
 export default CustomerRetentionSlice.reducer
