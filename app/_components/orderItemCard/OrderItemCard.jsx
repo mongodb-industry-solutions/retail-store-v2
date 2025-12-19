@@ -34,7 +34,7 @@ const prettifyDateFormat = (timestamp) => {
     return `${datePart} at ${timePart}`;
 }
 
-const OrderItemCard = ({ order, updateToggle }) => {
+const OrderItemCard = ({ order, updateToggle, triggerRef, feature }) => {
     const dispatch = useDispatch();
     const router = useRouter();
     const [totalPrice, setTotalPrice] = useState(0)
@@ -42,20 +42,26 @@ const OrderItemCard = ({ order, updateToggle }) => {
     const [keysPressed, setKeysPressed] = useState(new Set());
 
     const onSeeOrderClick = () => {
-        router.push(`/orderDetails/${order._id}`);
+        const url = feature   
+            ? `/orderDetails/${order._id}?feature=${feature}`  
+            : `/orderDetails/${order._id}`;  
+        router.push(url);
         dispatch(clearOrder())
     }
     const onOrderClick = async () => {
+        console.log(order)
         if (!keysPressed.has('d'))
             return
         const result = await deleteOrder(order._id);
 
     }
     const onSeeReceiptClick = async () => {
+        console.log('invoice id: ', order.invoiceId)
         if(!order.invoiceId)
             return
         dispatch(setOpenedInvoice(null))
         const invoice = await fetchInvoice(order.invoiceId)
+        console.log('fetched invoice: ', invoice)
         if(invoice)
             dispatch(setOpenedInvoice(invoice))
         else    
@@ -113,6 +119,7 @@ const OrderItemCard = ({ order, updateToggle }) => {
                 <div className={`${styles.item} ${styles.fitContent}`}>
                     {
                         order.invoiceId && <Button
+                            ref={triggerRef}
                             className="me-2"
                             variant='default'
                             onClick={() => onSeeReceiptClick()}

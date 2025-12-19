@@ -6,6 +6,7 @@ import ProductsReducer from './slices/ProductsSlice.js'
 import InvoiceReducer from './slices/InvoiceSlice.js'
 import AlertReducer from './slices/AlertSlice.js'
 import CustomerRetentionReducer from './slices/CustomerRetentionSlice'
+import GlobalReducer from './slices/GlobalSlice.js'
 
 const store = configureStore({
     reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
         "Products": ProductsReducer,
         "Invoice": InvoiceReducer,
         "Alerts": AlertReducer,
-        "CustomerRetention": CustomerRetentionReducer
+        "CustomerRetention": CustomerRetentionReducer,
+        "Global": GlobalReducer
     }
 });
 

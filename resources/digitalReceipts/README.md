@@ -40,16 +40,16 @@ Note: For Window’s users, replace touch .env.local with echo $null >> .env.loc
 Open the .env.local file that you just created, and add the following environment variables.
 
 ```bash
-MONGODB_URI=<mongodb connection string>
+MONGODB_URI=
 DATABASE_NAME="leafy_popup_store"
 COLLECTION_NAME="orders"
 NODE_ENV="development"
-NEXT_PUBLIC_GCP_INVOICE_URL=<url of the download PDF invoice url azure function>
+GCP_INVOICE_URL=<url of the download PDF invoice url azure function>
 ```
 
 Leave the MONGODB_URI blank for now, you will retrieve its value on Step 3. 
 
-The instructions to obtain the NEXT_PUBLIC_GCP_INVOICE_URL variable are defined inside the [invoice microservice backend README](https://github.com/mongodb-industry-solutions/retail-digital-receipts-backend/blob/main/services/invoice-ms/README.md#2-pdf-rendering-on-demand)
+The instructions to obtain the GCP_INVOICE_URL variable are defined inside the [invoice microservice backend README](https://github.com/mongodb-industry-solutions/retail-digital-receipts-backend/blob/main/services/invoice-ms/README.md#2-pdf-rendering-on-demand)
 
 Install the node modules executing the following command:
 
@@ -71,17 +71,17 @@ Figure 1. Atlas screen to choose a connection method.
 Once you select the ‘Drivers’ option copy the provided connection string. It should look something like this:
 
 ```bash
-mongodb+srv://<username>:<password>@<clusterAddress>
+mongodb+srv...
 ```
 
 Great job! Assign the connection string to the MONGODB_URI variable replacing <username> and <password> with your actual credentials and save the changes. Your .env.local file should now resemble the following:
 
 ```bash
-MONGODB_URI=mongodb+srv://<username>:<password>@<clusterAddress>
+MONGODB_URI=
 DATABASE_NAME="leafy_popup_store"
 COLLECTION_NAME="orders"
 NODE_ENV="development"
-NEXT_PUBLIC_GCP_INVOICE_URL=<url of the download PDF invoice url azure function>
+GCP_INVOICE_URL=<url of the download PDF invoice url azure function>
 ```
 
 ###  Step 4. Populate your database
@@ -92,7 +92,7 @@ Use the [mongorestore](https://www.mongodb.com/docs/database-tools/mongorestore/
 Let's go back to your terminal, navigate to the directory /retail-store-v2 (the root level of the application code), and run the following command:
 
 ```bash
-mongorestore --gzip --dir=dump/leafy_popup_store --db=leafy_popup_store --uri "mongodb+srv://<user>:<password>@<cluster-url>"
+mongorestore --gzip --dir=dump/leafy_popup_store --db=leafy_popup_store --uri "mongodb+srv:..."
 ```
 
 This command will create the database and collections and log its progress. Upon completion, you should see a log like this:

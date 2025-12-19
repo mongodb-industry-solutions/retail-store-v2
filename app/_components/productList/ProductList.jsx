@@ -28,6 +28,7 @@ const ProductList = () => {
     try {
       dispatch(setLoading(true))
       let result = await getProductsWithSearch(query);
+      console.log('getProducts result', result)
         if(result){
           setLoading(false)
           dispatch(setProducts({products: result.products, totalItems: result.totalItems}))

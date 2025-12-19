@@ -10,7 +10,7 @@ import styles from "./chatbotComp.module.css";
 import ChatbotModal from './ChatbotModal';
 import { calculateInitialMessage, getMinimizedSchemaForDataworkz } from '@/lib/helpers';
 import { addMessage, setInitialMessage, setMinimizedOrderSchema } from '@/redux/slices/ChatbotSlice';
-import { ROLE } from '@/lib/constants';
+import { ROLE,FEATURES } from '@/lib/constants';
 import Image from 'next/image';
 
 const ChatbotOpener = () => {
@@ -22,7 +22,7 @@ const ChatbotOpener = () => {
     const selectedUser = useSelector(state => state.User.selectedUser)
     const [openHint, setOpenHint] = useState(true);
     const triggerRef = useRef(null)
-
+    const feature = useSelector(state => state.Global.feature);
     const handleClose = () => {
         setIsOpen(false);
     };

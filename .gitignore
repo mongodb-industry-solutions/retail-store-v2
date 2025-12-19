@@ -44,3 +44,14 @@ ist-retail-demo-19b6b37ea3b2.json
 # Extra
 node_modules
 __pycache__
+security_check.sh
+
+# --- security essentials ---
+.venv
+.env/
+.env.local
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
