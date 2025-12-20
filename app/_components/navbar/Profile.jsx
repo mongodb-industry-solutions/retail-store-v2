@@ -21,7 +21,7 @@ const Profile = () => {
     return (
         <div id="Profile" className={'profileContainer'}>
             <LeafyGreenProvider onClick={toggleProfile}>
-                <IconButton className={'profileIcon'} onClick={toggleProfile} aria-label="Toggle Profile">
+                <IconButton className={'NavbarButtonIcon'} onClick={toggleProfile} aria-label="Toggle Profile">
                     <Icon glyph="Person" />
                 </IconButton>
             </LeafyGreenProvider>

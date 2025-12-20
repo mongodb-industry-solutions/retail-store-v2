@@ -25,7 +25,9 @@ const Navbar = () => {
   const sessionId = useRef(uuidv4());
   const ordersLoaded = useSelector((state) => state.User.orders?.initialLoad);
   const userId = useSelector((state) => state.User.selectedUser?._id);
-  const isDrawerOpen = useSelector((state) => state.CustomerRetention.isDrawerOpen);
+  const { isDrawerOpen, isCustomerRetentionEnabled } = useSelector(
+    (state) => state.CustomerRetention
+  );
   const pathname = usePathname();
   const featureInStore = useSelector((state) => state.Global.feature);
 
@@ -95,9 +97,9 @@ const Navbar = () => {
   }, [sseConnection]);
 
   return (
-    <nav className={'navbar'}>
-      <Container className='d-flex justify-content-between'>
-        <div className={'logo'}>
+    <nav className={"navbar"}>
+      <Container className="d-flex justify-content-between">
+        <div className={"logo"}>
           <Link href={`/?feature=${featureInStore}`}>
             <Image
               src="/leafyLogo.png"
@@ -108,23 +110,27 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <div className={'links'}>
-        <Link href={`/?feature=${featureInStore}`}>Home</Link>  
-        <Link href={`/shop?feature=${featureInStore}`}>Shop</Link>  
-        <Link href={`/about?feature=${featureInStore}`}>About</Link>  
+        <div className={"links"}>
+          <Link href={`/?feature=${featureInStore}`}>Home</Link>
+          <Link href={`/shop?feature=${featureInStore}`}>Shop</Link>
+          <Link href={`/about?feature=${featureInStore}`}>About</Link>
 
           {/* <Link href="/contact">Contact</Link> */}
         </div>
-        <div className={'iconButtons'}>
-          <Notifications />
-          {pathname === "/shop" && (
-            <IconButton
-              className={'profileIcon'}
-              onClick={() => dispatch(setIsDrawerOpen(!isDrawerOpen))}
-              aria-label="Toggle Profile"
-            >
-              <Icon glyph={isDrawerOpen?"NavCollapse":"NavExpand"} />
-            </IconButton>
+        <div className={"iconButtons"}>
+          {isCustomerRetentionEnabled && (
+            <>
+              {pathname === "/shop" && (
+                <IconButton
+                  className={"NavbarButtonIcon"}
+                  onClick={() => dispatch(setIsDrawerOpen(!isDrawerOpen))}
+                  aria-label="Toggle Profile"
+                >
+                  <Icon glyph={isDrawerOpen ? "NavCollapse" : "NavExpand"} />
+                </IconButton>
+              )}
+              <Notifications />
+            </>
           )}
           <Profile />
         </div>

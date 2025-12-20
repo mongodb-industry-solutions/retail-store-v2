@@ -1,3 +1,4 @@
+import { next_best_actions } from "@/lib/constants";
 import { createSlice } from "@reduxjs/toolkit";
 
 const CustomerRetentionSlice = createSlice({
@@ -5,6 +6,7 @@ const CustomerRetentionSlice = createSlice({
     initialState: {
         isCustomerRetentionEnabled: false,
         isDrawerOpen: true,
+        nextBestActions: next_best_actions,
     },
     reducers: {
         setIsDrawerOpen: (state, action) => {
