@@ -20,7 +20,7 @@ const EventStreamLogs = () => {
         <div className="top">
           <p className="m-0 d-inline">
             <strong>{new Date(log?.timestamp).toLocaleTimeString()}</strong>:{" "}
-            {log?.tags?.action}
+            {log?.tags?.event}
           </p>
           <IconButton
             onClick={toggleDocument}

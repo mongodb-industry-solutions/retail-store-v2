@@ -7,6 +7,7 @@ import InvoiceReducer from './slices/InvoiceSlice.js'
 import AlertReducer from './slices/AlertSlice.js'
 import CustomerRetentionReducer from './slices/CustomerRetentionSlice'
 import GlobalReducer from './slices/GlobalSlice.js'
+import EventsReducer from './slices/eventsSlice.js'
 
 const store = configureStore({
     reducer: {
@@ -17,7 +18,8 @@ const store = configureStore({
         "Invoice": InvoiceReducer,
         "Alerts": AlertReducer,
         "CustomerRetention": CustomerRetentionReducer,
-        "Global": GlobalReducer
+        "Global": GlobalReducer,
+        "Events": EventsReducer
     }
 });
 

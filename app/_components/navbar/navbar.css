@@ -64,6 +64,9 @@
     z-index: 1;
     color: black;
   }
+  .notificationsPopup{
+    width: 420px !important;
+  }
   .profilePopup {
     right: 0;
   }

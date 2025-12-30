@@ -41,7 +41,7 @@ const Notifications = () => {
           <ListGroup>
             <ListGroup.Item className={""}>
               <div className="d-flex flex-row align-items-center">
-                <Icon size={'xlarge'} glyph="Bell" />
+                <Icon size={'xlarge'} glyph="Bell" className="me-3"/>
                 <div  onClick={() => console.log("selectedUser: ", selectedUser)}>
                   <p className={"textMyProfile"}>Notifications</p>
                   <small>
@@ -52,8 +52,8 @@ const Notifications = () => {
 
             </ListGroup.Item>
             {nextBestActions.map((action, index) => (
-              <ListGroup.Item className={""}>
-                <NotificationItem></NotificationItem>
+              <ListGroup.Item className={"p-0"} key={`notification-item-${index}`}>
+                <NotificationItem item={action} />
               </ListGroup.Item>
             ))}
           </ListGroup>
