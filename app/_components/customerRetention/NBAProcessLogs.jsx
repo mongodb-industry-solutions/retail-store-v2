@@ -1,4 +1,3 @@
-import { FontSize } from '@leafygreen-ui/button'
 import Card from '@leafygreen-ui/card'
 import { H3 } from '@leafygreen-ui/typography'
 import React, { useState } from 'react'
@@ -6,25 +5,13 @@ import SectionHeader from './SectionHeader'
 import { next_best_actions } from '@/lib/constants'
 import Icon from '@leafygreen-ui/icon'
 import IconButton from '@leafygreen-ui/icon-button'
+import { getNextBestActionConfig } from '@/lib/helpers'
 
 const LogItem = ({ log }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   const getBehaviorLabel = (type) => {
     return type?.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()) || ""
-  };
-
-  const getActionIcon = (actionType) => {
-    switch (actionType) {
-      case "social-proof-notification":
-        return "Person";
-      case "product-recommendation":
-        return "Sparkle";
-      case "free-delivery":
-        return "Home";
-      default:
-        return "Bell";
-    }
   };
 
   const behaviorLabel = getBehaviorLabel(log?.trigger?.behaviourType);
@@ -55,7 +42,7 @@ const LogItem = ({ log }) => {
             }}
           >
             <Icon
-              glyph={getActionIcon(log?.action?.type)}
+              glyph={getNextBestActionConfig(log?.action?.type).icon}
               size={20}
               style={{ color: "#666" }}
             />

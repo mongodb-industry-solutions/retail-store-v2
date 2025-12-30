@@ -39,9 +39,21 @@
     background-color: #e3f2fd;
     color: #1565c0;
 }
+.log-item.grey{
+    background-color: #ececec;
+    color: #000000;
+}
 .top{
  
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+.GeneralStatistics .item,
+.CustomerStatistic .item{
+    margin-bottom: 1em;
+}
+.BehaviourStatistics .log-item,
+.NextBestActionStatistic .log-item{
+    font-family: inherit;
 }

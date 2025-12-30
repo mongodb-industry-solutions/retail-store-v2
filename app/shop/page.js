@@ -39,7 +39,7 @@ export default function Page() {
             <InfoWizard
               open={openHelpModal}
               setOpen={setOpenHelpModal}
-              tooltipText="Talk track!"
+              tooltipText="Learn More!"
               iconGlyph="Wizard"
               tabs={tabs}
               openModalIsButton={true}
@@ -66,7 +66,7 @@ export default function Page() {
             <InfoWizard
               open={openHelpModal}
               setOpen={setOpenHelpModal}
-              tooltipText="Talk track!"
+              tooltipText="Learn More!"
               iconGlyph="Wizard"
               tabs={tabs}
               openModalIsButton={true}

@@ -4,6 +4,7 @@ import SectionHeader from "./SectionHeader";
 import { customer_behaviour_docs } from "@/lib/constants";
 import IconButton from "@leafygreen-ui/icon-button";
 import Icon from "@leafygreen-ui/icon";
+import { getBehaviorConfig } from "@/lib/helpers";
 const BehaviourLogs = () => {
   const [openLogId, setOpenLogId] = useState(null);
 
@@ -14,18 +15,6 @@ const BehaviourLogs = () => {
       setOpenLogId(isOpen ? null : log._id);
     };
 
-    const getBehaviorConfig = (type) => {
-      switch (type) {
-        case "prolonged-browsing":
-          return { icon: "MagnifyingGlass", color: "#4CAF50", label: "Prolonged Browsing" };
-        case "exit-intent":
-          return { icon: "LogOut", color: "#FF5722", label: "Exit Intent" };
-        case "indecision":
-          return { icon: "QuestionMarkWithCircle", color: "#FF9800", label: "Indecision" };
-        default:
-          return { icon: "LightningBolt", color: "#2196F3", label: type };
-      }
-    };
 
     const behaviorConfig = getBehaviorConfig(log.behaviourType);
 
@@ -74,6 +63,7 @@ const BehaviourLogs = () => {
       </div>
     );
   };
+  
   return (
     <Card className="mt-2">
       <SectionHeader

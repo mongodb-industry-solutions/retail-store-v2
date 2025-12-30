@@ -6,6 +6,10 @@ import "./customerRetention.css";
 import EventStreamLogs from "./EventStreamLogs";
 import BehaviourLogs from "./BehaviourLogs";
 import NBAProcessLogs from "./NBAProcessLogs";
+import BehaviourStatistics from "./BehaviourStatistics";
+import GeneralStatistics from "./GeneralStatistics";
+import NextBestActionStatistic from "./NextBestActionsStatistics";
+import CustomerStatistic from "./CustomerStatistics";
 
 const CustomerRetentionContainer = () => {
   const [selected, setSelected] = useState(0);
@@ -30,7 +34,10 @@ const CustomerRetentionContainer = () => {
             </div>
         </Tab>
         <Tab name="Statistics">
-
+          <GeneralStatistics/>
+          <CustomerStatistic/>
+          <BehaviourStatistics/>
+          <NextBestActionStatistic/>
         </Tab>
       </Tabs>
     </Drawer>
