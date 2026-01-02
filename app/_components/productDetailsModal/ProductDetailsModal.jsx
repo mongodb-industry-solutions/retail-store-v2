@@ -13,6 +13,8 @@ import { Modal, Container } from 'react-bootstrap';
 import Button from "@leafygreen-ui/button";
 import Image from "next/image";
 import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
+import { sendEvent } from '@/redux/slices/eventsSlice';
+import { generateTimeSeriesEvent } from '@/lib/helpers';
 import { updateCartProduct } from "@/lib/api";
 import { setCartProductsList } from "@/redux/slices/UserSlice";
 
@@ -20,6 +22,7 @@ const ProductDetailsModal = () => {
     const openedProductDetails = useSelector(state => state.Products.openedProductDetails)
     const dispatch = useDispatch();
     const userId = useSelector(state => state.User.selectedUser?._id)
+    const selectedUser = useSelector(state => state.User.selectedUser)
     const cartProducts = useSelector(state => state.User.cart?.products)
     const [isInCart, setIsInCart] = useState(cartProducts.some(obj => obj._id === openedProductDetails?.id))
     
@@ -37,6 +40,25 @@ const ProductDetailsModal = () => {
             if(cart){
                 setIsInCart(!isInCart)
                 dispatch(setCartProductsList(cart))
+                
+                // Track add-to-cart event
+                if (selectedUser && selectedUser._id) {
+                    const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
+                    const payload = generateTimeSeriesEvent(
+                        selectedUser._id,
+                        sessionId,
+                        'add-to-cart',
+                        {
+                            productId: openedProductDetails.id,
+                            productName: openedProductDetails.name,
+                            masterCategory: "TODO...",
+                            subCategory: "TODO...",
+                            articleType: "TODO...",
+                            vai_text_embedding: [], // TODO...
+                        }
+                    );
+                    dispatch(sendEvent(payload));
+                }
             }
         } catch (err) {
             console.log(`Error filling cart ${err}`)

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Body } from '@leafygreen-ui/typography';
 import { GuideCue } from '@leafygreen-ui/guide-cue';
+import { usePathname } from 'next/navigation';
 
 import styles from "./chatbotComp.module.css";
 import ChatbotModal from './ChatbotModal';
@@ -14,6 +15,7 @@ import Image from 'next/image';
 
 const ChatbotOpener = () => {
     const dispatch = useDispatch();
+    const pathname = usePathname();
     const ordersInitialLoad = useSelector(state => state.User.orders.initialLoad)
     const ordersList = useSelector(state => state.User.orders.list)
     const [isOpen, setIsOpen] = useState(false);
@@ -59,42 +61,35 @@ const ChatbotOpener = () => {
         <>
             <ChatbotModal isOpen={isOpen} handleClose={handleClose} />
 
-            {/* ✅ Only show GuideCue hint if feature is NOT chatbot */}  
-
-             {feature !== FEATURES.AI_CHATBOT && (  
-            <GuideCue  
-                style={{zIndex: 0}}
-                open={openHint}  
-                setOpen={setOpenHint}  
-                title="Chat with our AI Assistant"  
-                refEl={triggerRef}  
-                numberOfSteps={1}  
-                currentStep={1}  
-                tooltipAlign="top"  
-                tooltipJustify="end"  
-                tooltipClassName={styles.tooltipClass}  
-                className={styles.guideCue}  
-                beaconAlign="bottom"  
-            />  
-             )}  
-  
-            <div  
-            id="chatbot-opener-button"  
-            ref={triggerRef} // ✅ Added ref back  
-            className={`${styles.chatbotButton}`}  
-            onClick={() => setIsOpen(true)}  
-            >  
-            <div className={`d-flex justify-content-center align-items-center ${styles.chatIcon}`}>  
-                <Image width={18} height={18} alt="Chat Icon" src="/rsc/icons/headphones-solid.svg" />  
-            </div>  
-            <span className={`${styles.expandableContent}`}>  
-                <Body className={styles.chatbotText}>  
-                    <strong>How can I help?</strong>  
-                </Body>  
-            </span>  
-        </div>  
-    </>  
-);  
+{pathname !== '/shop' && <>
+            <GuideCue
+                open={openHint}
+                setOpen={setOpenHint}
+                title="Chat with our AI Assistant"
+                refEl={triggerRef}
+                numberOfSteps={1}
+                currentStep={1}
+                tooltipAlign="top"
+                tooltipJustify="end"
+                tooltipClassName={styles.tooltipClass}
+                className={styles.guideCue}
+                beaconAlign="bottom"
+            ></GuideCue>
+            <div
+                className={`${styles.chatbotButton}`}
+                onClick={() => setIsOpen(true)}
+            >
+                <div className={`d-flex justify-content-center align-items-center ${styles.chatIcon}`} >
+                    <Image width={18} height={18} alt="Chat Icon" src="/rsc/icons/headphones-solid.svg" />
+                </div >
+                <span className={` ${styles.expandableContent}`}>
+                    <Body className={styles.chatbotText}>
+                        <strong>How can I help?</strong>
+                    </Body>
+                </span>
+            </div></>}
+        </>
+    );
 };
 
 export default ChatbotOpener;

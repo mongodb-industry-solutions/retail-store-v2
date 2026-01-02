@@ -1,45 +1,36 @@
 "use client";
 
-import styles from './searchBar.module.css';
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import LeafyGreenProvider from "@leafygreen-ui/leafygreen-provider";
-import Toggle from "@leafygreen-ui/toggle";
+import { SearchInput } from "@leafygreen-ui/search-input";
 
-import {
-    SearchInput,
-    SearchResult,
-    SearchResultGroup
-} from "@leafygreen-ui/search-input";
-import { Label } from '@leafygreen-ui/typography';
-
+import styles from "./searchBar.module.css";
+import { setQuery } from "@/redux/slices/ProductsSlice";
 
 const SearchBar = () => {
-    return (
+  const dispatch = useDispatch();
+  const [localQuery, setLocalQuery] = useState(
+    useSelector((state) => state.Products.query)
+  );
 
-        <div className={`${styles.searchContainer} d-none`}>
-            <LeafyGreenProvider>
-                <div className={styles.searchToggle}>
-                    <SearchInput aria-label="Label">
-                        <SearchResult
-                            onClick={() => {
-                                console.log("SB: Click Apple");
-                            }}
-                            description="This is a description"
-                        >
-                            Apple
-                        </SearchResult>
-                    </SearchInput>
+  const onSearchSubmit = () => {
+    dispatch(setQuery(localQuery));
+  };
 
-                    <Toggle
-                        aria-label="Dark mode toggle"
-                        className={styles.toggle}
-                    />
-
-                    <Label  className={styles.toggleLabel}>Vector Search</Label>
-                </div>
-            </LeafyGreenProvider>
-        </div>
-    );
+  return (
+    <div className={`${styles.searchContainer}`}>
+      <div className={styles.searchInputContainer}>
+        <SearchInput
+          className={styles.searchInput}
+          aria-label="Label"
+          onChange={(e) => setLocalQuery(e.target.value)} // Update state on change
+          onSubmit={() => onSearchSubmit()}
+          value={localQuery} // Use 'value' to make it a controlled component
+          defaultValue={localQuery}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default SearchBar;

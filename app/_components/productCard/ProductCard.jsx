@@ -1,6 +1,5 @@
 "use client";
-import { useDispatch } from 'react-redux';
-import { useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import styles from "./productCard.module.css";
 import PropTypes from "prop-types";
 
@@ -11,14 +10,17 @@ import {
   Description,
   Subtitle
 } from "@leafygreen-ui/typography";
-import IconButton from "@leafygreen-ui/icon-button";
 import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
+import { sendEvent } from '@/redux/slices/eventsSlice';
+import { generateTimeSeriesEvent } from '@/lib/helpers';
 import Image from "next/image";
-import Badge from "@leafygreen-ui/badge";
-import Icon from "@leafygreen-ui/icon";
 
-const ProductCard = ({ id, photo, name, brand, price, items }) => {
+const ProductCard = ({ id, product }) => {
+  const {  name, brand } = product;
+  const photo = product?.image?.url || '/placeholder.png';
+  const price = product?.price?.amount ? product.price.amount.toFixed(2) : 'N/A';
   const dispatch = useDispatch();
+  const selectedUser = useSelector(state => state.User.selectedUser);
 
 
   const onProductClick = () => {
@@ -28,8 +30,26 @@ const ProductCard = ({ id, photo, name, brand, price, items }) => {
       name,
       brand,
       price,
-      items,
     }))
+    
+    // Track view-product event
+    if (selectedUser && selectedUser._id) {
+      const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
+      const payload = generateTimeSeriesEvent(
+        selectedUser._id, 
+        sessionId, 
+        'view-product', 
+        {
+          productId: id,
+          productName: name,
+          category: brand,
+          price: price,
+          userEmail: selectedUser.email,
+          userName: selectedUser.name
+        }
+      );
+      dispatch(sendEvent(payload));
+    }
   }
 
   return (
@@ -48,24 +68,12 @@ const ProductCard = ({ id, photo, name, brand, price, items }) => {
               style={{ objectFit: "contain" }}
             />
           </div>
-          {/* <Image
-            src={photo}
-            alt={name}
-            width={200}
-            height={200}
-            quality={50}
-            unoptimized
-          /> */}
           <Label className={styles.productName}>{name}</Label>
           <Description>{brand}</Description>
         </div>
-
         <div className={styles.cardFooter}>
           <div className={styles.subtitle}>
             <Subtitle>${price}</Subtitle>
-            <IconButton className={styles.cartAdd} aria-label="Add to Cart">
-              <Image src="/cart.png" alt="Cart" width={16} height={16}></Image>
-            </IconButton>
           </div>
         </div>
       </Card>
@@ -78,7 +86,6 @@ ProductCard.propTypes = {
   name: PropTypes.string.isRequired,
   brand: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
-  items: PropTypes.string.isRequired,
 };
 
 export default ProductCard;
