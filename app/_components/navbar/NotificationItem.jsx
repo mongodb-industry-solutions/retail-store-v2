@@ -49,7 +49,7 @@ const NotificationItem = ({item}) => {
         alignItems: 'center'
       }}>
         {/* Image/Icon Row */}
-        <div style={{
+        <div style={item.action.product?.imageUrl ?{
           width: '64px',
           height: '64px',
           display: 'flex',
@@ -57,7 +57,7 @@ const NotificationItem = ({item}) => {
           justifyContent: 'center',
           backgroundColor: '#f8f8f8',
           borderRadius: '8px'
-        }}>
+        }: {}}>
           {item.action.product?.imageUrl ? (
             <img 
               src={item.action.product.imageUrl} 
@@ -70,7 +70,8 @@ const NotificationItem = ({item}) => {
               }}
             />
           ) : (
-            <Icon glyph={item.action.icon} size="default" />
+            // <Icon glyph={item.action.icon} size="default" />
+            <></>
           )}
         </div>
 

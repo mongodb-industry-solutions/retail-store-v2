@@ -71,7 +71,7 @@ const BehaviourLogs = () => {
         amount={customer_behaviour_docs.length.toString()}
         learnMoreElement={
           <p className="m-0">
-            Atlas Stream Processing ingests UX events streams and generates the
+            <a href="https://www.mongodb.com/atlas/stream-processing" target="_blank" rel="noopener noreferrer">Atlas Stream Processing</a> ingests UX events streams and generates the
             belowed customer behaviours.
           </p>
         }

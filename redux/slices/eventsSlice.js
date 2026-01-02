@@ -18,6 +18,7 @@ export const sendEvent = createAsyncThunk(
       }
 
       const data = await response.json();
+      console.log(`Event sent ${data.event.tags.event}:`, data.event);
       return data;
     } catch (error) {
       console.error('Failed to send event:', error);

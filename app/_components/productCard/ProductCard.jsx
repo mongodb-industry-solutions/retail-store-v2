@@ -1,5 +1,5 @@
 "use client";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from "./productCard.module.css";
 import PropTypes from "prop-types";
 
@@ -11,6 +11,8 @@ import {
   Subtitle
 } from "@leafygreen-ui/typography";
 import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
+import { sendEvent } from '@/redux/slices/eventsSlice';
+import { generateTimeSeriesEvent } from '@/lib/helpers';
 import Image from "next/image";
 
 const ProductCard = ({ id, product }) => {
@@ -18,6 +20,7 @@ const ProductCard = ({ id, product }) => {
   const photo = product?.image?.url || '/placeholder.png';
   const price = product?.price?.amount ? product.price.amount.toFixed(2) : 'N/A';
   const dispatch = useDispatch();
+  const selectedUser = useSelector(state => state.User.selectedUser);
 
 
   const onProductClick = () => {
@@ -28,6 +31,25 @@ const ProductCard = ({ id, product }) => {
       brand,
       price,
     }))
+    
+    // Track view-product event
+    if (selectedUser && selectedUser._id) {
+      const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
+      const payload = generateTimeSeriesEvent(
+        selectedUser._id, 
+        sessionId, 
+        'view-product', 
+        {
+          productId: id,
+          productName: name,
+          category: brand,
+          price: price,
+          userEmail: selectedUser.email,
+          userName: selectedUser.name
+        }
+      );
+      dispatch(sendEvent(payload));
+    }
   }
 
   return (

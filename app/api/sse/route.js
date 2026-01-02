@@ -91,6 +91,10 @@ export async function GET(req) {
     writer.close().catch((error) => {
       console.error("Error closing writer:", error);
     });
+
+    // Clear all event stream data
+    
+
   });
 
   return new NextResponse(readable, { headers });

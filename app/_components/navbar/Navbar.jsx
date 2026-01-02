@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useCallback, useRef } from "react";
+import React, { useEffect, useCallback, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { usePathname } from "next/navigation";
@@ -21,6 +21,7 @@ import Notifications from "./Notifications";
 
 const Navbar = () => {
   const dispatch = useDispatch();
+  const [openMenu, setOpenMenu] = useState(''); // '' for closed, 'profile' or 'notifications' for open
   const sseConnection = useRef(null);
   const sessionId = useRef(uuidv4());
   const ordersLoaded = useSelector((state) => state.User.orders?.initialLoad);
@@ -114,7 +115,6 @@ const Navbar = () => {
           <Link href={`/?feature=${featureInStore}`}>Home</Link>
           <Link href={`/shop?feature=${featureInStore}`}>Shop</Link>
           <Link href={`/about?feature=${featureInStore}`}>About</Link>
-
           {/* <Link href="/contact">Contact</Link> */}
         </div>
         <div className={"iconButtons"}>
@@ -129,10 +129,16 @@ const Navbar = () => {
                   <Icon glyph={isDrawerOpen ? "NavCollapse" : "NavExpand"} />
                 </IconButton>
               )}
-              <Notifications />
+              <Notifications 
+                isMenuOpened={openMenu === 'notifications'}
+                onToggle={() => setOpenMenu(openMenu === 'notifications' ? '' : 'notifications')}
+              />
             </>
           )}
-          <Profile />
+          <Profile 
+            isMenuOpened={openMenu === 'profile'}
+            onToggle={() => setOpenMenu(openMenu === 'profile' ? '' : 'profile')}
+          />
         </div>
       </Container>
     </nav>
