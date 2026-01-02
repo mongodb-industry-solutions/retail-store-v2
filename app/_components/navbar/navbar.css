@@ -1,0 +1,100 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  color: white;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.03); /* Adjust values as needed */
+}
+  
+  .links a {
+    margin-right: 15px;
+    color: #001E2B;
+    text-decoration: none;
+  }
+
+  .links a:hover{
+    color: #13aa52;
+  }
+
+  
+  .iconButtons img {
+    cursor: pointer;
+   
+  }
+
+  .iconButtons{
+    display: flex;
+    gap: 12px;
+  }
+
+  .iconButtons Profile{
+    margin-right: 10px;
+  }
+
+  /* IconButton styling with light grey background circle */
+  .NavbarButtonIcon {
+    background-color: #f5f5f5 !important;
+    border-radius: 50% !important;
+    border: none !important;
+    padding: 8px !important;
+    transition: background-color 0.2s ease;
+  }
+
+  .NavbarButt  onIcon:hover {
+    background-color: #e5e5e5 !important;
+  }
+  
+
+
+  /* PROFILE */
+  .profileContainer {
+    position: relative;
+  }
+  .NavbarButtonIcon {
+    cursor: pointer;
+  }
+  .profilePopup, .notificationsPopup {
+    position: absolute;
+    top: 100%;
+    width: 200px;
+    background-color: #ffffff;
+    border-radius: var(--bs-border-radius);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    color: black;
+  }
+  .notificationsPopup{
+    width: 420px !important;
+  }
+  .profilePopup {
+    right: 0;
+  }
+  .profilePopup p {
+      color: black;
+      margin: 0;
+  }
+  .profilePopup small{
+    color: #737574;
+    font-weight: bold;
+    margin-top: -5px;
+  }
+  .textMyProfile{
+    margin-bottom: -6px !important;
+  }
+  .listGroupItem{
+    cursor: pointer;
+  }
+  .listGroupItem a{
+    text-decoration: none;
+  }
+  .listGroupItem:hover{
+    background-color: rgba(235, 235, 235, 0.868);
+  }
+
+  /* NOTIFICATIONS */
+  
+.notificationsPopup .scroll-list{
+  max-height: 380px;
+  overflow-y: auto;
+}
