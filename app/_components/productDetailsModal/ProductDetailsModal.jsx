@@ -17,6 +17,7 @@ import { sendEvent } from '@/redux/slices/eventsSlice';
 import { generateTimeSeriesEvent } from '@/lib/helpers';
 import { updateCartProduct } from "@/lib/api";
 import { setCartProductsList } from "@/redux/slices/UserSlice";
+import { EVENT_STREAMS_TYPES } from "@/lib/constants";
 
 const ProductDetailsModal = () => {
     const openedProductDetails = useSelector(state => state.Products.openedProductDetails)
@@ -44,18 +45,16 @@ const ProductDetailsModal = () => {
                 // Track add-to-cart event
                 if (selectedUser && selectedUser._id) {
                     const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
+                    const metadata = {
+                        productId: openedProductDetails.id,
+                        masterCategory: "TODO...",
+                        brand: openedProductDetails.brand,
+                    };
                     const payload = generateTimeSeriesEvent(
                         selectedUser._id,
                         sessionId,
-                        'add-to-cart',
-                        {
-                            productId: openedProductDetails.id,
-                            productName: openedProductDetails.name,
-                            masterCategory: "TODO...",
-                            subCategory: "TODO...",
-                            articleType: "TODO...",
-                            vai_text_embedding: [], // TODO...
-                        }
+                        EVENT_STREAMS_TYPES.ADD_TO_CART,
+                        metadata
                     );
                     dispatch(sendEvent(payload));
                 }
