@@ -1,12 +1,13 @@
 import Card from "@leafygreen-ui/card";
 import React, { useState } from "react";
 import SectionHeader from "./SectionHeader";
-import { event_streams_logs } from "@/lib/constants";
+import { useSelector } from "react-redux";
 import IconButton from "@leafygreen-ui/icon-button";
 import Icon from "@leafygreen-ui/icon";
 
 const EventStreamLogs = () => {
   const [openLogId, setOpenLogId] = useState(null);
+  const events = useSelector(state => state.Events.events);
 
   const LogItem = ({ log }) => {
     const isOpen = openLogId === log._id;
@@ -32,13 +33,7 @@ const EventStreamLogs = () => {
         {isOpen && (
           <pre className="log-document">
             {JSON.stringify(
-              {
-                ...log,
-                metadata: {
-                  ...log?.metadata,
-                  vai_text_embedding: "[...]",
-                },
-              },
+              { ...log },
               null,
               2
             )}
@@ -52,7 +47,7 @@ const EventStreamLogs = () => {
     <Card>
       <SectionHeader
         title="UX events streams"
-        amount={event_streams_logs.length.toString()}
+        amount={events.length.toString()}
         learnMoreElement={
           <p className="m-0">
             Events streamed every X seconds to a{" "}
@@ -66,7 +61,7 @@ const EventStreamLogs = () => {
         }
       />
       <div className="list-container">
-        {event_streams_logs.map((log) => (
+        {events.map((log) => (
           <LogItem key={`log-${log?._id}`} log={log} />
         ))}
       </div>
