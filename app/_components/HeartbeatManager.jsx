@@ -33,7 +33,7 @@ const HeartbeatManager = () => {
     const startHeartbeat = () => {
       const intervalId = setInterval(() => {
         const payload = generateTimeSeriesEvent(userId, sessionId, EVENT_STREAMS_TYPES.HEARTBEAT, {});
-        dispatch(sendEvent(payload));
+        // TODO uncomment dispatch(sendEvent(payload));
       }, 10000); // 10 seconds
 
       return intervalId;
