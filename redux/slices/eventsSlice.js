@@ -51,10 +51,9 @@ const eventsSlice = createSlice({
       })
       .addCase(sendEvent.fulfilled, (state, action) => {
         state.isLoading = false;
+        // Add the actual stored event from the API response (includes MongoDB _id)
         state.events.push({
-          ...action.meta.arg, // Original event data (now with ISO timestamp)
-          id: action.payload?.id || Date.now().toString(), // Use string ID
-          sentAt: new Date().toISOString(),
+          ...action.payload.event, // The stored document with _id from MongoDB
         });
       })
       .addCase(sendEvent.rejected, (state, action) => {
