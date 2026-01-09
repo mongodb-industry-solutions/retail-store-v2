@@ -21,6 +21,7 @@ export async function POST(request) {
     });
 
     // Store the event in MongoDB time series collection
+    let insertedDocument = null;
     try {
       const client = await clientPromise;
       const db = client.db(dbName);
@@ -33,20 +34,32 @@ export async function POST(request) {
       };
       
       const result = await collection.insertOne(eventDocument);
-      console.log('Event stored in MongoDB:', result.insertedId);
+      
+      if (result.insertedId) {
+        insertedDocument = {
+          ...eventDocument,
+          _id: result.insertedId
+        };
+        console.log('Event stored in MongoDB with _id:', result.insertedId);
+      }
       
     } catch (dbError) {
       console.error('Error storing event in MongoDB:', dbError);
-      // Don't return error here, just log it - we still want to return success
     }
 
+    // Only return success if document was actually inserted
+    if (!insertedDocument) {
+      return NextResponse.json(
+        { error: 'Failed to store event in database' },
+        { status: 500 }
+      );
+    }
 
-    // For now, just return a success response
+    // Return response with the stored document
     const response = {
-      id: Date.now().toString(),
       status: 'received',
       timestamp: new Date().toISOString(),
-      event: eventData
+      event: insertedDocument
     };
 
     return NextResponse.json(response, { status: 201 });
