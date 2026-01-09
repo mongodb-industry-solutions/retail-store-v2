@@ -14,6 +14,7 @@ import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
 import { sendEvent } from '@/redux/slices/eventsSlice';
 import { generateTimeSeriesEvent } from '@/lib/helpers';
 import Image from "next/image";
+import { EVENT_STREAMS_TYPES } from '@/lib/constants';
 
 const ProductCard = ({ id, product }) => {
   const {  name, brand } = product;
@@ -35,18 +36,16 @@ const ProductCard = ({ id, product }) => {
     // Track view-product event
     if (selectedUser && selectedUser._id) {
       const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
+      const metadata = {
+          productId: id,
+          masterCategory: "TODO...",
+          brand: brand,
+        };
       const payload = generateTimeSeriesEvent(
         selectedUser._id, 
         sessionId, 
-        'view-product', 
-        {
-          productId: id,
-          productName: name,
-          category: brand,
-          price: price,
-          userEmail: selectedUser.email,
-          userName: selectedUser.name
-        }
+        EVENT_STREAMS_TYPES.VIEW_PRODUCT, 
+        metadata
       );
       dispatch(sendEvent(payload));
     }

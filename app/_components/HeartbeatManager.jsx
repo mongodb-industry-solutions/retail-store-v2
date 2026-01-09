@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendEvent } from '@/redux/slices/eventsSlice';
 import { generateTimeSeriesEvent } from '@/lib/helpers';
+import { EVENT_STREAMS_TYPES } from '@/lib/constants';
 
 const HeartbeatManager = () => {
   const dispatch = useDispatch();
@@ -31,11 +32,7 @@ const HeartbeatManager = () => {
 
     const startHeartbeat = () => {
       const intervalId = setInterval(() => {
-        const payload = generateTimeSeriesEvent(userId, sessionId, 'heartbeat', {
-          userEmail: selectedUser.email,
-          userName: selectedUser.name
-        });
-
+        const payload = generateTimeSeriesEvent(userId, sessionId, EVENT_STREAMS_TYPES.HEARTBEAT, {});
         dispatch(sendEvent(payload));
       }, 10000); // 10 seconds
 

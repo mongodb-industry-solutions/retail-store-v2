@@ -3,9 +3,28 @@ import React from "react";
 import SectionHeader from "./SectionHeader";
 import { CardTitle } from "react-bootstrap";
 import { InfoSprinkle } from "@leafygreen-ui/info-sprinkle";
+import { useSelector } from "react-redux";
 
 const GeneralStatistics = () => {
+  const selectedUser = useSelector(state => state.User.selectedUser);
+  const sessionId = sessionStorage.getItem('sessionId') || 'No session';
+
   return (
+    <>
+    {/* Session Info Bar */}
+    <div className="mb-2 p-3 rounded" style={{ backgroundColor: '#f8f9fa', border: '1px solid #e9ecef' }}>
+      <div className="d-flex justify-content-between align-items-center">
+        <div className="d-flex gap-4">
+          <span style={{ fontSize: '13px' }}>
+            <strong>User ID:</strong> <code>{selectedUser?._id || 'No user selected'}</code>
+          </span>
+          <span style={{ fontSize: '13px' }}>
+            <strong>Session:</strong> <code>{sessionId}</code>
+          </span>
+        </div>
+      </div>
+    </div>
+
     <Card className="mt-2 GeneralStatistics">
       <SectionHeader
         title="Session Analytics"
@@ -34,6 +53,8 @@ const GeneralStatistics = () => {
         </div>
       </div>
     </Card>
+    </>
+    
   );
 };
 

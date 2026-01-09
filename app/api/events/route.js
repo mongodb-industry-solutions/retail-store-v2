@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { clientPromise, dbName } from '@/lib/mongodb';
 
+const eventsTimeSeriesCollection = 'events_ingest_ts'
 export async function POST(request) {
   try {
     const eventData = await request.json();
@@ -18,10 +20,26 @@ export async function POST(request) {
       receivedAt: new Date().toISOString()
     });
 
-    // TODO:
-    // 1. Store the event in your database
-    // 2. Process the event data
-    // 3. Trigger any necessary business logic
+    // Store the event in MongoDB time series collection
+    try {
+      const client = await clientPromise;
+      const db = client.db(dbName);
+      const collection = db.collection(eventsTimeSeriesCollection);
+      
+      const eventDocument = {
+        ...eventData,
+        // Convert timestamp string to Date object for MongoDB time series
+        timestamp: new Date(eventData.timestamp)
+      };
+      
+      const result = await collection.insertOne(eventDocument);
+      console.log('Event stored in MongoDB:', result.insertedId);
+      
+    } catch (dbError) {
+      console.error('Error storing event in MongoDB:', dbError);
+      // Don't return error here, just log it - we still want to return success
+    }
+
 
     // For now, just return a success response
     const response = {
