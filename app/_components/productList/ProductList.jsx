@@ -8,7 +8,9 @@ import ProductCard from "../productCard/ProductCard";
 import Pagination from "@leafygreen-ui/pagination";
 import { setCurrentPage, setInitialLoad, setLoading, setProducts, updateProductPrice } from "../../../redux/slices/ProductsSlice";
 import { getProductsWithSearch } from "@/lib/api";
-import { PAGINATION_PER_PAGE } from "@/lib/constants";
+import { PAGINATION_PER_PAGE, EVENT_STREAMS_TYPES } from "@/lib/constants";
+import { generateTimeSeriesEvent } from "@/lib/helpers";
+import { sendEvent } from "@/redux/slices/eventsSlice";
 
 
 const itemsPerPage = PAGINATION_PER_PAGE;
@@ -21,7 +23,8 @@ const ProductList = () => {
     products,
     totalItems,
     query
-  } = useSelector(state => state.Products)
+  } = useSelector(state => state.Products);
+  const selectedUser = useSelector(state => state.User.selectedUser);
 
 
   const getProducts = async () => {
@@ -32,6 +35,23 @@ const ProductList = () => {
         if(result){
           setLoading(false)
           dispatch(setProducts({products: result.products, totalItems: result.totalItems}))
+          
+          // Track search event
+          if (selectedUser && selectedUser._id && query) {
+            const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
+            const metadata = {
+              query: query,
+            };
+            const payload = generateTimeSeriesEvent(
+              selectedUser._id,
+              sessionId,
+              EVENT_STREAMS_TYPES.SEARCH,
+              metadata
+            );
+            if (payload) {
+              dispatch(sendEvent(payload));
+            }
+          }
         }
     } catch (err) {
         console.log(`Error getting all products, ${err}`)

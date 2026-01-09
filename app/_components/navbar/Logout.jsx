@@ -3,6 +3,7 @@ import Icon from "@leafygreen-ui/icon";
 import { useDispatch, useSelector } from 'react-redux';
 import { sendEvent } from '@/redux/slices/eventsSlice';
 import { generateTimeSeriesEvent } from '@/lib/helpers';
+import { EVENT_STREAMS_TYPES } from "@/lib/constants";
 
 const Logout = () => {
   const dispatch = useDispatch();
@@ -11,15 +12,14 @@ const Logout = () => {
   const handleMouseEnter = () => {
     if (selectedUser && selectedUser._id) {
       const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
+      const metadata = {
+        exitMethod: 'logout-hover'
+      };
       const payload = generateTimeSeriesEvent(
         selectedUser._id,
         sessionId,
-        'exit-intent',
-        {
-          exitMethod: 'logout-hover',
-          userEmail: selectedUser.email,
-          userName: selectedUser.name
-        }
+        EVENT_STREAMS_TYPES.EXIT_INTENT,
+        metadata
       );
       dispatch(sendEvent(payload));
     }
