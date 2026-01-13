@@ -5,8 +5,10 @@ import { customer_behaviour_docs } from "@/lib/constants";
 import IconButton from "@leafygreen-ui/icon-button";
 import Icon from "@leafygreen-ui/icon";
 import { getBehaviorConfig } from "@/lib/helpers";
+import useAutoScroll from "@/hooks/useAutoScroll";
 const BehaviourLogs = () => {
   const [openLogId, setOpenLogId] = useState(null);
+  const { containerRef } = useAutoScroll(customer_behaviour_docs);
 
   const LogItem = ({ log }) => {
     const isOpen = openLogId === log._id;
@@ -76,7 +78,7 @@ const BehaviourLogs = () => {
           </p>
         }
       />
-      <div className="list-container">
+      <div className="list-container" ref={containerRef}>
         {customer_behaviour_docs.map((log) => (
           <LogItem key={`log-${log._id}`} log={log} />
         ))}

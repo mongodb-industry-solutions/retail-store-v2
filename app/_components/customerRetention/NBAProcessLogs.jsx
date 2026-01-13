@@ -6,6 +6,7 @@ import { next_best_actions } from '@/lib/constants'
 import Icon from '@leafygreen-ui/icon'
 import IconButton from '@leafygreen-ui/icon-button'
 import { getNextBestActionConfig } from '@/lib/helpers'
+import useAutoScroll from '@/hooks/useAutoScroll'
 
 const LogItem = ({ log }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -109,6 +110,8 @@ const LogItem = ({ log }) => {
 };
 
 const NBAProcessLogs = () => {
+  const { containerRef } = useAutoScroll(next_best_actions);
+  
   return (
     <Card className="mt-2">
       <div className='mb-2'>
@@ -128,7 +131,7 @@ const NBAProcessLogs = () => {
         }
       />
 
-      <div className="list-container longer">
+      <div className="list-container longer" ref={containerRef}>
         {next_best_actions.map((log) => (
           <LogItem key={`log-${log?._id}`} log={log} />
         ))}
