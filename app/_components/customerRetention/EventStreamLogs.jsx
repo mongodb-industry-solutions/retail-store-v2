@@ -1,5 +1,5 @@
 import Card from "@leafygreen-ui/card";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import SectionHeader from "./SectionHeader";
 import { useSelector } from "react-redux";
 import IconButton from "@leafygreen-ui/icon-button";
@@ -7,7 +7,39 @@ import Icon from "@leafygreen-ui/icon";
 
 const EventStreamLogs = () => {
   const [openLogId, setOpenLogId] = useState(null);
+  const [isAtBottom, setIsAtBottom] = useState(true);
   const events = useSelector(state => state.Events.events);
+  const listContainerRef = useRef(null);
+
+  // Check if user is at the bottom of the scroll
+  const checkIfAtBottom = () => {
+    if (listContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = listContainerRef.current;
+      const atBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 5; // 5px tolerance
+      setIsAtBottom(atBottom);
+    }
+  };
+
+  // Auto-scroll to bottom when new events arrive, but only if user was already at bottom
+  useEffect(() => {
+    if (isAtBottom && listContainerRef.current) {
+      listContainerRef.current.scrollTop = listContainerRef.current.scrollHeight;
+    }
+  }, [events, isAtBottom]);
+
+  // Add scroll listener to track user's scroll position
+  useEffect(() => {
+    const container = listContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', checkIfAtBottom);
+      // Check initial position
+      checkIfAtBottom();
+      
+      return () => {
+        container.removeEventListener('scroll', checkIfAtBottom);
+      };
+    }
+  }, []);
 
   const LogItem = ({ log }) => {
     const isOpen = openLogId === log._id;
@@ -60,7 +92,7 @@ const EventStreamLogs = () => {
           </p>
         }
       />
-      <div className="list-container">
+      <div className="list-container" ref={listContainerRef}>
         {events.map((log) => (
           <LogItem key={`log-${log?._id}`} log={log} />
         ))}
