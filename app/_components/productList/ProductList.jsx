@@ -1,22 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 
 import styles from "./productList.module.css";
 import ProductCard from "../productCard/ProductCard";
 import Pagination from "@leafygreen-ui/pagination";
-import { setCurrentPage, setInitialLoad, setLoading, setProducts, updateProductPrice } from "../../../redux/slices/ProductsSlice";
+import { setCurrentPage, setInitialLoad, setLoading, setProducts } from "../../../redux/slices/ProductsSlice";
 import { getProductsWithSearch } from "@/lib/api";
 import { PAGINATION_PER_PAGE, EVENT_STREAMS_TYPES } from "@/lib/constants";
-import { generateTimeSeriesEvent } from "@/lib/helpers";
-import { sendEvent } from "@/redux/slices/eventsSlice";
-
-
-const itemsPerPage = PAGINATION_PER_PAGE;
+import useCustomerRetentionTracking from '@/hooks/useCustomerRetentionTracking';
 
 const ProductList = () => {
   const dispatch = useDispatch();
+  const trackEvent = useCustomerRetentionTracking();
   const {
     initialLoad, 
     currentPage, 
@@ -24,8 +21,6 @@ const ProductList = () => {
     totalItems,
     query
   } = useSelector(state => state.Products);
-  const selectedUser = useSelector(state => state.User.selectedUser);
-
 
   const getProducts = async () => {
     try {
@@ -36,28 +31,17 @@ const ProductList = () => {
           setLoading(false)
           dispatch(setProducts({products: result.products, totalItems: result.totalItems}))
           
-          // Track search event
-          if (selectedUser && selectedUser._id && query) {
-            const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
-            const metadata = {
+          // Track search event (only if feature is customer retention)
+          if (query) {
+            trackEvent(EVENT_STREAMS_TYPES.SEARCH, {
               query: query,
-            };
-            const payload = generateTimeSeriesEvent(
-              selectedUser._id,
-              sessionId,
-              EVENT_STREAMS_TYPES.SEARCH,
-              metadata
-            );
-            if (payload) {
-              dispatch(sendEvent(payload));
-            }
+            });
           }
         }
     } catch (err) {
         console.log(`Error getting all products, ${err}`)
     }
   }
-
 
   useEffect(() => {
     const getAllProducts = async () => {
@@ -105,8 +89,8 @@ const ProductList = () => {
       <hr className={styles.hr}></hr>
       <Pagination
         currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        itemsPerPageOptions={[8, 16, itemsPerPage]}
+        itemsPerPage={PAGINATION_PER_PAGE}
+        itemsPerPageOptions={[8, 16, PAGINATION_PER_PAGE]}
         numTotalItems={totalItems}
         onForwardArrowClick={ () => dispatch(setCurrentPage(currentPage + 1)) }
         onBackArrowClick={ () => dispatch(setCurrentPage(currentPage - 1)) }
