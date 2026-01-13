@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { clientPromise, dbName } from '@/lib/mongodb';
 
-const eventsTimeSeriesCollection = 'events_ingest_ts'
+const eventsTimeSeriesCollection = 'events_ingest'
 export async function POST(request) {
   try {
     const eventData = await request.json();
