@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { clientPromise, dbName } from '@/lib/mongodb';
+import { COLLECTIONS } from '@/lib/constants';
 
-const eventsTimeSeriesCollection = 'events_ingest'
 export async function POST(request) {
   try {
     const eventData = await request.json();
@@ -25,7 +25,7 @@ export async function POST(request) {
     try {
       const client = await clientPromise;
       const db = client.db(dbName);
-      const collection = db.collection(eventsTimeSeriesCollection);
+      const collection = db.collection(COLLECTIONS.EVENTS_INGEST);
       
       const eventDocument = {
         ...eventData,
