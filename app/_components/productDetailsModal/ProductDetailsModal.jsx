@@ -11,19 +11,17 @@ import {
 } from "@leafygreen-ui/typography";
 import { Modal, Container } from 'react-bootstrap';
 import Button from "@leafygreen-ui/button";
-import Image from "next/image";
 import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
-import { sendEvent } from '@/redux/slices/eventsSlice';
-import { generateTimeSeriesEvent } from '@/lib/helpers';
 import { updateCartProduct } from "@/lib/api";
 import { setCartProductsList } from "@/redux/slices/UserSlice";
 import { EVENT_STREAMS_TYPES } from "@/lib/constants";
+import useCustomerRetentionTracking from '@/hooks/useCustomerRetentionTracking';
 
 const ProductDetailsModal = () => {
     const openedProductDetails = useSelector(state => state.Products.openedProductDetails)
     const dispatch = useDispatch();
     const userId = useSelector(state => state.User.selectedUser?._id)
-    const selectedUser = useSelector(state => state.User.selectedUser)
+    const trackEvent = useCustomerRetentionTracking();
     const cartProducts = useSelector(state => state.User.cart?.products)
     const [isInCart, setIsInCart] = useState(cartProducts.some(obj => obj._id === openedProductDetails?.id))
     
@@ -42,22 +40,12 @@ const ProductDetailsModal = () => {
                 setIsInCart(!isInCart)
                 dispatch(setCartProductsList(cart))
                 
-                // Track add-to-cart event
-                if (selectedUser && selectedUser._id) {
-                    const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
-                    const metadata = {
-                        productId: openedProductDetails.id,
-                        masterCategory: "TODO...",
-                        brand: openedProductDetails.brand,
-                    };
-                    const payload = generateTimeSeriesEvent(
-                        selectedUser._id,
-                        sessionId,
-                        EVENT_STREAMS_TYPES.ADD_TO_CART,
-                        metadata
-                    );
-                    dispatch(sendEvent(payload));
-                }
+                // Track add-to-cart event (only if feature is customer retention)
+                trackEvent(EVENT_STREAMS_TYPES.ADD_TO_CART, {
+                    productId: openedProductDetails.id,
+                    masterCategory: "TODO...",
+                    brand: openedProductDetails.brand,
+                });
             }
         } catch (err) {
             console.log(`Error filling cart ${err}`)

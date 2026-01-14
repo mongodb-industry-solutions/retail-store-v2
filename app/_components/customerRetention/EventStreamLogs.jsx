@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import IconButton from "@leafygreen-ui/icon-button";
 import Icon from "@leafygreen-ui/icon";
 import useAutoScroll from "@/hooks/useAutoScroll";
+import { HEARTBEAT_INTERVAL_MS } from "@/lib/constants";
 
 const EventStreamLogs = () => {
   const [openLogId, setOpenLogId] = useState(null);
@@ -52,13 +53,7 @@ const EventStreamLogs = () => {
         amount={events.length.toString()}
         learnMoreElement={
           <p className="m-0">
-            Events streamed every X seconds to a{" "}
-            <a
-              href="https://www.mongodb.com/docs/manual/core/timeseries-collections/"
-              target="_blank"
-            >
-              time series collection
-            </a> {" "}inside MongoDB Atlas.
+            Customer interactions are streamed to MongoDB Atlas in real time, complemented by heartbeat signals sent every {HEARTBEAT_INTERVAL_MS / 1000} seconds.
           </p>
         }
       />
