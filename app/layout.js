@@ -9,7 +9,7 @@ import DigitalReceiptComp from "./_components/digitalReceipt/DigitalReceiptComp"
 import AlertsContainer from "./_components/alertsContainer/AlertsContainer";
 import AppFeatureWrapper from "./_components/featureListener/AppFeatureWrapper";
 import Footer from "./_components/footer/Footer";
-import HeartbeatManager from "./_components/HeartbeatManager";
+import ConditionalHeartbeatManager from "./_components/heartbeatManager/ConditionalHeartbeatManager";
 
 export const metadata = {
   title: "Home",
@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
       <body>
         <ClientProvider>
           <AppFeatureWrapper>
-            <HeartbeatManager />
+            <ConditionalHeartbeatManager />
             {children}
             <LoginComp />
             <DigitalReceiptComp />

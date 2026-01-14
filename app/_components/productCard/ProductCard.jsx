@@ -11,17 +11,16 @@ import {
   Subtitle
 } from "@leafygreen-ui/typography";
 import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
-import { sendEvent } from '@/redux/slices/eventsSlice';
-import { generateTimeSeriesEvent } from '@/lib/helpers';
 import Image from "next/image";
 import { EVENT_STREAMS_TYPES } from '@/lib/constants';
+import useCustomerRetentionTracking from '@/hooks/useCustomerRetentionTracking';
 
 const ProductCard = ({ id, product }) => {
-  const {  name, brand } = product;
+  const { name, brand, masterCategory, articleType } = product;
   const photo = product?.image?.url || '/placeholder.png';
   const price = product?.price?.amount ? product.price.amount.toFixed(2) : 'N/A';
   const dispatch = useDispatch();
-  const selectedUser = useSelector(state => state.User.selectedUser);
+  const trackEvent = useCustomerRetentionTracking();
 
 
   const onProductClick = () => {
@@ -33,22 +32,13 @@ const ProductCard = ({ id, product }) => {
       price,
     }))
     
-    // Track view-product event
-    if (selectedUser && selectedUser._id) {
-      const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
-      const metadata = {
-          productId: id,
-          masterCategory: "TODO...",
-          brand: brand,
-        };
-      const payload = generateTimeSeriesEvent(
-        selectedUser._id, 
-        sessionId, 
-        EVENT_STREAMS_TYPES.VIEW_PRODUCT, 
-        metadata
-      );
-      dispatch(sendEvent(payload));
-    }
+    // Track view-product event (only if feature is customer retention)
+    trackEvent(EVENT_STREAMS_TYPES.VIEW_PRODUCT, {
+      productId: id,
+      masterCategory: masterCategory,
+      articleType: articleType,
+      brand: brand,
+    });
   }
 
   return (
