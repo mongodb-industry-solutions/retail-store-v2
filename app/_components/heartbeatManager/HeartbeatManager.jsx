@@ -113,11 +113,16 @@ const HeartbeatManager = () => {
     }, HEARTBEAT_INTERVAL_MS);
   }, [dispatch, selectedUser]);
 
+  // Effect to handle user/feature changes
   useEffect(() => {
-    // Check if we should be streaming
     const shouldStream = selectedUser && selectedUser._id && feature === FEATURES.CUSTOMER_RETENTION;
     
-    if (!shouldStream) {
+    if (shouldStream && !isStreaming) {
+      // Start streaming
+      setIsStreaming(true);
+      setIsPaused(false);
+    } else if (!shouldStream && isStreaming) {
+      // Stop streaming
       setIsStreaming(false);
       setIsPaused(true);
       // Clear any existing intervals/timeouts
@@ -129,22 +134,28 @@ const HeartbeatManager = () => {
         clearTimeout(inactivityTimeoutRef.current);
         inactivityTimeoutRef.current = null;
       }
-      return;
     }
+  }, [selectedUser, feature, isStreaming]);
 
-    // If we should stream and we're not already streaming, start it
-    if (!isStreaming || isPaused) {
-      setIsStreaming(true);
-      setIsPaused(false);
-      
-      // Start heartbeat and inactivity tracking
+  // Effect to start/stop heartbeat based on streaming state
+  useEffect(() => {
+    if (isStreaming && !isPaused) {
       startHeartbeat();
       resetInactivityTimer();
+    } else {
+      // Clear intervals when not streaming or paused
+      if (heartbeatIntervalRef.current) {
+        clearInterval(heartbeatIntervalRef.current);
+        heartbeatIntervalRef.current = null;
+      }
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current);
+        inactivityTimeoutRef.current = null;
+      }
     }
 
-    // Cleanup function
     return () => {
-      setIsStreaming(false);
+      // Cleanup on unmount
       if (heartbeatIntervalRef.current) {
         clearInterval(heartbeatIntervalRef.current);
         heartbeatIntervalRef.current = null;
@@ -154,7 +165,7 @@ const HeartbeatManager = () => {
         inactivityTimeoutRef.current = null;
       }
     };
-  }, [selectedUser, feature, isPaused, startHeartbeat, resetInactivityTimer]);
+  }, [isStreaming, isPaused, startHeartbeat, resetInactivityTimer]);
 
   // Return streaming indicator UI and inactivity alert
   return (

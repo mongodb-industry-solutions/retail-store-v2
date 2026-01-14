@@ -6,7 +6,14 @@ const CustomerRetentionSlice = createSlice({
     initialState: {
         isCustomerRetentionEnabled: false,
         isDrawerOpen: true,
+        customerBehaviour: {
+            initialFetch: false,
+            isLoading: false,
+            data: [],
+        },
         nextBestActions: next_best_actions,
+        
+
     },
     reducers: {
         setIsDrawerOpen: (state, action) => {
@@ -15,12 +22,20 @@ const CustomerRetentionSlice = createSlice({
         setIsCustomerRetentionEnabled: (state, action) => {
             return { ...state, isCustomerRetentionEnabled: action.payload.isCustomerRetentionEnabled }
         },
+        setCustomerBehaviour: (state, action) => {
+            return { ...state, customerBehaviour: { ...state.customerBehaviour, ...action.payload} }
+        },
+        pushCustomerBehaviourItem: (state, action) => {
+            state.customerBehaviour.data.push(action.payload);
+        }
     }
 })
 
 export const {
     setIsDrawerOpen,
-    setIsCustomerRetentionEnabled
+    setIsCustomerRetentionEnabled,
+    setCustomerBehaviour,
+    pushCustomerBehaviourItem
 } = CustomerRetentionSlice.actions
 
 export default CustomerRetentionSlice.reducer
