@@ -31,7 +31,7 @@ const BehaviourLogs = () => {
 
     console.log("listenToSSEUpdates func - sessionId:", sessionId, "userId:", userId);
     const eventSource = new EventSource(
-      `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.CUSTOMER_BEHAVIOUR}&userId=${userId}&sessionId=${sessionId}`
+      `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.CUSTOMER_BEHAVIOUR}&uid=${userId}&sid=${sessionId}`
     );
     
     eventSource.onopen = () => {
@@ -99,7 +99,7 @@ const BehaviourLogs = () => {
       setOpenLogId(isOpen ? null : log._id);
     };
 
-    const behaviorConfig = getBehaviorConfig(log.behaviourType);
+    const behaviorConfig = getBehaviorConfig(log.signalType);
 
     return (
       <div className="log-item blue" key={`log-${log._id}`}>
@@ -127,7 +127,7 @@ const BehaviourLogs = () => {
                 {behaviorConfig.label}
               </p>
               <p className="m-0" style={{ fontSize: "12px", color: "#666", marginTop: "2px" }}>
-                {new Date(log?.behaviourRegisteredTime).toLocaleTimeString()}
+                {new Date(log?.ts).toLocaleTimeString()}
               </p>
             </div>
           </div>
@@ -154,7 +154,7 @@ const BehaviourLogs = () => {
         amount={customerBehaviour.length.toString()}
         learnMoreElement={
           <p className="m-0">
-            <a href="https://www.mongodb.com/atlas/stream-processing" target="_blank" rel="noopener noreferrer">Atlas Stream Processing</a> ingests UX events streams and generates the
+            <a href="https://www.mongodb.com/atlas/stream-processing" target="_blank" rel="noopener noreferrer">Atlas Stream Processing</a> ingests action events streams and generates the
             belowed customer behaviours.
           </p>
         }
