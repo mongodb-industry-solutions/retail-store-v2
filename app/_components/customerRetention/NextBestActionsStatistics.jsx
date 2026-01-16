@@ -1,7 +1,7 @@
 import Card from "@leafygreen-ui/card";
 import React from "react";
 import SectionHeader from "./SectionHeader";
-import { next_best_actions_types } from "@/lib/constants";
+import { NEXT_BEST_ACTIONS_TYPES } from "@/lib/constants";
 import Icon from "@leafygreen-ui/icon";
 import { getBehaviorConfig, getNextBestActionConfig } from "@/lib/helpers";
 import Badge from "@leafygreen-ui/badge";
@@ -15,8 +15,8 @@ const NextBestActionStatistic = () => {
         learnMoreElement={null}
       />
       <div className="">
-        {next_best_actions_types.map((type, index) => {
-          const behaviorConfig = getBehaviorConfig(type);
+        {Object.values(NEXT_BEST_ACTIONS_TYPES).map((type, index) => {
+          const behaviorConfig = getBehaviorConfig(type.name);
           return (
             <div
               className="d-flex log-item grey justify-content-between"
