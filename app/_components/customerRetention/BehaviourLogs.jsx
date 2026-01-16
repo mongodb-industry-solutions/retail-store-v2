@@ -31,7 +31,11 @@ const BehaviourLogs = () => {
 
     console.log("listenToSSEUpdates func - sessionId:", sessionId, "userId:", userId);
     const eventSource = new EventSource(
+<<<<<<< HEAD
       `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.CUSTOMER_BEHAVIOUR}&uid=${userId}&sid=${sessionId}`
+=======
+      `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.CUSTOMER_BEHAVIOUR}&userId=${userId}&sessionId=${sessionId}`
+>>>>>>> a8ec0120dd727fe92553b553438e641b86fbaf2a
     );
     
     eventSource.onopen = () => {
@@ -99,7 +103,11 @@ const BehaviourLogs = () => {
       setOpenLogId(isOpen ? null : log._id);
     };
 
+<<<<<<< HEAD
     const behaviorConfig = getBehaviorConfig(log.signalType);
+=======
+    const behaviorConfig = getBehaviorConfig(log.behaviourType);
+>>>>>>> a8ec0120dd727fe92553b553438e641b86fbaf2a
 
     return (
       <div className="log-item blue" key={`log-${log._id}`}>
