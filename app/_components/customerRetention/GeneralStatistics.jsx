@@ -1,13 +1,50 @@
 import Card from "@leafygreen-ui/card";
-import React from "react";
+import React, { useMemo } from "react";
 import SectionHeader from "./SectionHeader";
 import { CardTitle } from "react-bootstrap";
 import { InfoSprinkle } from "@leafygreen-ui/info-sprinkle";
 import { useSelector } from "react-redux";
+import { EVENT_STREAMS_TYPES } from "@/lib/constants";
 
 const GeneralStatistics = () => {
   const selectedUser = useSelector(state => state.User.selectedUser);
   const sessionId = sessionStorage.getItem('sessionId') || 'No session';
+  const totalEvents = useSelector(state => state.events?.events?.length || 0);
+  const nextBestActionsTriggered = useSelector(state => state.CustomerRetention?.nextBestActions?.data?.length || 0);
+  
+  // Calculate conversion rate from actual events (optimized with useMemo)
+  const events = useSelector(state => state.events?.events || []);
+  const { productsAddedToCart, totalProductsViewed, conversionRate } = useMemo(() => {
+    let addToCartCount = 0;
+    let viewProductCount = 0;
+    
+    // Debug: Log events to see their structure
+    console.log('All events for conversion calculation:', events);
+    console.log('Looking for ADD_TO_CART:', EVENT_STREAMS_TYPES.ADD_TO_CART.name);
+    console.log('Looking for VIEW_PRODUCT:', EVENT_STREAMS_TYPES.VIEW_PRODUCT.name);
+    
+    // Single pass through events instead of two filters
+    events.forEach(event => {
+      console.log('Event:', event, 'Event type:', event.tags?.event);
+      if (event.tags?.event === EVENT_STREAMS_TYPES.ADD_TO_CART.name) {
+        addToCartCount++;
+        console.log('Found ADD_TO_CART event, count:', addToCartCount);
+      } else if (event.tags?.event === EVENT_STREAMS_TYPES.VIEW_PRODUCT.name) {
+        viewProductCount++;
+        console.log('Found VIEW_PRODUCT event, count:', viewProductCount);
+      }
+    });
+    
+    console.log('Final counts - addToCart:', addToCartCount, 'viewProduct:', viewProductCount);
+    
+    const rate = viewProductCount > 0 ? ((addToCartCount / viewProductCount) * 100).toFixed(1) : 0;
+    
+    return {
+      productsAddedToCart: addToCartCount,
+      totalProductsViewed: viewProductCount,
+      conversionRate: rate
+    };
+  }, [events]);
 
   return (
     <>
@@ -34,11 +71,11 @@ const GeneralStatistics = () => {
       <div>
         <div className="item">
           <p className="m-0">Total Events Processed</p>
-          <CardTitle>104</CardTitle>
+          <CardTitle>{totalEvents}</CardTitle>
         </div>
         <div className="item">
           <p className="m-0">Next Best Actions Triggered</p>
-          <CardTitle>7</CardTitle>
+          <CardTitle>{nextBestActionsTriggered}</CardTitle>
         </div>
         <div className="item">
             <div className="d-flex">
@@ -49,7 +86,7 @@ const GeneralStatistics = () => {
                     (Products Added to Cart / Total Products Viewed) × 100
                 </InfoSprinkle>
             </div>
-          <CardTitle>80%</CardTitle>
+          <CardTitle>{conversionRate}%</CardTitle>
         </div>
       </div>
     </Card>
