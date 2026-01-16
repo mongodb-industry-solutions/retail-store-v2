@@ -1,7 +1,7 @@
 import Card from "@leafygreen-ui/card";
 import React, { useState } from "react";
 import SectionHeader from "./SectionHeader";
-import { behaviour_types } from "@/lib/constants";
+import { CUSTOMER_BEHAVIOUR_TYPES } from "@/lib/constants";
 import Icon from "@leafygreen-ui/icon";
 import { getBehaviorConfig } from "@/lib/helpers";
 import Badge from "@leafygreen-ui/badge";
@@ -14,8 +14,8 @@ const BehaviourStatistics = () => {
         learnMoreElement={null}
       />
       <div className="">
-        {behaviour_types.map((type, index) => {
-          const behaviorConfig = getBehaviorConfig(type);
+        {Object.values(CUSTOMER_BEHAVIOUR_TYPES).map((type, index) => {
+          const behaviorConfig = getBehaviorConfig(type.name);
           return (
             <div
               className="d-flex log-item grey justify-content-between"
