@@ -4,6 +4,7 @@ import Badge from "@leafygreen-ui/badge";
 import React, { useEffect, useCallback, useRef } from 'react'
 import { COLLECTIONS } from '@/lib/constants'
 import { v4 as uuidv4 } from 'uuid'
+import { getSessionAndUserId } from '@/lib/helpers'
 
 import ListGroup from "react-bootstrap/ListGroup";
 import { useSelector, useDispatch } from 'react-redux'
@@ -21,17 +22,16 @@ const Notifications = ({ isMenuOpened, onToggle }) => {
 
 
   const listenToSSEUpdates = useCallback(() => {
-    const sessionId = sessionStorage.getItem('sessionId');
-    const userId = selectedUser?._id;
+    const { sid, uid } = getSessionAndUserId();
     
-    if (!sessionId || !userId) {
+    if (!sid || !uid) {
       console.warn('Missing sessionId or userId for SSE connection');
       return null;
     }
 
-    console.log("listenToSSEUpdates func - sessionId:", sessionId, "userId:", userId);
+    console.log("listenToSSEUpdates func - sessionId:", sid, "userId:", uid);
     const eventSource = new EventSource(
-      `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.NEXT_BEST_ACTIONS}&uid=${userId}&sid=${sessionId}`
+      `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.NEXT_BEST_ACTIONS}&uid=${uid}&sid=${sid}`
     );
     
     eventSource.onopen = () => {
