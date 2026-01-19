@@ -36,7 +36,6 @@ envSecrets:
   SEARCH_INDEX_NAME: retail-store-v2-staging
 
   # Frontend
-  NEXT_PUBLIC_DEVELOPMENT: 'true'
   NEXT_PUBLIC_CHATBOT_PASSWORD: retail-store-v2-staging
   GCP_INVOICE_URL: retail-store-v2-staging
 
@@ -49,6 +48,7 @@ envSecrets:
 # Environment variables for GCP (NO sensibles)
 env:
   NODE_ENV: "staging"
+  NEXT_PUBLIC_DEVELOPMENT: "true"
   GOOGLE_APPLICATION_CREDENTIALS: /etc/gcp/credential-configuration.json
   GCP_PROJECT_ID: ist-retail-demo
   GCP_LOCATION: us-central1
