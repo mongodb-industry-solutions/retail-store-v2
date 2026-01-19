@@ -33,7 +33,7 @@ const CustomerRetentionContainer = () => {
                 <NBAProcessLogs />
             </div>
         </Tab>
-        <Tab name="Session statistics">
+        <Tab name="Statistics">
           <GeneralStatistics/>
           <CustomerStatistic/>
           <BehaviourStatistics/>
