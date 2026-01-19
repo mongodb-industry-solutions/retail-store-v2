@@ -116,23 +116,6 @@ const HeartbeatManager = () => {
     }
   };
 
-  // Handle user dismissal (stop tracking)
-  const handleStopTracking = () => {
-    setShowInactivityAlert(false);
-    setIsPaused(true);
-    setIsStreaming(false);
-    
-    // Clear all timers
-    if (heartbeatIntervalRef.current) {
-      clearInterval(heartbeatIntervalRef.current);
-      heartbeatIntervalRef.current = null;
-    }
-    if (inactivityTimeoutRef.current) {
-      clearTimeout(inactivityTimeoutRef.current);
-      inactivityTimeoutRef.current = null;
-    }
-  };
-
   const startHeartbeat = useCallback(() => {
     // Clear existing interval first
     if (heartbeatIntervalRef.current) {
@@ -261,12 +244,6 @@ const HeartbeatManager = () => {
                 className="inactivity-button inactivity-button--primary"
               >
                 Yes, continue tracking
-              </button>
-              <button
-                onClick={handleStopTracking}
-                className="inactivity-button inactivity-button--secondary"
-              >
-                Stop tracking
               </button>
             </div>
           </div>

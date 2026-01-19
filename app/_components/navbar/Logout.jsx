@@ -7,7 +7,7 @@ const Logout = () => {
   const trackEvent = useCustomerRetentionTracking();
 
   const handleMouseEnter = () => {
-    trackEvent(EVENT_STREAMS_TYPES.EXIT_INTENT, {
+    trackEvent(EVENT_STREAMS_TYPES.EXIT_RISK, {
       exitMethod: 'logout-hover'
     });
   };

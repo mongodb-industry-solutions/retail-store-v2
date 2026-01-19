@@ -5,7 +5,7 @@ import { CardTitle } from "react-bootstrap";
 import { InfoSprinkle } from "@leafygreen-ui/info-sprinkle";
 import { useSelector } from "react-redux";
 import { EVENT_STREAMS_TYPES } from "@/lib/constants";
-import { getSessionAndUserId } from "@/lib/helpers";
+import { getSessionAndUserId, getUser } from "@/lib/helpers";
 
 const GeneralStatistics = () => {
   const { uid, sid } = getSessionAndUserId();
@@ -64,6 +64,7 @@ const GeneralStatistics = () => {
     <Card className="mt-2 GeneralStatistics">
       <SectionHeader
         title="Session Analytics"
+        subtitle={`For current ${getUser()?.name || "this user"}'s session.`}
         amount={null}
         learnMoreElement={null}
       />
