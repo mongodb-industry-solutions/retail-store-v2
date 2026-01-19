@@ -51,7 +51,7 @@ const NextBestActionStatistic = () => {
         title="Next Best Actions Triggered (By type)"
         subtitle={loading ? 'Loading actions data...' : `Based on ${totalCount} actions across all of ${getUser()?.name || "this user"}'s sessions.`}
         amount={null}
-        learnMoreElement={null}        extraHTMElement={<InfoWizard open={isInfoOpen} setOpen={setIsInfoOpen} tabs={[{
+        learnMoreElement={null}        extraHTMLElement={<InfoWizard open={isInfoOpen} setOpen={setIsInfoOpen} tabs={[{
           heading: "Aggregation Pipeline",
           content: <Code language="javascript">{`const pipeline = ${JSON.stringify(AGGREGATION_PIPELINES.NEXT_BEST_ACTIONS_ANALYSIS, null, 2)}`}</Code>
         }]} />}      />
