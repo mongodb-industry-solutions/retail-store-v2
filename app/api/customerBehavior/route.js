@@ -43,7 +43,7 @@ export async function GET(request) {
   return NextResponse.json(
     { 
       message: 'Customer Behavior API is running',
-      available: process.env.DEVELOPMENT === 'true'
+      available: process.env.NEXT_PUBLIC_DEVELOPMENT === 'true'
     },
     { status: 200 }
   );
