@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendEvent } from '@/redux/slices/eventsSlice';
 import { generateTimeSeriesEvent, getSessionAndUserId } from '@/lib/helpers';
-import { EVENT_STREAMS_TYPES, HEARTBEAT_INTERVAL_MS, INACTIVITY_TIMEOUT_MS, FEATURES } from '@/lib/constants';
+import { EVENT_STREAMS_TYPES, HEARTBEAT_INTERVAL_MS, INACTIVITY_TIMEOUT_MS, FEATURES, DEVELOPMENT } from '@/lib/constants';
 import './heartbeatManager.css';
 
 const HeartbeatManager = () => {
@@ -205,10 +205,10 @@ const HeartbeatManager = () => {
 
       {/* Development Generate Data Button */}
       {(() => {
-        const isDev = process.env.NEXT_PUBLIC_DEVELOPMENT === 'true';
+        const isDev = DEVELOPMENT;
         const hasUser = !!selectedUser;
         console.log('🔍 Button visibility check:', {
-          NEXT_PUBLIC_DEVELOPMENT: process.env.NEXT_PUBLIC_DEVELOPMENT,
+          DEVELOPMENT,
           isDev,
           hasUser,
           selectedUser,
