@@ -52,7 +52,7 @@ const BehaviourStatistics = () => {
         subtitle={loading ? 'Loading user data...' : `Based on ${totalCount} signals across all of ${getUser()?.name || "this user"}'s sessions.`}
         amount={null}
         learnMoreElement={null}
-        extraHTMElement={<InfoWizard open={isInfoOpen} setOpen={setIsInfoOpen} tabs={[{
+        extraHTMLElement={<InfoWizard open={isInfoOpen} setOpen={setIsInfoOpen} tabs={[{
           heading: "Aggregation Pipeline",
           content: <Code language="javascript">{`const pipeline = ${JSON.stringify(AGGREGATION_PIPELINES.CUSTOMER_BEHAVIOR_ANALYSIS, null, 2)}`}</Code>
         }]} />}
