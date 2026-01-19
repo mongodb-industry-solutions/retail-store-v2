@@ -48,7 +48,7 @@ const CustomerStatistic = () => {
         subtitle={loading ? 'Loading engagement data...' : `Based on ${totalCount} engaged actions across all ${getUser()?.name || getUser()?.firstName || "this user"}'s sessions.`}
         amount={null}
         learnMoreElement={null}
-        extraHTMElement={<InfoWizard open={isInfoOpen} setOpen={setIsInfoOpen} tabs={[{
+        extraHTMLElement={<InfoWizard open={isInfoOpen} setOpen={setIsInfoOpen} tabs={[{
           heading: "Aggregation Pipeline",
           content: <Code language="javascript">{`const pipeline = ${JSON.stringify(AGGREGATION_PIPELINES.ENGAGED_ACTIONS_ANALYSIS, null, 2)}`}</Code>
         }]} />}
