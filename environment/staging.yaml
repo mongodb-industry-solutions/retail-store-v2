@@ -48,7 +48,6 @@ envSecrets:
 # Environment variables for GCP (NO sensibles)
 env:
   NODE_ENV: "staging"
-  NEXT_PUBLIC_DEVELOPMENT: "true"
   GOOGLE_APPLICATION_CREDENTIALS: /etc/gcp/credential-configuration.json
   GCP_PROJECT_ID: ist-retail-demo
   GCP_LOCATION: us-central1
