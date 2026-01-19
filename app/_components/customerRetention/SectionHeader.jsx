@@ -4,16 +4,18 @@ import { Label } from '@leafygreen-ui/typography';
 import Icon from "@leafygreen-ui/icon";
 
 const SectionHeader = (props) => {
-  const { title, amount = null, learnMoreElement = null } = props;
+  const { title, subtitle = null, amount = null, learnMoreElement = null, extraHTMElement=null } = props;
   const [expanded, setExpanded] = useState(false);
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
       <div className="section-header">
-        <div className="titles d-flex p-2 justify-content-between align-items-center">
+        <div className="titles d-flex p-2 ps-0 justify-content-between align-items-center">
           <Label>{title}</Label>
           {amount && <Badge variant="darkgray">{amount}</Badge>}
+          {extraHTMElement}
         </div>
+        {subtitle && <p className="m-0">{subtitle}</p>}
         {learnMoreElement && expanded && (
           <div
             className="learn-more-text"
