@@ -21,23 +21,16 @@ const useCustomerRetentionTracking = () => {
       return;
     }
 
-    // Get or generate session ID
-    const sessionId = sessionStorage.getItem('sessionId') || 
-      (() => {
-        const newSessionId = Date.now().toString();
-        sessionStorage.setItem('sessionId', newSessionId);
-        return newSessionId;
-      })();
-
-    // Generate and dispatch event
+    // Generate and dispatch event (userId/sessionId handled internally)
     const payload = generateTimeSeriesEvent(
-      selectedUser._id, 
-      sessionId, 
       eventType, 
       metadata
     );
     
-    dispatch(sendEvent(payload));
+    // payload will be null if user/session validation fails internally
+    if (payload) {
+      dispatch(sendEvent(payload));
+    }
   }, [dispatch, selectedUser, feature]);
 
   return trackEvent;

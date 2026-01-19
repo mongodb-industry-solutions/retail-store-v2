@@ -1,43 +1,50 @@
 import Card from "@leafygreen-ui/card";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import SectionHeader from "./SectionHeader";
 import { COLLECTIONS } from "@/lib/constants";
 import IconButton from "@leafygreen-ui/icon-button";
 import Icon from "@leafygreen-ui/icon";
 import { getBehaviorConfig } from "@/lib/helpers";
 import useAutoScroll from "@/hooks/useAutoScroll";
-import { pushCustomerBehaviourItem, setCustomerBehaviour } from "@/redux/slices/CustomerRetentionSlice";
+import {
+  pushCustomerBehaviourItem,
+  setCustomerBehaviour,
+} from "@/redux/slices/CustomerRetentionSlice";
 import { fetchCustomerBehaviours } from "@/lib/api";
 
 const BehaviourLogs = () => {
   const [openLogId, setOpenLogId] = useState(null);
   const dispatch = useDispatch();
-  const {initialFetch, isLoading, data: customerBehaviour} = useSelector(state => state.CustomerRetention.customerBehaviour);
-  const selectedUser = useSelector(state => state.User.selectedUser);
+  const {
+    initialFetch,
+    isLoading,
+    data: customerBehaviour,
+  } = useSelector((state) => state.CustomerRetention.customerBehaviour);
+  const selectedUser = useSelector((state) => state.User.selectedUser);
   const { containerRef } = useAutoScroll(customerBehaviour);
   const sseConnection = useRef(null);
   const changeStreamSessionID = useRef(uuidv4());
 
   const listenToSSEUpdates = useCallback(() => {
-    const sessionId = sessionStorage.getItem('sessionId');
-    const userId = selectedUser?._id;
-    
-    if (!sessionId || !userId) {
-      console.warn('Missing sessionId or userId for SSE connection');
+    const sid = sessionStorage.getItem("sid");
+    const uid = selectedUser?._id;
+
+    if (!sid || !uid) {
+      console.warn("Missing sid or uid for SSE connection");
       return null;
     }
 
-    console.log("listenToSSEUpdates func - sessionId:", sessionId, "userId:", userId);
+    console.log("listenToSSEUpdates func - sid:", sid, "uid:", uid);
     const eventSource = new EventSource(
-      `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.CUSTOMER_BEHAVIOUR}&uid=${userId}&sid=${sessionId}`
+      `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.CUSTOMER_BEHAVIOUR}&uid=${uid}&sid=${sid}`
     );
-    
+
     eventSource.onopen = () => {
       console.log("SSE connection opened for customer behaviour events.");
     };
-    
+
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       console.log("Received SSE Update on Events:", data);
@@ -51,11 +58,11 @@ const BehaviourLogs = () => {
         }
       }
     };
-    
+
     eventSource.onerror = (event) => {
       console.error("SSE Error for customer behaviour:", event);
     };
-    
+
     // Close the previous connection if it exists
     if (sseConnection.current) {
       sseConnection.current.close();
@@ -67,18 +74,18 @@ const BehaviourLogs = () => {
   }, [selectedUser, dispatch]);
 
   useEffect(() => {
-    if(!initialFetch && !isLoading && selectedUser){        
-      dispatch(setCustomerBehaviour({initialFetch: true, isLoading: true}));
+    if (!initialFetch && !isLoading && selectedUser) {
+      dispatch(setCustomerBehaviour({ initialFetch: true, isLoading: true }));
       fetchCustomerBehaviours()
-        .then(response => {
-          dispatch(setCustomerBehaviour({isLoading: false, data: response}));
+        .then((response) => {
+          dispatch(setCustomerBehaviour({ isLoading: false, data: response }));
         })
-        .catch(error => {
-          console.error('Error fetching customer behaviours:', error);
-          dispatch(setCustomerBehaviour({isLoading: false, data: []}));
+        .catch((error) => {
+          console.error("Error fetching customer behaviours:", error);
+          dispatch(setCustomerBehaviour({ isLoading: false, data: [] }));
         });
     }
-  }, [initialFetch, isLoading, selectedUser, dispatch])
+  }, [initialFetch, isLoading, selectedUser, dispatch]);
 
   // SSE connection for real-time updates
   useEffect(() => {
@@ -123,18 +130,21 @@ const BehaviourLogs = () => {
               />
             </div>
             <div>
-              <p className="m-0" style={{ fontWeight: 600, fontSize: "14px", color: "#1976D2" }}>
+              <p
+                className="m-0"
+                style={{ fontWeight: 600, fontSize: "14px", color: "#1976D2" }}
+              >
                 {behaviorConfig.label}
               </p>
-              <p className="m-0" style={{ fontSize: "12px", color: "#666", marginTop: "2px" }}>
+              <p
+                className="m-0"
+                style={{ fontSize: "12px", color: "#666", marginTop: "2px" }}
+              >
                 {new Date(log?.ts).toLocaleTimeString()}
               </p>
             </div>
           </div>
-          <IconButton
-            onClick={toggleDocument}
-            aria-label="Toggle Document"
-          >
+          <IconButton onClick={toggleDocument} aria-label="Toggle Document">
             <Icon glyph="CurlyBraces" size="small" />
           </IconButton>
         </div>
@@ -146,7 +156,7 @@ const BehaviourLogs = () => {
       </div>
     );
   };
-  
+
   return (
     <Card className="mt-2">
       <SectionHeader
@@ -154,8 +164,15 @@ const BehaviourLogs = () => {
         amount={customerBehaviour.length.toString()}
         learnMoreElement={
           <p className="m-0">
-            <a href="https://www.mongodb.com/atlas/stream-processing" target="_blank" rel="noopener noreferrer">Atlas Stream Processing</a> ingests action events streams and generates the
-            belowed customer behaviours.
+            <a
+              href="https://www.mongodb.com/atlas/stream-processing"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Atlas Stream Processing
+            </a>{" "}
+            ingests action events streams and generates the belowed customer
+            behaviours.
           </p>
         }
       />

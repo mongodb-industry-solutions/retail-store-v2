@@ -5,15 +5,14 @@ import { CardTitle } from "react-bootstrap";
 import { InfoSprinkle } from "@leafygreen-ui/info-sprinkle";
 import { useSelector } from "react-redux";
 import { EVENT_STREAMS_TYPES } from "@/lib/constants";
+import { getSessionAndUserId, getUser } from "@/lib/helpers";
 
 const GeneralStatistics = () => {
-  const selectedUser = useSelector(state => state.User.selectedUser);
-  const sessionId = sessionStorage.getItem('sessionId') || 'No session';
-  const totalEvents = useSelector(state => state.events?.events?.length || 0);
+  const { uid, sid } = getSessionAndUserId();
   const nextBestActionsTriggered = useSelector(state => state.CustomerRetention?.nextBestActions?.data?.length || 0);
   
   // Calculate conversion rate from actual events (optimized with useMemo)
-  const events = useSelector(state => state.events?.events || []);
+  const events = useSelector(state => state.Events?.events || []);
   const { productsAddedToCart, totalProductsViewed, conversionRate } = useMemo(() => {
     let addToCartCount = 0;
     let viewProductCount = 0;
@@ -53,10 +52,10 @@ const GeneralStatistics = () => {
       <div className="d-flex justify-content-between align-items-center">
         <div className="d-flex gap-4">
           <span style={{ fontSize: '13px' }}>
-            <strong>User ID:</strong> <code>{selectedUser?._id || 'No user selected'}</code>
+            <strong>User ID:</strong> <code>{uid|| 'No user selected'}</code>
           </span>
           <span style={{ fontSize: '13px' }}>
-            <strong>Session:</strong> <code>{sessionId}</code>
+            <strong>Session:</strong> <code>{sid}</code>
           </span>
         </div>
       </div>
@@ -65,13 +64,14 @@ const GeneralStatistics = () => {
     <Card className="mt-2 GeneralStatistics">
       <SectionHeader
         title="Session Analytics"
+        subtitle={`For current ${getUser()?.name || "this user"}'s session.`}
         amount={null}
         learnMoreElement={null}
       />
       <div>
         <div className="item">
-          <p className="m-0">Total Events Processed</p>
-          <CardTitle>{totalEvents}</CardTitle>
+          <p className="m-0">Total Events Generated</p>
+          <CardTitle>{events?.length || 0}</CardTitle>
         </div>
         <div className="item">
           <p className="m-0">Next Best Actions Triggered</p>

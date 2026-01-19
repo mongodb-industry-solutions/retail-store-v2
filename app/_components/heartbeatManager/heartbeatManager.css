@@ -1,0 +1,147 @@
+/* HeartbeatManager Component Styles */
+
+@keyframes heartbeatBlink {
+  0%, 50% { 
+    opacity: 1; 
+  }
+  51%, 100% { 
+    opacity: 0.3; 
+  }
+}
+
+/* Status Indicator */
+.heartbeat-status {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.heartbeat-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.heartbeat-indicator--active {
+  background-color: #00ff00;
+  animation: heartbeatBlink 1s infinite;
+}
+
+.heartbeat-indicator--inactive {
+  background-color: #ff4444;
+}
+
+/* Development Generate Data Button */
+.generate-data-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.generate-data-button--active {
+  background-color: #28a745;
+  cursor: pointer;
+  opacity: 1;
+}
+
+.generate-data-button--active:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.generate-data-button--disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Inactivity Alert Modal */
+.inactivity-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.inactivity-modal {
+  background-color: white;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  max-width: 400px;
+  margin: 20px;
+}
+
+.inactivity-modal__title {
+  margin: 0 0 16px 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.inactivity-modal__text {
+  margin: 0 0 24px 0;
+  font-size: 16px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.inactivity-modal__buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.inactivity-button {
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.inactivity-button--primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.inactivity-button--primary:hover {
+  background-color: #0056b3;
+}
+
+.inactivity-button--secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.inactivity-button--secondary:hover {
+  background-color: #545b62;
+}

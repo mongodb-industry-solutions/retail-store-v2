@@ -36,6 +36,7 @@ envSecrets:
   SEARCH_INDEX_NAME: retail-store-v2-staging
 
   # Frontend
+  NEXT_PUBLIC_DEVELOPMENT: true
   NEXT_PUBLIC_CHATBOT_PASSWORD: retail-store-v2-staging
   GCP_INVOICE_URL: retail-store-v2-staging
 
