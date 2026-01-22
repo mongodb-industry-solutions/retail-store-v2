@@ -35,6 +35,10 @@ const ProductList = () => {
           if (query) {
             trackEvent(EVENT_STREAMS_TYPES.SEARCH, {
               query: query,
+              productId: result.products.length > 0 ? result.products[0]._id : null,
+              subCategory: result.products.length > 0 ? result.products[0].subCategory : null,
+              articleType: result.products.length > 0 ? result.products[0].articleType : null,
+              brand: result.products.length > 0 ? result.products[0].brand : null,
             });
           }
         }

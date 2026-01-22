@@ -160,7 +160,7 @@ const BehaviourLogs = () => {
   return (
     <Card className="mt-2">
       <SectionHeader
-        title="Customer behaviour events"
+        title="2. Customer behaviour events"
         amount={customerBehaviour.length.toString()}
         learnMoreElement={
           <p className="m-0">
