@@ -11,6 +11,8 @@ import { DisplayMode, DrawerLayout } from "@leafygreen-ui/drawer";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsDrawerOpen } from "@/redux/slices/CustomerRetentionSlice";
 import CustomerRetentionContainer from "../_components/customerRetention/CustomerRetentionContainer";
+import ShopTalkTrackNoEvents from "../_components/customerRetention/talkTracks/shopTalkTrackNoEvents";
+import ShopTalkTrackCustomerRetention from "../_components/customerRetention/talkTracks/ShopTalkTrackCustomerRetention";
 
 export default function Page() {
   const dispatch = useDispatch();
@@ -20,17 +22,28 @@ export default function Page() {
   const tabs = [
     {
       heading: "How to demo",
-      content: <></>,
+      content: <><ShopTalkTrackNoEvents/></>,
+    }
+  ];
+    const tabsCustomerRetention = [
+    {
+      heading: "How to demo",
+      content: <ShopTalkTrackCustomerRetention section={1}/>,
     },
     {
       heading: "Behind the scenes",
-      content: <></>,
+      content: <ShopTalkTrackCustomerRetention section={2}/>,
+    },
+    {
+      heading: "Customer Retention",
+      content: <ShopTalkTrackCustomerRetention section={3}/>,
     },
     {
       heading: "Why MongoDB?",
-      content: <></>,
+      content: <ShopTalkTrackCustomerRetention section={4}/>,
     },
   ];
+
   if(!isCustomerRetentionEnabled){
     return <main>
           <Navbar />
@@ -41,7 +54,7 @@ export default function Page() {
               setOpen={setOpenHelpModal}
               tooltipText="Learn More!"
               iconGlyph="Wizard"
-              tabs={tabs}
+              tabs={ tabsCustomerRetention }
               openModalIsButton={true}
             />
           </div>
@@ -68,14 +81,14 @@ export default function Page() {
               setOpen={setOpenHelpModal}
               tooltipText="Learn More!"
               iconGlyph="Wizard"
-              tabs={tabs}
+              tabs={tabsCustomerRetention}
               openModalIsButton={true}
             />
           </div>
           <div className="container mx-auto px-4">
             <ProductList />
           </div>
-          <ProductDetailsModal />
+          <ProductDetailsModal/>
         </main>
       </DrawerLayout>
   );

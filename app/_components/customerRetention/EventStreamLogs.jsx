@@ -49,7 +49,7 @@ const EventStreamLogs = () => {
   return (
     <Card>
       <SectionHeader
-        title="UX events streams"
+        title="1. UX events streams"
         amount={events?.length?.toString()}
         learnMoreElement={
           <p className="m-0">
