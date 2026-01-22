@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Modal from "@leafygreen-ui/modal";
 import { H3, Body } from "@leafygreen-ui/typography";
 import Tooltip from "@leafygreen-ui/tooltip";
 import Icon from "@leafygreen-ui/icon";
@@ -10,6 +9,7 @@ import PropTypes from "prop-types";
 import styles from "./InfoWizard.module.css";
 import Button from "@leafygreen-ui/button";
 import { Tabs, Tab } from "@leafygreen-ui/tabs";
+import { Container, Modal } from "react-bootstrap";
 
 const InfoWizard = ({
   open,
@@ -18,72 +18,102 @@ const InfoWizard = ({
   iconGlyph = "Wizard",
   sections = [],
   openModalIsButton = false,
-  tabs = []
+  tabs = [],
 }) => {
   const [selected, setSelected] = useState(0);
 
   return (
     <>
-      {
-        openModalIsButton
-          /* Bigger button for navbars */
-          ? <Button onClick={() => setOpen((prev) => !prev)} leftGlyph={<Icon glyph={iconGlyph} />}>
-            {tooltipText}
-          </Button>
-          /* Small icon button */
-          : <Tooltip
-            trigger={
-              <IconButton aria-label="Info" onClick={() => setOpen((prev) => !prev)}>
-                <Icon glyph={iconGlyph} />
-              </IconButton>
-            }
-          >
-            {tooltipText}
-          </Tooltip>
-      }
+      {openModalIsButton ? (
+        /* Bigger button for navbars */
+        <Button
+          onClick={() => setOpen((prev) => !prev)}
+          leftGlyph={<Icon glyph={iconGlyph} />}
+        >
+          {tooltipText}
+        </Button>
+      ) : (
+        /* Small icon button */
+        <Tooltip
+          trigger={
+            <IconButton
+              aria-label="Info"
+              onClick={() => setOpen((prev) => !prev)}
+            >
+              <Icon glyph={iconGlyph} />
+            </IconButton>
+          }
+        >
+          {tooltipText}
+        </Tooltip>
+      )}
 
-      <Modal open={open} setOpen={setOpen} className={styles.modal}>
-        <div className={styles.modalContent}>
-          {
-            tabs.length > 0
-              ? <Tabs aria-label="info wizard tabs" setSelected={setSelected} selected={selected}>
-                {tabs.map((tab, tabIndex )=> (
+      <Modal
+        show={open}
+        onHide={() => setOpen(false)}
+        fullscreen="md-down"
+        size="xl"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        className={styles.modal}
+      >
+        <div className={styles.modalContent} style={{minHeight:'80vh'}}>
+          {tabs.length > 0 ? (
+            <Tabs
+              aria-label="info wizard tabs"
+              setSelected={setSelected}
+              selected={selected}
+            >
+              {tabs.map((tab, tabIndex) => (
                 <Tab key={`tab1-${tabIndex}`} name={tab.heading}>
-                    {tab.content}
-                  </Tab>
-                ))}
-              </Tabs>
-            : <Tabs aria-label="info wizard tabs" setSelected={setSelected} selected={selected}>
-                {sections.map((tab, tabIndex) => (
-                  <Tab key={`tab2-${tabIndex}`} name={tab.heading}>
+                  <Container>{tab.content}</Container>
+                </Tab>
+              ))}
+            </Tabs>
+          ) : (
+            <Tabs
+              aria-label="info wizard tabs"
+              setSelected={setSelected}
+              selected={selected}
+            >
+              {sections.map((tab, tabIndex) => (
+                <Tab key={`tab2-${tabIndex}`} name={tab.heading}>
+                  <Container>
                     {tab.content.map((section, sectionIndex) => (
                       <div key={sectionIndex} className={styles.section}>
-                        {section.heading && <H3 className={styles.modalH3}>{section.heading}</H3>}
-                        {
-                          section.body && section.isHTML === true
-                            ? <div className={styles.htmlRender} contentEditable='true' dangerouslySetInnerHTML={{ __html: section.body }}></div>
-                            : section.body && Array.isArray(section.body)
-                              ? <ul className={styles.list}>
-                                {
-                                  section.body.map((item, idx) => (
-                                    typeof (item) == 'object'
-                                      ? <li key={`sec-${idx}`}>
-                                        {item.heading}
-                                        <ul className={styles.list}>
-                                          {
-                                            item.body.map((subItem, idx) => (
-                                              <li key={idx}><Body>{subItem}</Body></li>
-                                            ))
-                                          }
-                                        </ul>
+                        {section.heading && (
+                          <H3 className={styles.modalH3}>{section.heading}</H3>
+                        )}
+                        {section.body && section.isHTML === true ? (
+                          <div
+                            className={styles.htmlRender}
+                            contentEditable="true"
+                            dangerouslySetInnerHTML={{ __html: section.body }}
+                          ></div>
+                        ) : section.body && Array.isArray(section.body) ? (
+                          <ul className={styles.list}>
+                            {section.body.map((item, idx) =>
+                              typeof item == "object" ? (
+                                <li key={`sec-${idx}`}>
+                                  {item.heading}
+                                  <ul className={styles.list}>
+                                    {item.body.map((subItem, idx) => (
+                                      <li key={idx}>
+                                        <Body>{subItem}</Body>
                                       </li>
-                                      : <li key={idx}><Body>{item}</Body></li>
-                                  )
-                                  )
-                                }
-                              </ul>
-                              : <Body>{section.body}</Body>
-                        }
+                                    ))}
+                                  </ul>
+                                </li>
+                              ) : (
+                                <li key={idx}>
+                                  <Body>{item}</Body>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        ) : (
+                          <Body>{section.body}</Body>
+                        )}
 
                         {section.image && (
                           <img
@@ -95,11 +125,11 @@ const InfoWizard = ({
                         )}
                       </div>
                     ))}
-                  </Tab>
-                ))}
-              </Tabs>
-          }
-
+                  </Container>
+                </Tab>
+              ))}
+            </Tabs>
+          )}
         </div>
       </Modal>
     </>
