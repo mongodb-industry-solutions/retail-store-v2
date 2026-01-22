@@ -1,0 +1,163 @@
+/* Customer Retention Talk Track Styles */
+
+.customer-retention-container {
+  background: linear-gradient(90deg, #f8fafc 0%, #e0f7fa 100%);
+  padding: 32px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+}
+
+.main-title {
+  color: #1a237e;
+  margin-bottom: 12px;
+}
+
+.intro-text {
+  font-size: 1.1rem;
+  margin-bottom: 18px;
+}
+
+.stat-highlight {
+  background-color: #fff3cd;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.stat-link {
+  text-decoration: none;
+  color: #d84315;
+}
+
+.section-title {
+  color: #1565c0;
+  margin-bottom: 12px;
+  margin-top: 32px;
+}
+
+.challenges-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.challenge-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  padding: 16px;
+  font-size: 1rem;
+}
+
+.challenge-title {
+  color: #0288d1;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.challenge-desc {
+  color: #333;
+  margin-top: 6px;
+}
+
+.interventions-container {
+  background: #e8f5e8;
+  border-radius: 8px;
+  padding: 18px;
+  text-align: left;
+  font-size: 1.08rem;
+  color: #2e7d32;
+  margin-bottom: 24px;
+}
+
+.interventions-title {
+  color: #2e7d32;
+  margin-bottom: 12px;
+}
+
+.interventions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.intervention-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  padding: 14px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.intervention-action {
+  flex: 1;
+  color: #1976d2;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.intervention-arrow {
+  font-size: 1.2rem;
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.intervention-consequence {
+  flex: 1.2;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.cta-box {
+  background: #e3f2fd;
+  border-radius: 8px;
+  padding: 18px;
+  text-align: center;
+  font-size: 1.08rem;
+  color: #1565c0;
+}
+
+.advantage-details {
+  margin-top: 12px;
+  padding-left: 8px;
+}
+
+.advantage-detail {
+  margin-bottom: 8px;
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 4px solid #ddd;
+}
+
+.advantage-detail.how-it-works {
+  background-color: #e8f5e8;
+  border-left-color: #4caf50;
+}
+
+.advantage-detail.the-benefit {
+  background-color: #e3f2fd;
+  border-left-color: #2196f3;
+}
+
+.advantage-detail.key-enabler {
+  background-color: #fff3e0;
+  border-left-color: #ff9800;
+}
+
+.advantage-detail a {
+  color: #1565c0;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.advantage-detail a:hover {
+  text-decoration: underline;
+}
