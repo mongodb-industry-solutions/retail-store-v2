@@ -15,6 +15,10 @@ const CustomerRetentionSlice = createSlice({
             isLoading: false,
             data: [],
         },
+        productNotifications: {
+            // Map of productId to notification data: { title, _id, embedInProductId }
+            highlightedProducts: {},
+        },
     },
     reducers: {
         setIsDrawerOpen: (state, action) => {
@@ -41,6 +45,20 @@ const CustomerRetentionSlice = createSlice({
             if (item) {
                 item.redeemed = true;
             }
+        },
+        addProductNotification: (state, action) => {
+            const { embedInProductId, title, _id } = action.payload;
+            if (embedInProductId) {
+                state.productNotifications.highlightedProducts[embedInProductId] = {
+                    title,
+                    _id,
+                    embedInProductId
+                };
+            }
+        },
+        removeProductNotification: (state, action) => {
+            const productId = action.payload;
+            delete state.productNotifications.highlightedProducts[productId];
         }
     }
 })
@@ -52,7 +70,9 @@ export const {
     pushCustomerBehaviourItem,
     setNextBestActions,
     pushNextBestActionItem,
-    markNextBestActionAsRedeemed
+    markNextBestActionAsRedeemed,
+    addProductNotification,
+    removeProductNotification
 } = CustomerRetentionSlice.actions
 
 export default CustomerRetentionSlice.reducer
