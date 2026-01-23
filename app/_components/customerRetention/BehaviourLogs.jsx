@@ -160,7 +160,7 @@ const BehaviourLogs = () => {
   return (
     <Card className="mt-2">
       <SectionHeader
-        title="2. Customer behaviour events"
+        title="2. Customer behaviour signals"
         amount={customerBehaviour.length.toString()}
         learnMoreElement={
           <p className="m-0">
@@ -169,9 +169,9 @@ const BehaviourLogs = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Atlas Stream Processing
+              Atlas Stream Processing (ASP)
             </a>{" "}
-            ingests action events streams and generates the belowed customer
+             process the real-time events from step 1 and extracts information from them as they arrive. It identifies patterns in the session and generates the below customer
             behaviours.
           </p>
         }

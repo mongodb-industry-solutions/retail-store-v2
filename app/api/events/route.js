@@ -19,7 +19,7 @@ export async function POST(request) {
       ...eventData,
       receivedAt: new Date().toISOString()
     });
-
+    
     // Store the event in MongoDB time series collection
     let insertedDocument = null;
     try {
