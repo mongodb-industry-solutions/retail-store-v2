@@ -1,5 +1,4 @@
 import React from 'react'
-import { Container } from 'react-bootstrap'
 import './talkTracks.css'
 
 const ShopTalkTrackCustomerRetention = ({ section }) => {
@@ -60,7 +59,7 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
     ];
 
     return (
-      <div className="customer-retention-container">
+      <div className="customer-retention-container-tt">
         <h2 className="main-title">Customer Retention</h2>
         <p className="intro-text">
           Customer retention is essential in the retail landscape. Industry research has shown that retaining existing customers is far more cost-effective than acquiring new ones. What's more, returning customers tend to purchase more frequently, spend more per transaction, and are far more likely to recommend the brand to others.
@@ -142,7 +141,7 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
     ];
 
     return (
-      <div className="customer-retention-container">
+      <div className="customer-retention-container-tt">
         <h2 className="main-title">Why use MongoDB for customer retention strategies?</h2>
         
         <div className="challenges-grid">

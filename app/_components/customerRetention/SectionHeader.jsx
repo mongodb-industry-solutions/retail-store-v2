@@ -5,7 +5,7 @@ import Icon from "@leafygreen-ui/icon";
 
 const SectionHeader = (props) => {
   const { title, subtitle = null, amount = null, learnMoreElement = null, extraHTMLElement=null } = props;
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
