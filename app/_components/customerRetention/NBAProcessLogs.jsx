@@ -15,7 +15,7 @@ const LogItem = ({ log }) => {
     return type?.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()) || ""
   };
 
-  const behaviorLabel = getBehaviorLabel(log?.trigger?.signalType);
+  //const behaviorLabel = getBehaviorLabel(log?.trigger?.signalType);
   const timeAgo = new Date(Date.now() - new Date(log?.ts)).getMinutes();
 
   return (
@@ -43,7 +43,7 @@ const LogItem = ({ log }) => {
             }}
           >
             <Icon
-              glyph={getNextBestActionConfig(log?.action?.type).icon}
+              glyph={getNextBestActionConfig(log?.type).icon}
               size={20}
               style={{ color: "#666" }}
             />
@@ -55,15 +55,15 @@ const LogItem = ({ log }) => {
               fontWeight: 600,
               color: "#333"
             }}>
-              {log?.action?.type?.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+              {log?.type?.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
             </h4>
-            <p style={{ 
+            {/* <p style={{ 
               margin: "0 0 8px 0", 
               fontSize: "14px", 
               color: "#666"
             }}>
               Triggered by: {behaviorLabel}
-            </p>
+            </p> */}
             <div style={{
               display: "inline-block",
               backgroundColor: log.redeemed ? "#4CAF50" : "#f44336",

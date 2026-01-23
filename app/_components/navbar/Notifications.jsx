@@ -10,7 +10,7 @@ import ListGroup from "react-bootstrap/ListGroup";
 import { useSelector, useDispatch } from 'react-redux'
 import NotificationItem from "./NotificationItem";
 import { fetchNextBestActions } from "@/lib/api";
-import { pushNextBestActionItem, setNextBestActions } from "@/redux/slices/CustomerRetentionSlice";
+import { pushNextBestActionItem, setNextBestActions, addProductNotification } from "@/redux/slices/CustomerRetentionSlice";
 
 const Notifications = ({ isMenuOpened, onToggle }) => {
   const {initialFetch, isLoading, data: nextBestActions} = useSelector(state => state.CustomerRetention.nextBestActions);
@@ -46,6 +46,16 @@ const Notifications = ({ isMenuOpened, onToggle }) => {
         if (newDocument) {
           console.log("Received new next best action document:", newDocument);
           dispatch(pushNextBestActionItem(newDocument));
+          
+          // Check if this notification is for a specific product
+          if (newDocument.embedInProductId) {
+            console.log("Adding product notification for product ID:", newDocument.embedInProductId);
+            dispatch(addProductNotification({
+              embedInProductId: newDocument.embedInProductId,
+              ...newDocument.actionMetadata,
+              _id: newDocument._id
+            }));
+          }
         }
       }
     };
