@@ -49,11 +49,11 @@ const EventStreamLogs = () => {
   return (
     <Card>
       <SectionHeader
-        title="1. UX events streams"
+        title="1. Customer events streams"
         amount={events?.length?.toString()}
         learnMoreElement={
           <p className="m-0">
-            Customer interactions are streamed to MongoDB Atlas in real time, complemented by heartbeat signals sent every {HEARTBEAT_INTERVAL_MS / 1000} seconds.
+            Customer action based interactions are streamed to MongoDB Atlas in real time, complemented by heartbeat signals sent every {HEARTBEAT_INTERVAL_MS / 1000} seconds.
           </p>
         }
       />

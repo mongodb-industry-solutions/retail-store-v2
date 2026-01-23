@@ -1,14 +1,283 @@
 import React from 'react'
 import './talkTracks.css'
+import Icon from '@leafygreen-ui/icon';
+import Image from 'next/image';
 
 const ShopTalkTrackCustomerRetention = ({ section }) => {
   
   if (section === 1) {
+    const eventTypes = [
+      {
+        event: 'View product',
+        action: 'Click a product card to open its detailed view',
+        represents: 'Product-level interest and intent discovery.'
+      },
+      {
+        event: 'Add to cart',
+        action: 'Click the Add to Cart button found inside the details of the product.',
+        represents: 'Strong purchase intent signal.'
+      },
+      {
+        event: 'Exit intent',
+        action: (
+          <span>
+            Click on the <Icon glyph="LogOut" size="large" fill="red" /> icon at the rightmost side of the navbar, and hover your mouse over the "Log out" area.
+          </span>
+        ),
+        represents: 'Potential abandonment risk.'
+      },
+      {
+        event: 'Heartbeat',
+        action: 'No action needed, sent periodically (every ~10 seconds).',
+        represents: 'Continued session presence and activity.'
+      }
+    ];
+
+    const signalTypes = [
+      {
+        signal: 'High Intent',
+        represents: 'The customer is actively considering a specific purchase',
+        matters: 'Opportunity to remove doubt and accelerate conversion'
+      },
+      {
+        signal: 'Search Friction',
+        represents: 'The customer is trying to find something but isn\'t progressing',
+        matters: 'Best moment to help before frustration turns into abandonment'
+      },
+      {
+        signal: 'Exit Risk',
+        represents: 'The customer is likely to leave without converting',
+        matters: 'Last chance to retain (recover cart, save intent, assist immediately)'
+      }
+    ];
+
     return (
-      <div>
-        <h3>How To Demo</h3>
-        <p>Instructions on how to demonstrate the customer retention feature...</p>
-        {/* Add your How To content here */}
+      <div className="customer-retention-container-tt">
+        <h1 className="main-title">Understanding this page</h1>
+        
+        <p className="intro-text">
+          In this page we are demonstrating how the Leafy PopUp ecommerce captures and analyses real-time customer behaviour while browsing through the catalog. And generate reactive measures in the form of Next Best Actions, to keep the customer engaged and retain them.
+        </p>
+
+        <p className="intro-text">
+          The system captures customer behavior events during an active user session to enable real-time processing and trigger Next Best Actions
+        </p>
+
+        <div className="demo-controls">
+          <div className="control-item">
+             <Icon glyph={"NavExpand"} /> Toggles a sidebar that showcases some of the behind the scenes collections and processes happening in the back.
+          </div>
+          <div className="control-item">
+            <Icon glyph={"Bell"} /> Opens the notifications menu where we are displaying the 'Next Best Actions (NBA)' generated. NBA are all centralized on this notification menu, however some of them can be present in other places like the product details to show another example of what the NBA can trigger/do.
+          </div>
+        </div>
+
+        <h2 className="section-title">1. UX events streams</h2>
+        <h3 className="section-subtitle">Sending real-time heartbeats and action based events</h3>
+        
+        <p className="intro-text">
+          In retail and digital commerce systems, customer behavior is typically observed through:
+        </p>
+        <ul className="behavior-list">
+          <li>Action-based events (clicks, navigation, cart interactions)</li>
+          <li>Lightweight engagement signals to indicate session presence and activity</li>
+        </ul>
+
+        <p className="intro-text">
+          Perform any of the actions mentioned in the table above and map them to the "UX events streams" section on the right side. Click on the <Icon glyph="CurlyBraces" /> icon to see the full document.
+        </p>
+
+        <table className="events-table" style={{ border: '1px solid #ccc', borderCollapse: 'collapse', width: '100%' }}>
+          <thead>
+            <tr>
+              <th style={{ border: '1px solid #ccc', padding: '8px', backgroundColor: '#f5f5f5' }}>Event type</th>
+              <th style={{ border: '1px solid #ccc', padding: '8px', backgroundColor: '#f5f5f5' }}>Perform the following to emit this event</th>
+              <th style={{ border: '1px solid #ccc', padding: '8px', backgroundColor: '#f5f5f5' }}>What it represents</th>
+            </tr>
+          </thead>
+          <tbody>
+            {eventTypes.map((eventType, idx) => (
+              <tr key={idx}>
+                <td style={{ border: '1px solid #ccc', padding: '8px' }}><strong>{eventType.event}</strong></td>
+                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{eventType.action}</td>
+                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{eventType.represents}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="mt-2">
+          <Image 
+            src="/rsc/images/customerRetention/events.png" 
+            alt="Events section placeholder" 
+            width={400}
+            height={250}
+            style={{ width: '400px', height: 'auto', border: '1px solid #ddd', borderRadius: '4px' }} 
+          />
+        </div>
+
+        <h2 className="section-title">2. Customer behaviour signals</h2>
+        <h3 className="section-subtitle">Finding Complex Event Patterns (CEP) from the events to identify customer behaviour signals</h3>
+
+        <p className="intro-text">
+          This section will start auto populating as you continue to interact on this page.
+        </p>
+
+        <p className="intro-text">
+          In this demo we have three possible signal types identified.
+        </p>
+
+        <table className="signals-table" style={{ border: '1px solid #ccc', borderCollapse: 'collapse', width: '100%' }}>
+          <thead>
+            <tr>
+              <th style={{ border: '1px solid #ccc', padding: '8px', backgroundColor: '#f5f5f5' }}>Signal Type</th>
+              <th style={{ border: '1px solid #ccc', padding: '8px', backgroundColor: '#f5f5f5' }}>What it represents</th>
+              <th style={{ border: '1px solid #ccc', padding: '8px', backgroundColor: '#f5f5f5' }}>Why it matters</th>
+            </tr>
+          </thead>
+          <tbody>
+            {signalTypes.map((signalType, idx) => (
+              <tr key={idx}>
+                <td style={{ border: '1px solid #ccc', padding: '8px' }}><strong>{signalType.signal}</strong></td>
+                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{signalType.represents}</td>
+                <td style={{ border: '1px solid #ccc', padding: '8px' }}>{signalType.matters}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <p className="intro-text">
+          It's important to note that signals are not calculated on linear rules but, based on a behavioral algorithm that looks at intensity and direction in user behavior.
+        </p>
+
+        <p className="intro-text">
+          You can see these signals listed inside the 'Customer behaviour signals' section, click on the <Icon glyph="CurlyBraces" /> icon to see the full document.
+        </p>
+
+        <div className="mt-2">
+          <Image 
+            src="/rsc/images/customerRetention/customerBehaviours.png" 
+            alt="Customer behaviour signals placeholder" 
+            width={400}
+            height={250}
+            style={{ width: '400px', height: 'auto', border: '1px solid #ddd', borderRadius: '4px' }} 
+          />
+        </div>
+
+        <h2 className="section-title">3. Agent reasoning</h2>
+        <p className="intro-text">
+          A lightweight agent takes the session signals and decides which is the best Next Best Action.
+        </p>
+
+        <p className="intro-text">
+          In this demo we have three possible Next Best Action types from which the agent can pick based on the signals that it reads.
+        </p>
+
+        <h2 className="section-title">4. Next Best Action decisions</h2>
+        <h3 className="section-subtitle">The Next Best actions generated by the agent</h3>
+
+        <p className="intro-text">
+          This section will start auto populating as the agent creates Next Best Actions to send to the customer.
+        </p>
+
+        <p className="intro-text">
+          You will see the Next Best Actions listed inside this section.
+        </p>
+
+        <div className="mt-2">
+          <Image 
+            src="/rsc/images/customerRetention/nextBestAction.png" 
+            alt="Next Best Actions placeholder" 
+            width={400}
+            height={250}
+            style={{ width: '400px', height: 'auto', border: '1px solid #ddd', borderRadius: '4px' }} 
+          />
+        </div>
+
+        <h3 className="section-subtitle">How will the customer look at this NBAs?</h3>
+
+        <p className="intro-text">
+          NBAs are displayed inside the navbar as Notifications
+        </p>
+        <div className="mt-2">
+          <Image 
+            src="/rsc/images/customerRetention/notifications.png" 
+            alt="NBA notifications placeholder" 
+            width={400}
+            height={250}
+            style={{ width: '400px', height: 'auto', border: '1px solid #ddd', borderRadius: '4px' }} 
+          />
+        </div>
+
+        <p className="intro-text">
+          Also for some NBA that are for a specific product, in addition to the notification you will be able to see it inside the product details as well as with a            
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="25"
+                height="25"
+                fill="#6c3036"
+                className="me-2"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15" />
+              </svg>
+             icon on the product card.
+        </p>
+        <div className="mt-2">
+          <Image 
+            src="/rsc/images/customerRetention/embedNotification.png" 
+            alt="Embedded NBA notification placeholder" 
+            width={400}
+            height={250}
+            style={{ width: '400px', height: 'auto', border: '1px solid #ddd', borderRadius: '4px' }} 
+          />
+        </div>
+
+        <h1 className="main-title mt-2">Demo Walkthrough (What you show)</h1>
+
+        <div className="scenarios-container">
+          <div className="scenario-card">
+            <h3 className="scenario-title">Scenario 1 — High Intent</h3>
+            <div className="scenario-sequence">
+              <strong>Sequence:</strong> search → view-product → add-to-cart (same category/topic)
+            </div>
+            <div className="scenario-show">
+              <strong>Show:</strong>
+              <ul>
+                <li>baseline high intent detection</li>
+                <li>Decision layer writes NBA: "Complete your purchase" or "Recommended matching item"</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="scenario-card">
+            <h3 className="scenario-title">Scenario 2 — Search Friction</h3>
+            <div className="scenario-sequence">
+              <strong>Sequence:</strong> search → search → search without cart/progress
+            </div>
+            <div className="scenario-show">
+              <strong>Show:</strong>
+              <ul>
+                <li>baseline friction detection</li>
+                <li>Decision layer writes NBA: recommendations or top alternative items</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="scenario-card">
+            <h3 className="scenario-title">Scenario 3 — Exit Risk</h3>
+            <div className="scenario-sequence">
+              <strong>Sequence:</strong> add-to-cart then exit-intent
+            </div>
+            <div className="scenario-show">
+              <strong>Show:</strong>
+              <ul>
+                <li>urgent signal</li>
+                <li>Decision layer writes NBA: "Don't forget your cart" or similar retention action</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
