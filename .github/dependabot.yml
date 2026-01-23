@@ -16,7 +16,7 @@ updates:
       # Group all patch updates together
       patch-updates:
         update-types: ["patch"]
-      # Group all minor updates together  
+      # Group all minor updates together
       minor-updates:
         update-types: ["minor"]
       # Group all major updates together
