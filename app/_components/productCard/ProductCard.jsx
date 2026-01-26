@@ -42,7 +42,7 @@ const ProductCard = ({ id, product }) => {
     // Track view-product event (only if feature is customer retention)
     trackEvent(EVENT_STREAMS_TYPES.VIEW_PRODUCT, {
       productId: id,
-      masterCategory: masterCategory,
+      subCategory: subCategory,
       articleType: articleType,
       brand: brand,
     });
