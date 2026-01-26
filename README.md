@@ -12,6 +12,7 @@
             <li><a href="#agentic-rag-chatbot-with-dataworkz">Agentic RAG Chatbot (with Dataworkz)</a></li>
             <li><a href="#omnichannel-ordering-solution">Omnichannel Ordering Solution</a> </li>
             <li><a href="#personalized-recommendations-from-digital-receipts">Personalized recommendations from digital receipts</a></li>
+            <li><a href="#complex-event-processing-cep-for-customer-retention">Complex event processing (CEP) for customer retention</a></li>
         </ol>
     </li>
     <li><a href="#authors-&-contributors">Authors & Contributors</a></li>
@@ -113,6 +114,34 @@ Tech Stack:
 
 Partners:
 - [Azure](https://azure.microsoft.com/)
+
+</details>
+
+
+### Complex event processing (CEP) for customer retention
+
+Customer retention is essential in the retail landscape, yet traditional analytics often fail to capture the "immediacy" of shopping behaviors. This feature demonstrates how MongoDB's real-time processing capabilities can identify customer behavior patterns and trigger proactive retention measures before customers abandon their sessions.
+
+The system captures customer behavior events during active user sessions and uses Complex Event Processing (CEP) to analyze patterns like high intent, search friction, and exit risk. A lightweight agent then generates Next Best Actions (NBAs) such as product recommendations, social proof notifications, or free delivery offers to keep customers engaged.
+
+Key capabilities include:
+- Real-time heartbeat and action-based event tracking
+- Pattern recognition through MongoDB Change Streams and Atlas Stream Processing 
+- Intelligent agent reasoning using Model Context Protocol (MCP)
+- Dynamic NBA generation based on behavioral signals
+- Seamless integration of retention actions in the user interface
+
+See the full step by step [README](./resources/customerRetention/README.md) to run this feature from your own environment in the demo.
+
+<details>
+
+Tech Stack:
+- MongoDB Atlas Account
+- Atlas Stream Processing (ASP)
+- Change Streams
+- VoyageAI
+- Model Context Protocol (MCP)
+- Node
 
 </details>
 
