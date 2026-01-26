@@ -32,6 +32,7 @@ envSecrets:
   MONGODB_URI: retail-store-v2-prod
   DATABASE_NAME: retail-store-v2-prod
   COLLECTION_NAME: retail-store-v2-prod
+  SEARCH_INDEX_NAME: retail-store-v2-prod
 
   # Frontend
   NEXT_PUBLIC_CHATBOT_PASSWORD: retail-store-v2-prod

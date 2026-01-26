@@ -1,61 +1,71 @@
 "use client";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./productCard.module.css";
 import PropTypes from "prop-types";
 
 import LeafyGreenProvider from "@leafygreen-ui/leafygreen-provider";
 import Card from "@leafygreen-ui/card";
-import {
-  Label,
-  Description,
-  Subtitle
-} from "@leafygreen-ui/typography";
+import { Label, Description, Subtitle } from "@leafygreen-ui/typography";
 import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
-import { sendEvent } from '@/redux/slices/eventsSlice';
-import { generateTimeSeriesEvent } from '@/lib/helpers';
 import Image from "next/image";
+import { EVENT_STREAMS_TYPES } from "@/lib/constants";
+import useCustomerRetentionTracking from "@/hooks/useCustomerRetentionTracking";
 
 const ProductCard = ({ id, product }) => {
-  const {  name, brand } = product;
-  const photo = product?.image?.url || '/placeholder.png';
-  const price = product?.price?.amount ? product.price.amount.toFixed(2) : 'N/A';
+  const { name, brand, masterCategory, subCategory, articleType } = product;
+  const photo = product?.image?.url || "/placeholder.png";
+  const price = product?.price?.amount
+    ? product.price.amount.toFixed(2)
+    : "N/A";
   const dispatch = useDispatch();
-  const selectedUser = useSelector(state => state.User.selectedUser);
+  const trackEvent = useCustomerRetentionTracking();
 
+  // Check if this product has a notification
+  const highlightedProducts = useSelector(
+    (state) => state.CustomerRetention.productNotifications.highlightedProducts
+  );
+  const hasNotification = highlightedProducts[id];
 
   const onProductClick = () => {
-    dispatch(setOpenedProductDetails({
-      id,
-      photo,
-      name,
-      brand,
-      price,
-    }))
-    
-    // Track view-product event
-    if (selectedUser && selectedUser._id) {
-      const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
-      const payload = generateTimeSeriesEvent(
-        selectedUser._id, 
-        sessionId, 
-        'view-product', 
-        {
-          productId: id,
-          productName: name,
-          category: brand,
-          price: price,
-          userEmail: selectedUser.email,
-          userName: selectedUser.name
-        }
-      );
-      dispatch(sendEvent(payload));
-    }
-  }
+    dispatch(
+      setOpenedProductDetails({
+        id,
+        photo,
+        name,
+        brand,
+        price,
+        articleType,
+        subCategory,
+      })
+    );
+
+    // Track view-product event (only if feature is customer retention)
+    trackEvent(EVENT_STREAMS_TYPES.VIEW_PRODUCT, {
+      productId: id,
+      subCategory: subCategory,
+      articleType: articleType,
+      brand: brand,
+    });
+  };
 
   return (
     <LeafyGreenProvider>
       <Card className={styles.card} onClick={() => onProductClick()}>
-        <div className={styles.scoreContainer}>
+        <div>
+          {hasNotification && (
+            <div className={styles.fireIcon}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="25"
+                height="25"
+                fill="#6c3036"
+                className="me-2"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15" />
+              </svg>
+            </div>
+          )}
         </div>
         <div className={styles.productInfo}>
           <div className={styles.imageContainer}>
@@ -86,6 +96,9 @@ ProductCard.propTypes = {
   name: PropTypes.string.isRequired,
   brand: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
+  masterCategory: PropTypes.string.isRequired,
+  subCategory: PropTypes.string.isRequired,
+  articleType: PropTypes.string.isRequired,
 };
 
 export default ProductCard;

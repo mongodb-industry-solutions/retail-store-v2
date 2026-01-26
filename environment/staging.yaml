@@ -33,6 +33,7 @@ envSecrets:
   MONGODB_URI: retail-store-v2-staging
   DATABASE_NAME: retail-store-v2-staging
   COLLECTION_NAME: retail-store-v2-staging
+  SEARCH_INDEX_NAME: retail-store-v2-staging
 
   # Frontend
   NEXT_PUBLIC_CHATBOT_PASSWORD: retail-store-v2-staging
@@ -47,6 +48,7 @@ envSecrets:
 # Environment variables for GCP (NO sensibles)
 env:
   NODE_ENV: "staging"
+  NEXT_PUBLIC_DEVELOPMENT: "true"
   GOOGLE_APPLICATION_CREDENTIALS: /etc/gcp/credential-configuration.json
   GCP_PROJECT_ID: ist-retail-demo
   GCP_LOCATION: us-central1

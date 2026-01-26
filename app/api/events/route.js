@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import { clientPromise, dbName } from '@/lib/mongodb';
+import { COLLECTIONS } from '@/lib/constants';
 
 export async function POST(request) {
   try {
@@ -17,18 +19,47 @@ export async function POST(request) {
       ...eventData,
       receivedAt: new Date().toISOString()
     });
+    
+    // Store the event in MongoDB time series collection
+    let insertedDocument = null;
+    try {
+      const client = await clientPromise;
+      const db = client.db(dbName);
+      const collection = db.collection(COLLECTIONS.EVENTS_INGEST);
+      
+      const eventDocument = {
+        ...eventData,
+        // Convert timestamp string to Date object for MongoDB time series
+        timestamp: new Date(eventData.timestamp)
+      };
+      
+      const result = await collection.insertOne(eventDocument);
+      
+      if (result.insertedId) {
+        insertedDocument = {
+          ...eventDocument,
+          _id: result.insertedId
+        };
+        console.log('Event stored in MongoDB with _id:', result.insertedId);
+      }
+      
+    } catch (dbError) {
+      console.error('Error storing event in MongoDB:', dbError);
+    }
 
-    // TODO:
-    // 1. Store the event in your database
-    // 2. Process the event data
-    // 3. Trigger any necessary business logic
+    // Only return success if document was actually inserted
+    if (!insertedDocument) {
+      return NextResponse.json(
+        { error: 'Failed to store event in database' },
+        { status: 500 }
+      );
+    }
 
-    // For now, just return a success response
+    // Return response with the stored document
     const response = {
-      id: Date.now().toString(),
       status: 'received',
       timestamp: new Date().toISOString(),
-      event: eventData
+      event: insertedDocument
     };
 
     return NextResponse.json(response, { status: 201 });

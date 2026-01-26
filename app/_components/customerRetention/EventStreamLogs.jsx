@@ -1,12 +1,16 @@
 import Card from "@leafygreen-ui/card";
 import React, { useState } from "react";
 import SectionHeader from "./SectionHeader";
-import { event_streams_logs } from "@/lib/constants";
+import { useSelector } from "react-redux";
 import IconButton from "@leafygreen-ui/icon-button";
 import Icon from "@leafygreen-ui/icon";
+import useAutoScroll from "@/hooks/useAutoScroll";
+import { HEARTBEAT_INTERVAL_MS } from "@/lib/constants";
 
 const EventStreamLogs = () => {
   const [openLogId, setOpenLogId] = useState(null);
+  const events = useSelector(state => state.Events.events);
+  const { containerRef } = useAutoScroll(events);
 
   const LogItem = ({ log }) => {
     const isOpen = openLogId === log._id;
@@ -32,13 +36,7 @@ const EventStreamLogs = () => {
         {isOpen && (
           <pre className="log-document">
             {JSON.stringify(
-              {
-                ...log,
-                metadata: {
-                  ...log?.metadata,
-                  vai_text_embedding: "[...]",
-                },
-              },
+              { ...log },
               null,
               2
             )}
@@ -51,22 +49,16 @@ const EventStreamLogs = () => {
   return (
     <Card>
       <SectionHeader
-        title="UX events streams"
-        amount={event_streams_logs.length.toString()}
+        title="1. Customer events streams"
+        amount={events?.length?.toString()}
         learnMoreElement={
           <p className="m-0">
-            Events streamed every X seconds to a{" "}
-            <a
-              href="https://www.mongodb.com/docs/manual/core/timeseries-collections/"
-              target="_blank"
-            >
-              time series collection
-            </a> {" "}inside MongoDB Atlas.
+            Customer action based interactions are streamed to MongoDB Atlas in real time, complemented by heartbeat signals sent every {HEARTBEAT_INTERVAL_MS / 1000} seconds.
           </p>
         }
       />
-      <div className="list-container">
-        {event_streams_logs.map((log) => (
+      <div className="list-container" ref={containerRef}>
+        {events.map((log) => (
           <LogItem key={`log-${log?._id}`} log={log} />
         ))}
       </div>

@@ -1,28 +1,15 @@
 import React from "react";
 import Icon from "@leafygreen-ui/icon";
-import { useDispatch, useSelector } from 'react-redux';
-import { sendEvent } from '@/redux/slices/eventsSlice';
-import { generateTimeSeriesEvent } from '@/lib/helpers';
+import { EVENT_STREAMS_TYPES } from "@/lib/constants";
+import useCustomerRetentionTracking from '@/hooks/useCustomerRetentionTracking';
 
 const Logout = () => {
-  const dispatch = useDispatch();
-  const selectedUser = useSelector(state => state.User.selectedUser);
+  const trackEvent = useCustomerRetentionTracking();
 
   const handleMouseEnter = () => {
-    if (selectedUser && selectedUser._id) {
-      const sessionId = sessionStorage.getItem('sessionId') || Date.now().toString();
-      const payload = generateTimeSeriesEvent(
-        selectedUser._id,
-        sessionId,
-        'exit-intent',
-        {
-          exitMethod: 'logout-hover',
-          userEmail: selectedUser.email,
-          userName: selectedUser.name
-        }
-      );
-      dispatch(sendEvent(payload));
-    }
+    trackEvent(EVENT_STREAMS_TYPES.EXIT_RISK, {
+      exitMethod: 'logout-hover'
+    });
   };
 
   const handleLogoutClick = () => {
