@@ -54,7 +54,7 @@ export default function Page() {
               setOpen={setOpenHelpModal}
               tooltipText="Learn More!"
               iconGlyph="Wizard"
-              tabs={ tabsCustomerRetention }
+              tabs={ tabs }
               openModalIsButton={true}
             />
           </div>

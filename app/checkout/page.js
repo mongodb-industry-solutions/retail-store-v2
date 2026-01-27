@@ -35,6 +35,7 @@ import { GUIDE_CUE_MESSAGES, FEATURES } from "@/lib/constants";
 import GuideCueContainer from "../_components/guideCueContainer/GuideCuecontainer";
 import Banner from "@leafygreen-ui/banner";
 import Icon from "@leafygreen-ui/icon";
+import Footer from "../_components/footer/Footer";
 export default function Page() {
   const router = useRouter();
   const dispatch = useDispatch();
