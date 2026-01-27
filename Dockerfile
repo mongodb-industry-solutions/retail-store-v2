@@ -13,7 +13,7 @@ RUN npm ci --legacy-peer-deps
 # Copiamos el código
 COPY ./ ./
 
-# 🔐 Env DUMMY para que Next.js no falle en el build
+# 🔐 Env DUMMY para que Next.js no falle en el build.
 ENV MONGODB_URI="mongodb://placeholder" \
     DATABASE_NAME="placeholder" \
     COLLECTION_NAME="placeholder" \
