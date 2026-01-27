@@ -49,14 +49,14 @@ export default function Page() {
           <Navbar />
           <div className="container mx-auto px-4 my-4 d-flex justify-content-between">
             <SearchBar />
-            <InfoWizard
+            {/* <InfoWizard
               open={openHelpModal}
               setOpen={setOpenHelpModal}
               tooltipText="Learn More!"
               iconGlyph="Wizard"
               tabs={ tabs }
               openModalIsButton={true}
-            />
+            /> */}
           </div>
           <div className="container mx-auto px-4">
             <ProductList />
