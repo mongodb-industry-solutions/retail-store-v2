@@ -7,9 +7,8 @@ export default function ShopLayout({
     children,
   }) {
     return (
-      <section>
-        <nav></nav>
+      <div>
         {children}
-      </section>
+      </div>
     )
   }
