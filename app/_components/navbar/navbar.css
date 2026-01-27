@@ -41,7 +41,7 @@
     transition: background-color 0.2s ease;
   }
 
-  .NavbarButt  onIcon:hover {
+  .NavbarButtonIcon:hover {
     background-color: #e5e5e5 !important;
   }
   
