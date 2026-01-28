@@ -18,9 +18,7 @@ export async function POST(request) {
         string_dialogue.push({ by: mappedRole, text: message.content })
     })
     string_dialogue.push({ by: ROLE.user, text: userText })
-    console.log('-- string_dialogue:', JSON.stringify(string_dialogue, null, 2))
-    json_data["conversationHistory"] = string_dialogue;
-    console.log(`-- fetch api: ${urlTemplate}${userText}`)
+
     const response = await fetch(`${urlTemplate}${userText}`, {
         method: "POST",
         headers: {

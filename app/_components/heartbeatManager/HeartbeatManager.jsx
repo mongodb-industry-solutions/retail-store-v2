@@ -207,13 +207,6 @@ const HeartbeatManager = () => {
       {(() => {
         const isDev = DEVELOPMENT;
         const hasUser = !!selectedUser;
-        console.log('🔍 Button visibility check:', {
-          DEVELOPMENT,
-          isDev,
-          hasUser,
-          selectedUser,
-          shouldShow: isDev && hasUser
-        });
         return isDev && hasUser;
       })() && (
         <button
