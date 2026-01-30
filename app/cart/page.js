@@ -11,9 +11,9 @@ import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import { Container } from 'react-bootstrap';
 import Button from "@leafygreen-ui/button";
-import { fillCartRandomly } from '@/lib/api';
+import { clearCart, fillCartRandomly } from '@/lib/api';
 import CartItem from '../_components/cart/CartItem';
-import { setCartLoading, setCartProductsList } from '@/redux/slices/UserSlice';
+import { clearCartProductsList, setCartLoading, setCartProductsList } from '@/redux/slices/UserSlice';
 import CartIndexModal from '../_components/whereMDB_cartIndex/CartIndexModal';
 import TalkTrackContainer from '../_components/talkTrackContainer/talkTrackContainer';
 import { cartPage } from '@/lib/talkTrack';
@@ -28,6 +28,7 @@ export default function CartPage() {
     const cart = useSelector(state => state.User.cart);  
     const feature = useSelector(state => state.Global.feature);  
     const isCartReady = !cart.loading;  
+    console.log("🛒 Cart Page - cart state:", cart);
 
     const [open, setOpen] = useState(false);  
   
@@ -102,6 +103,23 @@ export default function CartPage() {
                 dispatch(setCartLoading(false));  
             }  
         }  
+    }; 
+    
+    const onClearCart = async () => {  
+        if (selectedUser !== null &&  cart?.products?.length > 0) {  
+            try {  
+                dispatch(setCartLoading(true));  
+                const cartData = await clearCart(selectedUser._id);  
+                console.log('Clear cart result:', cartData);  
+                if (cartData) {  
+                    dispatch(clearCartProductsList([]));  
+                }  
+                dispatch(setCartLoading(false));  
+            } catch (err) {  
+                console.log(`Error filling cart: ${err}`);  
+                dispatch(setCartLoading(false));  
+            }  
+        }  
     };  
   
     // ✅ Autofill cart if empty & feature matches  
@@ -146,6 +164,14 @@ export default function CartPage() {
                             onClick={() => onFillCart()}  
                         >  
                             Fill cart  
+                        </Button>  
+                        <Button  
+                            size='small'  
+                            className='ms-3 mb-2'  
+                            disabled={cart.loading || cart.error || !cart.products?.length}  
+                            onClick={() => onClearCart()}  
+                        >  
+                            Clear cart  
                         </Button>  
                     </div>  
                     <TalkTrackContainer sections={cartPage} />  

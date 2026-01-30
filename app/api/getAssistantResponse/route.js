@@ -13,12 +13,12 @@ export async function POST(request) {
     let string_dialogue = [];
 
     messages.map(message => {
-        string_dialogue.push({ by: message.role, text: message.content })
+        // Map OpenAI format roles to DATAWORKZ format
+        const mappedRole = message.role === ROLE.assistant ? ROLE.assistant : ROLE.user;
+        string_dialogue.push({ by: mappedRole, text: message.content })
     })
     string_dialogue.push({ by: ROLE.user, text: userText })
-    // console.log('--', string_dialogue)
-    json_data["conversationHistory"] = string_dialogue;
-    console.log(`-- fetch api: ${urlTemplate}${userText}`)
+
     const response = await fetch(`${urlTemplate}${userText}`, {
         method: "POST",
         headers: {
@@ -30,10 +30,13 @@ export async function POST(request) {
     console.log('-- response', response)
     let output = "I am sorry but I was unable to get a response.";
     let resJson = await response.json();
-
+    
+    console.log('-- resJson: ', resJson);
     if (response.ok) { // response.ok is true if the status code is in the 200-299 range
         output = resJson.answer || output;
+    } else {
+        console.log('-- ERROR: Response not OK. Status:', response.status, 'StatusText:', response.statusText);
+        console.log('-- ERROR: Response body:', resJson);
     }
-    console.log('-- resJson: ', resJson);
     return NextResponse.json({ message: output || null, resJson }, { status: 200 });
 }

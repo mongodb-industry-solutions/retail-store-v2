@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { H1, H3, Body } from "@leafygreen-ui/typography";
 import { RadioBox, RadioBoxGroup } from "@leafygreen-ui/radio-box-group";
 
-import Footer from "../_components/footer/Footer";
 import Navbar from "../_components/navbar/Navbar";
 import { Container } from "react-bootstrap";
 import Button from "@leafygreen-ui/button";
@@ -36,6 +35,7 @@ import { GUIDE_CUE_MESSAGES, FEATURES } from "@/lib/constants";
 import GuideCueContainer from "../_components/guideCueContainer/GuideCuecontainer";
 import Banner from "@leafygreen-ui/banner";
 import Icon from "@leafygreen-ui/icon";
+import Footer from "../_components/footer/Footer";
 export default function Page() {
   const router = useRouter();
   const dispatch = useDispatch();

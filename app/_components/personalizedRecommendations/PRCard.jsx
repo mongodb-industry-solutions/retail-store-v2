@@ -29,6 +29,7 @@ const PRCard = (props) => {
             price,
             items: [],
         }))
+        
     }
 
     return (
