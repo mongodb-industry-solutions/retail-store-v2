@@ -15,7 +15,7 @@ const LogItem = ({ log }) => {
     return type?.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase()) || ""
   };
 
-  //const behaviorLabel = getBehaviorLabel(log?.trigger?.signalType);
+  //const behaviorLabel = getBehaviorLabel(log?.trigger?.signal);
   const timeAgo = new Date(Date.now() - new Date(log?.ts)).getMinutes();
 
   return (
