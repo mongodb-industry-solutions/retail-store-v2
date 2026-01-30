@@ -106,7 +106,7 @@ const BehaviourLogs = () => {
       setOpenLogId(isOpen ? null : log._id);
     };
 
-    const behaviorConfig = getBehaviorConfig(log.signalType);
+    const behaviorConfig = getBehaviorConfig(log.signal);
 
     return (
       <div className="log-item blue" key={`log-${log._id}`}>
@@ -172,7 +172,7 @@ const BehaviourLogs = () => {
               Atlas Stream Processing (ASP)
             </a>{" "}
              process the real-time events from step 1 and extracts information from them as they arrive. It identifies patterns in the session and generates the below customer
-            behaviours.
+            behaviour signals.
           </p>
         }
       />

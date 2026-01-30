@@ -38,7 +38,7 @@ const BehaviourStatistics = () => {
 
   // Create a map of behavior data by signal type for easy lookup
   const behaviorDataMap = behaviorData.reduce((acc, item) => {
-    acc[item.signalType] = item;
+    acc[item.signal] = item;
     return acc;
   }, {});
 

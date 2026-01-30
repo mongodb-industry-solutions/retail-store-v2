@@ -434,12 +434,82 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
 
   if (section === 2) {
     return (
-      <div>
-        <h3>Behind the Scenes</h3>
-        <p>
-          Technical details about how the customer retention system works...
-        </p>
-        {/* Add your Behind the Scenes content here */}
+      <div className="customer-retention-container-tt">
+        <h2 className="main-title">Behind the Scenes</h2>
+        
+        <div className="mt-2">
+          <Image
+            src="/rsc/diagrams/customerRetentionHighLevel.svg"
+            alt="Customer Retention Architecture Diagram"
+            width={1200}
+            height={750}
+            quality={100}
+            style={{
+              width: "100%",
+              height: "auto",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+              marginBottom: "20px"
+            }}
+          />
+        </div>
+
+        <div className="technical-overview">
+          <h3 className="section-title">Technical Architecture Overview</h3>
+          
+          <div className="technical-step">
+            <h4 className="technical-step-title">1. Real-Time Event Streaming</h4>
+            <p className="intro-text">
+              The eCommerce application streams real-time events during a user session. The application tracks action-based events such as add to cart, search, and exit intent, and also emits a heartbeat event every 10 seconds while the user remains active.
+            </p>
+            <ul className="behavior-list">
+              <li><strong>a.</strong> In this demo, events are streamed into a MongoDB collection named <code>events_ingest</code>. However, the same architecture can connect to other streaming sources such as Apache Kafka, Google Cloud Pub/Sub, AWS Kinesis, or similar platforms.</li>
+              <li><strong>b.</strong> Each event includes a <code>userId</code> and a <code>sessionId</code>. The sessionId is generated using a UUID and managed via sessionStorage. The primary streaming source is the eCommerce application itself.</li>
+            </ul>
+          </div>
+
+          <div className="technical-step">
+            <h4 className="technical-step-title">2. Atlas Stream Processing (ASP)</h4>
+            <p className="intro-text">
+              Atlas Stream Processing (ASP) continuously listens to real-time session events and detects patterns in customer behavior. This Complex Event Processing (CEP) is implemented using two Stream Processing pipelines:
+            </p>
+            <ul className="behavior-list">
+              <li><strong>a.</strong> ASP #1 continuously transforms high-volume raw clickstream events from <code>events_ingest</code> into a compact, session-level operational state stored in the <code>session_state</code> collection.</li>
+              <li><strong>b.</strong> ASP #2 consumes the session-level state materialized by ASP #1 and evaluates it every 30 seconds to detect higher-level behavioral signals in real time. Each detected signal is emitted as a document and stored in <code>session_state</code>.</li>
+            </ul>
+          </div>
+
+          <div className="technical-step">
+            <h4 className="technical-step-title">3. Stream Processing Output Destinations</h4>
+            <p className="intro-text">
+              Atlas Stream Processing can output data to multiple destinations. In this demo, ASP outputs directly to MongoDB collections, but it can also stream results to other destinations such as Apache Kafka, AWS S3, or asynchronous external functions.
+            </p>
+          </div>
+
+          <div className="technical-step">
+            <h4 className="technical-step-title">4. Lightweight Agent & Next Best Action Generation</h4>
+            <p className="intro-text">
+              A lightweight agent listens to <code>session_state</code> and generates a Next Best Action (NBA). The agent selects the most relevant action based on the customer's real-time context and behavior, rather than relying on static campaigns. Examples of Next Best Actions include product recommendations, social proof notifications, and shipping discounts.
+            </p>
+          </div>
+
+          <div className="technical-step">
+            <h4 className="technical-step-title">5. Agent Context & Decision Layer</h4>
+            <p className="intro-text">
+              The agent leverages tools such as Vector Search and has direct access to MongoDB Atlas, which serves as a Unified Commerce and Customer Context layer. This provides relevant context such as customer preferences, product availability, and inventory. The agent writes its decision to the <code>next_best_action</code> collection, making NBAs dynamic and continuously adaptive to the customer's behavior, context, and history.
+            </p>
+          </div>
+
+          <div className="technical-step">
+            <h4 className="technical-step-title">6. Real-Time NBA Consumption</h4>
+            <p className="intro-text">
+              The eCommerce application consumes Next Best Actions in real time. Using MongoDB Change Streams, the application listens to updates in the <code>next_best_action</code> collection and immediately displays the NBA to the user. This enables personalized interactions while the user is still active, helping reduce friction and increase engagement.
+            </p>
+            <p className="intro-text">
+              In this demo, NBAs are shown in the notification menu, and some are also surfaced directly within product detail modal.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -549,19 +619,44 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
           <h4 className="interventions-title">
             Automated real-time interventions to improve retention
           </h4>
-          <div className="interventions-grid">
-            {interventions.map((intervention, idx) => (
-              <div key={idx} className="intervention-card">
-                <div className="intervention-action">{intervention.action}</div>
-                <div className="intervention-arrow">→</div>
-                <div className="intervention-consequence">
-                  {intervention.consequence}
-                </div>
+          <div className="interventions-container">
+            <div className="interventions-header intervention-card" style={{ display: 'flex', alignItems: 'center', marginBottom: '16px', fontWeight: 'bold' }}>
+              <div style={{ flex: 1 }}>
+                <h5 className="intervention-header-title" style={{ margin: 0 }}>Customer behaviour</h5>
               </div>
-            ))}
+              <div style={{ padding: '0 20px', fontSize: '18px' }}>→</div>
+              <div style={{ flex: 1 }}>
+                <h5 className="intervention-header-title" style={{ margin: 0 }}>Next Best action</h5>
+              </div>
+            </div>
+            <div className="interventions-grid">
+              {interventions.map((intervention, idx) => (
+                <div key={idx} className="intervention-card">
+                  <div className="intervention-action">{intervention.action}</div>
+                  <div className="intervention-arrow">→</div>
+                  <div className="intervention-consequence">
+                    {intervention.consequence}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
+        <h3 className="section-title">What is NBA (Next Best Action)?</h3>
+        <p className="intro-text">
+          Next Best Action (NBA) focuses on selecting the most relevant action for a customer at a specific moment based on their real-time context and behavior, rather than relying on static campaigns. Using data, AI, and business rules, NBA continuously adapts decisions as customer responses change.
+        </p>
 
+        <p className="intro-text">
+          Examples of NBA actions include:
+        </p>
+        <ul className="behavior-list">
+          <li>Recommending a product based on recent activity</li>
+          <li>Sending a timely reminder or notification</li>
+          <li>Offering a personalized discount or incentive</li>
+          <li>Routing the customer to a human advisor</li>
+          <li>Choosing not to interrupt when no action adds value</li>
+        </ul>
         <div className="cta-box">
           <strong>
             Discover what Next Best Actions are triggered in this demo when
