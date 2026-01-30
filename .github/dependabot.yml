@@ -1,11 +1,27 @@
 version: 2
 updates:
+  # Security patches - daily checks for vulnerabilities
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "javascript"
+      - "security"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+
+  # Regular updates - weekly, grouped
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
       time: "09:00"
+    open-pull-requests-limit: 3
     labels:
       - "dependencies"
       - "javascript"
