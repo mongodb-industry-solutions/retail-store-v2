@@ -2,25 +2,16 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Dependency files
-package.json @Alberthor47 @AngelicaGE
-package-lock.json @Alberthor47 @AngelicaGE
+package.json @Alberthor47 @AngelicaGE @floarin @mongodb-industry-solutions/lst-techhub
+package-lock.json @Alberthor47 @AngelicaGE @floarin @mongodb-industry-solutions/lst-techhub
 
 # Dependabot configuration
-.github/dependabot.yml @Alberthor47 @AngelicaGE
+.github/dependabot.yml @Alberthor47 @AngelicaGE @floarin
 
 # GitHub workflows and actions
-.github/workflows/ @Alberthor47 @AngelicaGE
-.github/actions/ @Alberthor47 @AngelicaGE
+.github/workflows/ @Alberthor47 @AngelicaGE @floarin
+.github/actions/ @Alberthor47 @AngelicaGE @floarin
 
 # Docker and deployment
-Dockerfile @Alberthor47 @AngelicaGE
-docker-compose.yml @Alberthor47 @AngelicaGE
-
-# Configuration files
-next.config.js @Alberthor47 @AngelicaGE
-jsconfig.json @Alberthor47 @AngelicaGE
-makefile @Alberthor47 @AngelicaGE
-
-# Root level documentation
-/README.md @Alberthor47 @AngelicaGE
-/EXAMPLE.env.local @Alberthor47 @AngelicaGE
+Dockerfile @Alberthor47 @AngelicaGE @floarin
+docker-compose.yml @Alberthor47 @AngelicaGE @floarin
