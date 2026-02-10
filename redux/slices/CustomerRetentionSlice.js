@@ -16,7 +16,7 @@ const CustomerRetentionSlice = createSlice({
             data: [],
         },
         productNotifications: {
-            // Map of productId to notification data: { title, _id, embedInProductId }
+            // Map of productId to notification data: { title, message, _id, productId }
             highlightedProducts: {},
         },
     },
@@ -47,12 +47,13 @@ const CustomerRetentionSlice = createSlice({
             }
         },
         addProductNotification: (state, action) => {
-            const { embedInProductId, title, _id } = action.payload;
-            if (embedInProductId) {
-                state.productNotifications.highlightedProducts[embedInProductId] = {
+            const { productId, title, message, _id } = action.payload;
+            if (productId) {
+                state.productNotifications.highlightedProducts[productId] = {
                     title,
+                    message,
                     _id,
-                    embedInProductId
+                    productId
                 };
             }
         },

@@ -48,11 +48,12 @@ const Notifications = ({ isMenuOpened, onToggle }) => {
           dispatch(pushNextBestActionItem(newDocument));
           
           // Check if this notification is for a specific product
-          if (newDocument.embedInProductId) {
-            console.log("Adding product notification for product ID:", newDocument.embedInProductId);
+          if (newDocument.embedInProduct?.productId) {
+            console.log("Adding product notification for product ID:", newDocument.embedInProduct.productId);
             dispatch(addProductNotification({
-              embedInProductId: newDocument.embedInProductId,
-              ...newDocument.actionMetadata,
+              productId: newDocument.embedInProduct.productId,
+              title: newDocument.embedInProduct?.title,
+              message: newDocument.embedInProduct?.message,
               _id: newDocument._id
             }));
           }
