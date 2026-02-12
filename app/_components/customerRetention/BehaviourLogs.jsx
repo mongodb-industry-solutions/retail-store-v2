@@ -171,8 +171,8 @@ const BehaviourLogs = () => {
             >
               Atlas Stream Processing (ASP)
             </a>{" "}
-             process the real-time events from step 1 and extracts information from them as they arrive. It identifies patterns in the session and generates the below customer
-            behaviour signals.
+             process the real-time events from step 1 as they arrive. It identifies patterns in the session and generates the below customer
+            behavior signals.
           </p>
         }
       />

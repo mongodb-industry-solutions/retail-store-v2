@@ -255,7 +255,7 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
         <p className="intro-text">
           It's important to note that signals are not calculated on linear rules
           but, based on a behavioral algorithm that looks at intensity and
-          direction in user behavior.
+          direction in user behavior. <strong>The more frequent and intense the behavior, the more signals you will see.</strong>
         </p>
 
         <p className="intro-text">
@@ -282,9 +282,16 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
         <h2 className="section-title">3. Agent reasoning</h2>
         <p className="intro-text">
           A lightweight agent takes the session signals and decides which is the
-          best Next Best Action.
+          best Next Best Action. The agent has the following tech stack:
         </p>
-
+        <ul className="behavior-list">
+          <li>Model Context Protocol (MCP)</li>
+          <li>Product search through Vector Search</li>
+          <li>VoyageAI embedding models</li>
+          <li>LLM (AWS bedrock)</li>
+        </ul>
+        <a href="https://github.com/mongodb-industry-solutions/retail-customer-retention-backend" target="_blank">You can see the full code in the Github Repo</a>
+        <br></br><br></br>
         <p className="intro-text">
           In this demo we have three possible Next Best Action types from which
           the agent can pick based on the signals that it reads.

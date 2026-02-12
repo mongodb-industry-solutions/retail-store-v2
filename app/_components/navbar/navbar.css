@@ -5,6 +5,10 @@
   padding: 1rem;
   color: white;
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.03); /* Adjust values as needed */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: white;
 }
   
   .links a {

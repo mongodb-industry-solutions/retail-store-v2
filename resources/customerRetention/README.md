@@ -156,7 +156,7 @@ In this demo we have three possible signal types identified:
 | **Search Friction** | The customer is trying to find something but isn't progressing | Best moment to help before frustration turns into abandonment |
 | **Exit Risk** | The customer is likely to leave without converting | Last chance to retain (recover cart, save intent, assist immediately) |
 
-It's important to note that signals are not calculated on linear rules but, based on a behavioral algorithm that looks at intensity and direction in user behavior.
+It's important to note that signals are not calculated on linear rules but, based on a behavioral algorithm that looks at intensity and direction in user behavior. 
 
 You can see these signals listed inside the 'Customer behaviour signals' section, click on the curly bracket icon to see the full document.
 

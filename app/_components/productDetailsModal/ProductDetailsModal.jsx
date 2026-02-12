@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from "react-redux";
 import styles from "./productDetailsModal.module.css";
 import { Subtitle, Label, Description } from "@leafygreen-ui/typography";
 import { Modal, Container, Alert } from "react-bootstrap";
+import Code from "@leafygreen-ui/code";
+import Image from "next/image";
 import Button from "@leafygreen-ui/button";
 import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
 import { updateCartProduct, redeemNextBestAction } from "@/lib/api";
@@ -86,12 +88,11 @@ console.log('openedProductDetails:', openedProductDetails);
     <Modal
       show={openedProductDetails !== null}
       onHide={handleClose}
-      size="lg"
+      size="xl"
       aria-labelledby="contained-modal-title-vcenter"
       centered
       fullscreen={"md-down"}
       className={styles.leafyFeel}
-      backdrop="static"
     >
       <Container className="p-3 h-100">
         <div
@@ -103,18 +104,33 @@ console.log('openedProductDetails:', openedProductDetails);
         {openedProductDetails !== null && (
           <div className={styles.detailModal}>
             <div className={styles.detailPhoto}>
-              <img
+              <Image
                 src={openedProductDetails.photo}
                 alt={openedProductDetails.name}
                 width={400}
                 height={400}
-              ></img>
+                priority={true}
+                style={{
+                  objectFit: "contain",
+                  borderRadius: "8px"
+                }}
+              />
             </div>
             <div className={styles.detailInfo}>
               <Label className={styles.productName}>
                 {openedProductDetails.name}
               </Label>
-              <Description>{openedProductDetails.brand}</Description>
+              
+              <div className="mb-2">
+                <Description><strong>Brand:</strong> {openedProductDetails.brand}</Description>
+                {openedProductDetails.articleType && (
+                  <Description><strong>Type:</strong> {openedProductDetails.articleType}</Description>
+                )}
+                {openedProductDetails.subCategory && (
+                  <Description><strong>Category:</strong> {openedProductDetails.subCategory}</Description>
+                )}
+              </div>
+              
               <Subtitle className={styles.price}>
                 ${openedProductDetails.price}
               </Subtitle>
@@ -149,6 +165,13 @@ console.log('openedProductDetails:', openedProductDetails);
                 }{" "}
                 Add to Cart
               </Button>
+
+              <div className="mt-3">
+                <Description className="mb-2">Product Document (partial):</Description>
+                <Code language="javascript">
+                  {JSON.stringify(openedProductDetails, null, 2)}
+                </Code>
+              </div>
             </div>
           </div>
         )}

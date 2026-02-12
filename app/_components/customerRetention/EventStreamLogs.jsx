@@ -53,7 +53,7 @@ const EventStreamLogs = () => {
         amount={events?.length?.toString()}
         learnMoreElement={
           <p className="m-0">
-            Customer action based interactions are streamed to MongoDB Atlas in real time, complemented by heartbeat signals sent every {HEARTBEAT_INTERVAL_MS / 1000} seconds.
+            Action based interactions are streamed to MongoDB Atlas in real time, complemented by heartbeat signals sent every {HEARTBEAT_INTERVAL_MS / 1000} seconds.
           </p>
         }
       />
