@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import "./shop.css";
 import Navbar from "../_components/navbar/Navbar";
@@ -18,6 +18,18 @@ export default function Page() {
   const dispatch = useDispatch();
   const [openHelpModal, setOpenHelpModal] = useState(false);
   const { isDrawerOpen, isCustomerRetentionEnabled } = useSelector(state => state.CustomerRetention)
+
+  // Hide scrollbar on shop page
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, []);
 
   const tabs = [
     {
@@ -49,16 +61,16 @@ export default function Page() {
           <Navbar />
           <div className="container mx-auto px-4 my-4 d-flex justify-content-between">
             <SearchBar />
-            {/* <InfoWizard
+            <InfoWizard
               open={openHelpModal}
               setOpen={setOpenHelpModal}
               tooltipText="Learn More!"
               iconGlyph="Wizard"
               tabs={ tabs }
               openModalIsButton={true}
-            /> */}
+            />
           </div>
-          <div className="container mx-auto px-4">
+          <div className="ProductListContainer container mx-auto px-4">
             <ProductList />
           </div>
           <ProductDetailsModal />
@@ -85,7 +97,7 @@ export default function Page() {
               openModalIsButton={true}
             />
           </div>
-          <div className="container mx-auto px-4">
+          <div className="ProductListContainer container mx-auto px-4 mb-4">
             <ProductList />
           </div>
           <ProductDetailsModal/>

@@ -96,9 +96,19 @@ const ProductList = () => {
         itemsPerPage={PAGINATION_PER_PAGE}
         itemsPerPageOptions={[8, 16, PAGINATION_PER_PAGE]}
         numTotalItems={totalItems}
-        onForwardArrowClick={ () => dispatch(setCurrentPage(currentPage + 1)) }
-        onBackArrowClick={ () => dispatch(setCurrentPage(currentPage - 1)) }
+        onForwardArrowClick={ () => {
+          const maxPage = Math.ceil(totalItems / PAGINATION_PER_PAGE);
+          if (currentPage < maxPage) {
+            dispatch(setCurrentPage(currentPage + 1));
+          }
+        }}
+        onBackArrowClick={ () => {
+          if (currentPage > 1) {
+            dispatch(setCurrentPage(currentPage - 1));
+          }
+        }}
       ></Pagination>
+      <br></br>
     </div>
   );
 };

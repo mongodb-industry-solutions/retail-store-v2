@@ -142,6 +142,13 @@ const Notifications = ({ isMenuOpened, onToggle }) => {
                 <NotificationItem item={action} />
               </ListGroup.Item>
             ))}
+            {
+              nextBestActions.length === 0 && (
+                <div className="p-3">
+                  <p className="mb-0">No notification yet.</p>
+                </div>
+              )
+            }
           </ListGroup>
         </div>
       )}

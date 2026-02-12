@@ -5,7 +5,7 @@ import { useState } from "react";
 import { SearchInput } from "@leafygreen-ui/search-input";
 
 import styles from "./searchBar.module.css";
-import { setQuery } from "@/redux/slices/ProductsSlice";
+import { setQuery, setCurrentPage } from "@/redux/slices/ProductsSlice";
 
 const SearchBar = () => {
   const dispatch = useDispatch();
@@ -15,6 +15,7 @@ const SearchBar = () => {
 
   const onSearchSubmit = () => {
     dispatch(setQuery(localQuery));
+    dispatch(setCurrentPage(1)); // Reset pagination to first page on new search
   };
 
   return (

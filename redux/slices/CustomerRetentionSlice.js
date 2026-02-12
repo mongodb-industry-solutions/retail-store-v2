@@ -37,7 +37,7 @@ const CustomerRetentionSlice = createSlice({
             state.customerBehaviour.data.push(action.payload);
         },
         pushNextBestActionItem: (state, action) => {
-            state.nextBestActions.data.push(action.payload);
+            state.nextBestActions.data.unshift(action.payload);
         },
         markNextBestActionAsRedeemed: (state, action) => {
             const itemId = action.payload;
