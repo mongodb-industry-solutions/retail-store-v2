@@ -91,9 +91,8 @@ const HeartbeatManager = () => {
     }
 
     heartbeatIntervalRef.current = setInterval(() => {
-      // TODO UNCOMMENT LATER
-      // const payload = generateTimeSeriesEvent(EVENT_STREAMS_TYPES.HEARTBEAT, {});
-      // dispatch(sendEvent(payload));
+      const payload = generateTimeSeriesEvent(EVENT_STREAMS_TYPES.HEARTBEAT, {});
+      dispatch(sendEvent(payload));
     }, HEARTBEAT_INTERVAL_MS);
   }, [dispatch, selectedUser]);
 
