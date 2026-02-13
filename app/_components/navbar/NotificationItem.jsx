@@ -7,6 +7,8 @@ import { markNextBestActionAsRedeemed } from '@/redux/slices/CustomerRetentionSl
 const NotificationItem = ({item}) => {
   const [awaitingApiResponse, setAwaitingApiResponse] = useState(false);
   const dispatch = useDispatch();
+  
+  console.log('Rendering NotificationItem with item:', item);
 
   const redeemNBA = async () => {
     if (awaitingApiResponse || item.redeemed) return;
@@ -44,20 +46,6 @@ const NotificationItem = ({item}) => {
 
       {/* Right Column - Image and Button */}
       <div className="NotificationItem-actions">
-        {/* Image/Icon Row */}
-        <div className={item.actionMetadata.product?.imageUrl ? "NotificationItem-image-container" : ""}>
-          {item.actionMetadata.product?.imageUrl ? (
-            <img 
-              src={item.actionMetadata.product.imageUrl} 
-              alt={item.actionMetadata.product.productName}
-              className="NotificationItem-product-image"
-            />
-          ) : (
-            // <Icon glyph={item.actionMetadata.icon} size="default" />
-            <></>
-          )}
-        </div>
-
         {/* Button Row */}
         <Button 
           size='xsmall' 
