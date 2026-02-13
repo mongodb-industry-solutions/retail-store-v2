@@ -4,6 +4,7 @@ import "../../fonts.css";
 import styles from "./about.module.css";
 import TeamCard from "../teamcard/TeamCard";
 import Disclaimer from "../disclaimer/Disclaimer";
+import Image from "next/image";
 
 import Button from "@leafygreen-ui/button";
 import { H1, H3, Body } from "@leafygreen-ui/typography";
@@ -15,6 +16,8 @@ const About = () => {
     "https://github.com/mongodb-industry-solutions/retail-store-v2";
   const githubRepoMSUrl =
     "https://github.com/mongodb-industry-solutions/retail-digital-receipts-backend";
+  const githubRepoNBAUrl = 
+    "https://github.com/mongodb-industry-solutions/retail-customer-retention-backend";
 
   return (
     <Container>
@@ -35,7 +38,14 @@ const About = () => {
           <Disclaimer />
         </div>
         <div>
-          <img className={styles.aboutImg} src="/aboutillo.png"></img>
+          <Image 
+            className={styles.aboutImg} 
+            src="/aboutIllo.png" 
+            alt="About illustration"
+            width={400}
+            height={300}
+            priority
+          />
         </div>
       </div>
       <H3>Related Resources</H3>
@@ -50,6 +60,12 @@ const About = () => {
           <Button>
             <img src="/github.png" alt="GitHub" width={24} height={24} />
             Github: Invoice & Recommendation MS
+          </Button>
+        </a>
+        <a href={githubRepoNBAUrl} target="_blank" rel="noopener noreferrer">
+          <Button>
+            <img src="/github.png" alt="GitHub" width={24} height={24} />
+            Github: Next Best Action MS
           </Button>
         </a>
       </div>

@@ -8,12 +8,14 @@ import { InfoSprinkle } from "@leafygreen-ui/info-sprinkle";
 import { getEngagedActionsAnalysis } from "@/lib/api";
 import { getUser, getNextBestActionConfig } from "@/lib/helpers";
 import { AGGREGATION_PIPELINES } from "@/lib/constants";
+import { useSelector } from "react-redux";
 
 const CustomerStatistic = () => {
   const [engagementData, setEngagementData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const recalculateAnalytics = useSelector((state) => state.CustomerRetention.recalculateAnalytics);
 
   useEffect(() => {
     const fetchEngagementData = async () => {
@@ -33,7 +35,7 @@ const CustomerStatistic = () => {
     };
 
     fetchEngagementData();
-  }, []);
+  }, [recalculateAnalytics]);
 
   // Calculate total count for display
   const totalCount = engagementData.reduce((sum, item) => sum + item.count, 0);
@@ -45,7 +47,7 @@ const CustomerStatistic = () => {
     <Card className="mt-2 CustomerStatistic">
       <SectionHeader
         title="Customer Analytics"
-        subtitle={loading ? 'Loading engagement data...' : `Based on ${totalCount} engaged actions across all ${getUser()?.name || getUser()?.firstName || "this user"}'s sessions.`}
+        subtitle={loading ? 'Loading engagement data...' : `Based on ${totalCount} redeemed NBA across all ${getUser()?.name || getUser()?.firstName || "this user"}'s sessions.`}
         amount={null}
         learnMoreElement={null}
         extraHTMLElement={<InfoWizard open={isInfoOpen} setOpen={setIsInfoOpen} tabs={[{

@@ -16,49 +16,10 @@ const HeartbeatManager = () => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [showInactivityAlert, setShowInactivityAlert] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
-  const [buttonClicked, setButtonClicked] = useState(false); // Track if button was clicked
   
   const heartbeatIntervalRef = useRef(null);
   const inactivityTimeoutRef = useRef(null);
   const lastActivityRef = useRef(Date.now());
-
-  // Generate customer behavior data via API call
-  const generateData = useCallback(async () => {
-    console.log('🎯 generateData called - Starting customer behavior data generation...');
-    setButtonClicked(true); // Disable button after clicking
-    try {
-      const { sid, uid } = getSessionAndUserId();
-      if (!uid) {
-        console.error('Cannot generate data: no user ID available');
-        return;
-      }
-      console.log('🎯 Calling API to generate customer behavior data...', { userId: uid, sessionId: sid });
-      
-      // Call the API endpoint instead of importing MongoDB code
-      const response = await fetch('/api/customerBehavior', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          uid: uid, 
-          sid: sid, 
-          useDelay: true // Enable 10-second delays between insertions
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`API call failed with status: ${response.status}`);
-      }
-
-      const results = await response.json();
-      
-      console.log('✅ Customer behavior data generated successfully:', results);
-    } catch (error) {
-      console.error('❌ Failed to generate customer behavior data:', error);
-      setButtonClicked(false); // Re-enable button on error
-    }
-  }, [selectedUser]);
 
   // Reset inactivity timer on user activity
   const resetInactivityTimer = useCallback(() => {
@@ -202,25 +163,6 @@ const HeartbeatManager = () => {
         />
         <span>{isStreaming && !isPaused ? 'Tracking behaviour' : 'Stopped tracking'}</span>
       </div>
-
-      {/* Development Generate Data Button */}
-      {(() => {
-        const isDev = DEVELOPMENT;
-        const hasUser = !!selectedUser;
-        return isDev && hasUser;
-      })() && (
-        <button
-          onClick={generateData}
-          disabled={buttonClicked}
-          className={`generate-data-button ${
-            buttonClicked 
-              ? 'generate-data-button--disabled' 
-              : 'generate-data-button--active'
-          }`}
-        >
-          {buttonClicked ? '✅ Data Generated' : '🎯 Generate Dummy Data For Testing'}
-        </button>
-      )}
       
       {showInactivityAlert && (
         <div className="inactivity-overlay">

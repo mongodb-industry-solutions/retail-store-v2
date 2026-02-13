@@ -26,6 +26,7 @@ const Navbar = () => {
   const sessionId = useRef(uuidv4());
   const ordersLoaded = useSelector((state) => state.User.orders?.initialLoad);
   const userId = useSelector((state) => state.User.selectedUser?._id);
+  const openedProductDetails = useSelector((state) => state.Products.openedProductDetails);
   const { isDrawerOpen, isCustomerRetentionEnabled } = useSelector(
     (state) => state.CustomerRetention
   );
@@ -96,6 +97,10 @@ const Navbar = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [sseConnection]);
+
+  useEffect(() => {
+    if(openedProductDetails) setOpenMenu(''); // Close any open menu when product details modal is opened
+  }, [openedProductDetails]);
 
   return (
     <nav className={"navbar"}>

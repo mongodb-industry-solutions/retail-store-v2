@@ -19,6 +19,7 @@ const CustomerRetentionSlice = createSlice({
             // Map of productId to notification data: { title, message, _id, productId }
             highlightedProducts: {},
         },
+        recalculateAnalytics: false, // Flag to trigger recalculation of analytics when needed
     },
     reducers: {
         setIsDrawerOpen: (state, action) => {
@@ -37,7 +38,8 @@ const CustomerRetentionSlice = createSlice({
             state.customerBehaviour.data.push(action.payload);
         },
         pushNextBestActionItem: (state, action) => {
-            state.nextBestActions.data.push(action.payload);
+            state.nextBestActions.data.unshift(action.payload);
+            state.recalculateAnalytics = !state.recalculateAnalytics; // Toggle to trigger analytics recalculation if needed
         },
         markNextBestActionAsRedeemed: (state, action) => {
             const itemId = action.payload;
@@ -45,6 +47,7 @@ const CustomerRetentionSlice = createSlice({
             if (item) {
                 item.redeemed = true;
             }
+            state.recalculateAnalytics = !state.recalculateAnalytics; // Toggle to trigger analytics recalculation if needed
         },
         addProductNotification: (state, action) => {
             const { productId, title, message, _id } = action.payload;
