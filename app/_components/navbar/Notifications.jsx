@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import NotificationItem from "./NotificationItem";
 import { fetchNextBestActions } from "@/lib/api";
 import { pushNextBestActionItem, setNextBestActions, addProductNotification } from "@/redux/slices/CustomerRetentionSlice";
+import { addAlert } from "@/redux/slices/AlertSlice";
 
 const Notifications = ({ isMenuOpened, onToggle }) => {
   const {initialFetch, isLoading, data: nextBestActions} = useSelector(state => state.CustomerRetention.nextBestActions);
@@ -48,13 +49,25 @@ const Notifications = ({ isMenuOpened, onToggle }) => {
           dispatch(pushNextBestActionItem(newDocument));
           
           // Check if this notification is for a specific product
-          if (newDocument.embedInProductId) {
-            console.log("Adding product notification for product ID:", newDocument.embedInProductId);
+          if (newDocument.embedInProduct?.productId) {
+            console.log("Adding product notification for product ID:", newDocument.embedInProduct.productId);
             dispatch(addProductNotification({
-              embedInProductId: newDocument.embedInProductId,
-              ...newDocument.actionMetadata,
+              productId: newDocument.embedInProduct.productId,
+              title: newDocument.embedInProduct?.title,
+              message: newDocument.embedInProduct?.message,
               _id: newDocument._id
             }));
+          }
+          // Flash recommendation
+          if(newDocument?.actionMetadata?.productRecommendation){
+            dispatch(addAlert({
+            id: newDocument._id,
+            title: 'Flash recommendation!',
+            message: newDocument?.actionMetadata?.productRecommendation?.name,
+            imageUrl: newDocument?.actionMetadata?.productRecommendation?.imageUrl,
+            type: 'success', // success, error, info
+            duration: 20000 // 20 secs in milliseconds
+        }));
           }
         }
       }
@@ -106,7 +119,6 @@ const Notifications = ({ isMenuOpened, onToggle }) => {
     <div className={"profileContainer"}>
       <div style={{ position: "relative", display: "inline-block" }} onClick={onToggle}>
         <IconButton
-          //onClick={}
           aria-label="Toggle Notifications"
           className={"NavbarButtonIcon cursorPointer"}
         >
@@ -118,7 +130,7 @@ const Notifications = ({ isMenuOpened, onToggle }) => {
               variant="red"
               style={{ backgroundColor: "#dc2626", color: "white" }}
             >
-              {nextBestActions.length}
+              {nextBestActions.filter(action => !action.redeemed).length}
             </Badge>
           </div>
         )}
@@ -141,6 +153,13 @@ const Notifications = ({ isMenuOpened, onToggle }) => {
                 <NotificationItem item={action} />
               </ListGroup.Item>
             ))}
+            {
+              nextBestActions.length === 0 && (
+                <div className="p-3">
+                  <p className="mb-0">No notification yet.</p>
+                </div>
+              )
+            }
           </ListGroup>
         </div>
       )}

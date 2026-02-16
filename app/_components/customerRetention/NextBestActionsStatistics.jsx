@@ -9,12 +9,14 @@ import { getNextBestActionConfig, getUser } from "@/lib/helpers";
 import { getNextBestActionsAnalysis } from "@/lib/api";
 import { AGGREGATION_PIPELINES } from "@/lib/constants";
 import Badge from "@leafygreen-ui/badge";
+import { useSelector } from "react-redux";
 
 const NextBestActionStatistic = () => {
   const [actionsData, setActionsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const recalculateAnalytics = useSelector((state) => state.CustomerRetention.recalculateAnalytics);
 
   useEffect(() => {
     const fetchActionsData = async () => {
@@ -24,6 +26,7 @@ const NextBestActionStatistic = () => {
         
         // Fetch next best actions analysis data (including all actions)
         const data = await getNextBestActionsAnalysis(true);
+        console.log("Next Best Actions Analysis Data:", data);
         setActionsData(data || []);
       } catch (err) {
         console.error("Error fetching next best actions analysis:", err);
@@ -34,11 +37,11 @@ const NextBestActionStatistic = () => {
     };
 
     fetchActionsData();
-  }, []);
+  }, [recalculateAnalytics]);
 
   // Create a map of actions data by action type for easy lookup
   const actionsDataMap = actionsData.reduce((acc, item) => {
-    acc[item.actionType] = item;
+    acc[item.type] = item;
     return acc;
   }, {});
 

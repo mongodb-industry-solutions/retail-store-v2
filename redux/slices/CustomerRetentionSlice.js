@@ -16,9 +16,10 @@ const CustomerRetentionSlice = createSlice({
             data: [],
         },
         productNotifications: {
-            // Map of productId to notification data: { title, _id, embedInProductId }
+            // Map of productId to notification data: { title, message, _id, productId }
             highlightedProducts: {},
         },
+        recalculateAnalytics: false, // Flag to trigger recalculation of analytics when needed
     },
     reducers: {
         setIsDrawerOpen: (state, action) => {
@@ -37,7 +38,8 @@ const CustomerRetentionSlice = createSlice({
             state.customerBehaviour.data.push(action.payload);
         },
         pushNextBestActionItem: (state, action) => {
-            state.nextBestActions.data.push(action.payload);
+            state.nextBestActions.data.unshift(action.payload);
+            state.recalculateAnalytics = !state.recalculateAnalytics; // Toggle to trigger analytics recalculation if needed
         },
         markNextBestActionAsRedeemed: (state, action) => {
             const itemId = action.payload;
@@ -45,14 +47,16 @@ const CustomerRetentionSlice = createSlice({
             if (item) {
                 item.redeemed = true;
             }
+            state.recalculateAnalytics = !state.recalculateAnalytics; // Toggle to trigger analytics recalculation if needed
         },
         addProductNotification: (state, action) => {
-            const { embedInProductId, title, _id } = action.payload;
-            if (embedInProductId) {
-                state.productNotifications.highlightedProducts[embedInProductId] = {
+            const { productId, title, message, _id } = action.payload;
+            if (productId) {
+                state.productNotifications.highlightedProducts[productId] = {
                     title,
+                    message,
                     _id,
-                    embedInProductId
+                    productId
                 };
             }
         },

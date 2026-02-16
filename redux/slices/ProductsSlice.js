@@ -65,9 +65,10 @@ const ProductsSlice = createSlice({
             }
         },
         setCurrentPage: (state, action) => {
+            const newPage = action.payload;
             return {
                 ...state,
-                currentPage: action.payload
+                currentPage: Math.max(1, newPage) // Ensure currentPage is never less than 1
             }
         },
 

@@ -9,12 +9,14 @@ import { getBehaviorConfig, getUser } from "@/lib/helpers";
 import { getCustomerBehaviorAnalysis } from "@/lib/api";
 import { AGGREGATION_PIPELINES } from "@/lib/constants";
 import Badge from "@leafygreen-ui/badge";
+import { useSelector } from "react-redux";
 
 const BehaviourStatistics = () => {
   const [behaviorData, setBehaviorData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const recalculateAnalytics = useSelector((state) => state.CustomerRetention.recalculateAnalytics);
 
   useEffect(() => {
     const fetchBehaviorData = async () => {
@@ -34,11 +36,11 @@ const BehaviourStatistics = () => {
     };
 
     fetchBehaviorData();
-  }, []);
+  }, [recalculateAnalytics]);
 
   // Create a map of behavior data by signal type for easy lookup
   const behaviorDataMap = behaviorData.reduce((acc, item) => {
-    acc[item.signalType] = item;
+    acc[item.signal] = item;
     return acc;
   }, {});
 

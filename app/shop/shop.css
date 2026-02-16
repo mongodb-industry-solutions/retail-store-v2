@@ -1,0 +1,5 @@
+/* Simple scroll fix - only for ProductListContainer */
+.ProductListContainer {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}

@@ -14,10 +14,11 @@ const AlertsList = () => {
             {alerts.map((alert) => (
                 <Alert key={alert.id}
                     id={alert.id}
-                    type={alert.type}
-                    duration={alert.duration}
-                    title={alert.title}
-                    message={alert.message}
+                    type={alert?.type}
+                    duration={alert?.duration}
+                    title={alert?.title}
+                    message={alert?.message}
+                    imageUrl={alert?.imageUrl}
                 />
             ))}
         </>
