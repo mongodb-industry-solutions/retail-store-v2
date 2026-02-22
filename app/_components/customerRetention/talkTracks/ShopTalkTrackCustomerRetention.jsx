@@ -169,7 +169,7 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
         <div className="mt-2">
           <Image
             src="/rsc/images/customerRetention/events.png"
-            alt="Events section placeholder"
+            alt="Events section"
             width={400}
             height={250}
             style={{
@@ -267,7 +267,7 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
         <div className="mt-2">
           <Image
             src="/rsc/images/customerRetention/customerBehaviours.png"
-            alt="Customer behaviour signals placeholder"
+            alt="Customer behaviour signals"
             width={400}
             height={250}
             style={{
@@ -295,15 +295,6 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
         </ul>
         <a href="https://github.com/mongodb-industry-solutions/retail-customer-retention-backend" target="_blank">You can see the full code in the Github Repo</a>
         <br></br><br></br>
-        <p className="intro-text">
-          In this demo we have three possible Next Best Action types from which
-          the agent can pick based on the signals that it reads.
-        </p>
-
-        <p className="intro-text">
-          This section will start auto populating as the agent creates Next Best
-          Actions to send to the customer.
-        </p>
 
         <p className="intro-text">
           You will see the Next Best Actions listed inside this section.
@@ -312,7 +303,7 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
         <div className="mt-2">
           <Image
             src="/rsc/images/customerRetention/nextBestAction.png"
-            alt="Next Best Actions placeholder"
+            alt="Next Best Actions"
             width={400}
             height={250}
             style={{
@@ -324,33 +315,21 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
           />
         </div>
 
+        <br></br>
         <h3 className="section-subtitle">
-          How will the customer look at this NBAs?
+          NBA Types Available in this Demo
         </h3>
-
         <p className="intro-text">
-          NBAs are displayed inside the navbar as Notifications
+          In this demo we have three possible Next Best Action types from which
+          the agent can pick based on the signals that it reads.
         </p>
-        <div className="mt-2">
-          <Image
-            src="/rsc/images/customerRetention/notifications.png"
-            alt="NBA notifications placeholder"
-            width={400}
-            height={250}
-            style={{
-              width: "400px",
-              height: "auto",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
-          />
-        </div>
 
-        <p className="intro-text">
-          Also for some NBA that are for a specific product, in addition to the
-          notification you will be able to see it inside the product details as
-          well as with a
-          <svg
+        <div className="nba-types-section">
+          <h4 className="nba-type-title">Type: Social Proof Notification</h4>
+          <p className="nba-description">
+            <strong>Triggered by signal:</strong> High Intent<br/>
+            <strong>NBA:</strong> Will generate a notification with a social proof notification 
+            regarding the product the customer is having a high focus on, plus a  <svg
             xmlns="http://www.w3.org/2000/svg"
             width="25"
             height="25"
@@ -359,23 +338,98 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
             viewBox="0 0 16 16"
           >
             <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15" />
-          </svg>
-          icon on the product card.
-        </p>
-        <div className="mt-2">
-          <Image
-            src="/rsc/images/customerRetention/embedNotification.png"
-            alt="Embedded NBA notification placeholder"
-            width={400}
-            height={250}
-            style={{
-              width: "400px",
-              height: "auto",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
-          />
+          </svg> icon 
+            and message will be added into the product card and details page.
+          </p>
+          <div className="mt-2">
+            <Image
+              src="/rsc/images/customerRetention/socialProofNoti.png"
+              alt="Social Proof Notification"
+              width={400}
+              height={250}
+              style={{
+                width: "400px",
+                height: "auto",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
+                marginBottom: "10px"
+              }}
+            />
+            <Image
+              src="/rsc/images/customerRetention/fireIconNBA.png"
+              alt="Social Proof Fire icon"
+              width={400}
+              height={250}
+              style={{
+                width: "400px",
+                height: "auto",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
+              }}
+            />
+          </div>
+
+          <h4 className="nba-type-title">Type: Discount Product Recommendation</h4>
+          <p className="nba-description">
+            <strong>Triggered by signal:</strong> Search friction<br/>
+            <strong>NBA:</strong> Notification that provides a discount on an article type or 
+            subcategory. Plus a Flash product recommendation, which is generated by running 
+            vector search with the context of the latest customer activity.
+          </p>
+          <div className="mt-2">
+            <Image
+              src="/rsc/images/customerRetention/productDiscountNoti.png"
+              alt="Discount Product Recommendation Notification"
+              width={400}
+              height={250}
+              style={{
+                width: "400px",
+                height: "auto",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
+                marginBottom: "10px"
+              }}
+            />
+            <Image
+              src="/rsc/images/customerRetention/flashRecommendation.png"
+              alt="Flash Recommendation"
+              width={400}
+              height={250}
+              style={{
+                width: "400px",
+                height: "auto",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
+              }}
+            />
+          </div>
+
+          <h4 className="nba-type-title">Type: Shipping discount</h4>
+          <p className="nba-description">
+            <strong>Triggered by signal:</strong> Exit intent<br/>
+            <strong>NBA:</strong> Notification that provides shipping discount. Percentage 
+            discount varies in the severity of the signal.
+          </p>
+          <div className="mt-2">
+            <Image
+              src="/rsc/images/customerRetention/shippingDiscount.png"
+              alt="Shipping discount"
+              width={400}
+              height={250}
+              style={{
+                width: "400px",
+                height: "auto",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
+              }}
+            />
+          </div>
         </div>
+
+        <p className="intro-text">
+          This section will start auto populating as the agent creates Next Best
+          Actions to send to the customer.
+        </p>
 
         <h1 className="main-title mt-2">Demo Walkthrough (What you show)</h1>
 
@@ -419,7 +473,7 @@ const ShopTalkTrackCustomerRetention = ({ section }) => {
           <div className="scenario-card">
             <h3 className="scenario-title">Scenario 3 — Exit Risk</h3>
             <div className="scenario-sequence">
-              <strong>Sequence:</strong> add-to-cart then exit-intent
+              <strong>Sequence:</strong> Hover over the "Log out" button several times without performing any other relevant activity. 
             </div>
             <div className="scenario-show">
               <strong>Show:</strong>
