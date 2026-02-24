@@ -10,6 +10,7 @@ import BehaviourStatistics from "./BehaviourStatistics";
 import GeneralStatistics from "./GeneralStatistics";
 import NextBestActionStatistic from "./NextBestActionsStatistics";
 import CustomerStatistic from "./CustomerStatistics";
+import SessionState from "./SessionState";
 
 const CustomerRetentionContainer = () => {
   const [selected, setSelected] = useState(0);
@@ -35,6 +36,7 @@ const CustomerRetentionContainer = () => {
         </Tab>
         <Tab name="Statistics">
           <GeneralStatistics/>
+          <SessionState/>
           <CustomerStatistic/>
           <BehaviourStatistics/>
           <NextBestActionStatistic/>
