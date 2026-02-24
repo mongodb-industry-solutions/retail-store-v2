@@ -19,6 +19,7 @@ const CustomerRetentionSlice = createSlice({
             // Map of productId to notification data: { title, message, _id, productId }
             highlightedProducts: {},
         },
+        sessionState: null, // The session_state generated/updated by ASP 1
         recalculateAnalytics: false, // Flag to trigger recalculation of analytics when needed
     },
     reducers: {
@@ -60,12 +61,17 @@ const CustomerRetentionSlice = createSlice({
                 };
             }
         },
+
         removeProductNotification: (state, action) => {
             const productId = action.payload;
             delete state.productNotifications.highlightedProducts[productId];
+        },
+        setSessionState: (state, action) => {
+            state.sessionState = action.payload;
         }
     }
 })
+
 
 export const {
     setIsDrawerOpen,
@@ -76,7 +82,8 @@ export const {
     pushNextBestActionItem,
     markNextBestActionAsRedeemed,
     addProductNotification,
-    removeProductNotification
+    removeProductNotification,
+    setSessionState
 } = CustomerRetentionSlice.actions
 
 export default CustomerRetentionSlice.reducer
