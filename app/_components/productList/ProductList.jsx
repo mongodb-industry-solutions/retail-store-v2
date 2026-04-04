@@ -19,7 +19,8 @@ const ProductList = () => {
     currentPage, 
     products,
     totalItems,
-    query
+    query,
+    searchTrigger
   } = useSelector(state => state.Products);
 
   const getProducts = async () => {
@@ -70,7 +71,7 @@ const ProductList = () => {
   useEffect(() => {
     if(initialLoad === true)
       getProducts()
-  }, [currentPage, query])
+  }, [currentPage, searchTrigger])
 
   return (
     <div>

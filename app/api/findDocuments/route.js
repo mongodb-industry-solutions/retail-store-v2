@@ -14,7 +14,7 @@ export async function POST(request) {
     const db = client.db(databaseName);
     const collection = db.collection(collectionName);
 
-    if(filter['_id']){
+    if(filter['_id'] && typeof filter['_id'] === 'string' && /^[a-fA-F0-9]{24}$/.test(filter['_id'])){
         filter['_id'] = new ObjectId(filter['_id'])
     }
 

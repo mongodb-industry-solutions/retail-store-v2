@@ -3,47 +3,47 @@ import { useDispatch } from 'react-redux';
 import Image from 'next/image'
 import { Subtitle } from '@leafygreen-ui/typography';
 import { setOpenedProductDetails } from '@/redux/slices/ProductsSlice';
-import Badge from '@leafygreen-ui/badge';
-import Icon from '@leafygreen-ui/icon';
+import { fetchproduct } from '@/lib/api';
 
 import './prCard.css'
 
 const PRCard = (props) => {
+    const product = props.product;
     const { 
         _id = 1234, 
         image = null, 
         name = 'Product Name', 
         brand = 'Brand Name', 
         price = 0.00, 
-        vectorSearchScore = null
-    } = props.product;
+    } = product;
     const {triggerRef} = props;
     const dispatch = useDispatch();
 
-    const onProductClick = () => {
-        dispatch(setOpenedProductDetails({
-            id: _id,
-            photo: image,
-            name,
-            brand,
-            price,
-            items: [],
-        }))
-        
+    const onProductClick = async () => {
+        // Fetch full product document so the modal shows all details (description, specs, etc.)
+        try {
+            const fullProduct = await fetchproduct(_id);
+            const merged = fullProduct 
+                ? { ...fullProduct, id: fullProduct._id, photo: fullProduct.image?.url || fullProduct.image || image }
+                : { ...product, id: _id, photo: image, name, brand, price };
+            dispatch(setOpenedProductDetails(merged));
+        } catch (err) {
+            console.error('Error fetching full product:', err);
+            // Fallback to partial data
+            dispatch(setOpenedProductDetails({
+                ...product,
+                id: _id,
+                photo: image,
+                name,
+                brand,
+                price,
+            }));
+        }
     }
 
     return (
         <div className='PRCard cursorPointer' onClick={() => onProductClick()}>
             <div className='d-flex flex-column' ref={triggerRef}>
-                <div className='scoreContainer'>
-                    {
-                        vectorSearchScore &&
-                        <Badge className='scorebadge' variant="yellow">
-                            <Icon glyph="Favorite" />
-                            {Number(vectorSearchScore).toFixed(5)}
-                        </Badge>
-                    }
-                </div>
                 <div className='imageContainer'>
                     {
                         image == null
@@ -61,7 +61,11 @@ const PRCard = (props) => {
                 <div className='ms-3 me-3 mt-3'>
                     <Subtitle className="name" title={name}>{name}</Subtitle>
                     <Subtitle className="brand" title={brand}>{brand}</Subtitle>
-                    <Subtitle className="text-secondary">${price}</Subtitle>
+                    <Subtitle className="text-secondary">
+                        {typeof price === "object" && price?.amount != null
+                            ? `${price.currency === "USD" ? "$" : price.currency + " "}${price.amount}`
+                            : `$${price}`}
+                    </Subtitle>
                 </div>
             </div>
         </div>

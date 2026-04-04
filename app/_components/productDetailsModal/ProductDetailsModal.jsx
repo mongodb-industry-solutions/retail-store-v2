@@ -4,17 +4,41 @@ import { useState, useEffect } from "react";
 import Icon from "@leafygreen-ui/icon";
 import { useSelector, useDispatch } from "react-redux";
 import styles from "./productDetailsModal.module.css";
-import { Subtitle, Label, Description } from "@leafygreen-ui/typography";
+import { Subtitle, Label, Description, Body } from "@leafygreen-ui/typography";
 import { Modal, Container, Alert } from "react-bootstrap";
 import Code from "@leafygreen-ui/code";
 import Image from "next/image";
 import Button from "@leafygreen-ui/button";
+import IconButton from "@leafygreen-ui/icon-button";
 import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
 import { updateCartProduct, redeemNextBestAction } from "@/lib/api";
 import { setCartProductsList } from "@/redux/slices/UserSlice";
 import { markNextBestActionAsRedeemed } from "@/redux/slices/CustomerRetentionSlice";
 import { EVENT_STREAMS_TYPES } from "@/lib/constants";
 import useCustomerRetentionTracking from "@/hooks/useCustomerRetentionTracking";
+
+// Known product attribute keys to display in the specs table
+const SPEC_KEYS = [
+  { key: "material", label: "Material", icon: "🧵" },
+  { key: "color", label: "Color", icon: "🎨" },
+  { key: "dimensions", label: "Dimensions", icon: "📐" },
+  { key: "usage", label: "Usage", icon: "💡" },
+  { key: "pattern", label: "Pattern", icon: "🔲" },
+  { key: "mountType", label: "Mount Type", icon: "🔩" },
+  { key: "style", label: "Style", icon: "✨" },
+  { key: "weight", label: "Weight", icon: "⚖️" },
+  { key: "season", label: "Season", icon: "🌤️" },
+  { key: "gender", label: "Gender", icon: "👤" },
+  { key: "baseColour", label: "Base Colour", icon: "🎨" },
+];
+
+// Keys to exclude from the JSON display
+const EXCLUDED_KEYS = [
+  "_id", "id", "photo", "image", "price", "name", "brand",
+  "masterCategory", "subCategory", "articleType", "description",
+  "score", "vai_4_embedding", "vai_text_embedding",
+  ...SPEC_KEYS.map((s) => s.key),
+];
 
 const ProductDetailsModal = () => {
   const openedProductDetails = useSelector(
@@ -27,44 +51,38 @@ const ProductDetailsModal = () => {
   const highlightedProducts = useSelector(
     (state) => state.CustomerRetention.productNotifications.highlightedProducts
   );
-  const [isInCart, setIsInCart] = useState(
-    cartProducts.some((obj) => obj._id === openedProductDetails?.id)
-  );
-console.log('openedProductDetails:', openedProductDetails);
+  const [isInCart, setIsInCart] = useState(false);
+  const [showJson, setShowJson] = useState(false);
+
   const handleClose = () => {
     dispatch(setOpenedProductDetails(null));
+    setShowJson(false);
   };
+
   const onAddToCartClick = async () => {
-    if (isInCart)
-      // TODO temporary while we implement remove from cart
-      return;
+    if (isInCart) return;
     try {
-      //const addToCart = cartProducts.some(obj => obj._id === openedProductDetails.id);      
-      // Check if there's a highlighted product notification for this product
       if (highlightedProducts[openedProductDetails.id]) {
-        // First redeem the next best action in the database
-        const nextBestActionId = highlightedProducts[openedProductDetails.id]._id;
+        const nextBestActionId =
+          highlightedProducts[openedProductDetails.id]._id;
         try {
-          const redeemRes = await redeemNextBestAction(nextBestActionId);          
-          // If the database update was successful, mark the item as redeemed in Redux
+          const redeemRes = await redeemNextBestAction(nextBestActionId);
           if (redeemRes.modifiedCount === 1) {
             dispatch(markNextBestActionAsRedeemed(nextBestActionId));
           }
         } catch (error) {
-          console.error('Error redeeming next best action:', error);
+          console.error("Error redeeming next best action:", error);
         }
       }
-      
+
       const cart = await updateCartProduct(
         userId,
         openedProductDetails.id,
         isInCart
       );
-      console.log("result", cart);
       if (cart) {
         setIsInCart(!isInCart);
         dispatch(setCartProductsList(cart));
-        // Track add-to-cart event (only if feature is customer retention)
         trackEvent(EVENT_STREAMS_TYPES.ADD_TO_CART, {
           productId: openedProductDetails?.id,
           subCategory: openedProductDetails?.subCategory,
@@ -78,11 +96,53 @@ console.log('openedProductDetails:', openedProductDetails);
   };
 
   useEffect(() => {
-    let _isInCart = cartProducts.some(
-      (obj) => obj._id === openedProductDetails?.id
-    );
-    setIsInCart(_isInCart);
+    if (openedProductDetails?.id) {
+      const _isInCart = cartProducts.some(
+        (obj) => obj._id === openedProductDetails.id
+      );
+      setIsInCart(_isInCart);
+      setShowJson(false);
+    }
   }, [openedProductDetails?.id]);
+
+  // Build category breadcrumb
+  const breadcrumbParts = [
+    openedProductDetails?.masterCategory,
+    openedProductDetails?.subCategory,
+    openedProductDetails?.articleType,
+  ].filter(Boolean);
+
+  // Collect product specs that exist on this document
+  const specs = SPEC_KEYS.filter(
+    ({ key }) =>
+      openedProductDetails?.[key] !== undefined &&
+      openedProductDetails?.[key] !== null &&
+      openedProductDetails?.[key] !== ""
+  );
+
+  // Build a clean JSON object for the raw view (exclude UI-computed fields)
+  const buildJsonDisplay = () => {
+    if (!openedProductDetails) return {};
+    const clean = {};
+    Object.keys(openedProductDetails).forEach((key) => {
+      if (!EXCLUDED_KEYS.includes(key)) {
+        clean[key] = openedProductDetails[key];
+      }
+    });
+    // Always include these core fields at the top
+    return {
+      _id: openedProductDetails.id || openedProductDetails._id,
+      name: openedProductDetails.name,
+      brand: openedProductDetails.brand,
+      price: openedProductDetails.price,
+      masterCategory: openedProductDetails.masterCategory,
+      subCategory: openedProductDetails.subCategory,
+      articleType: openedProductDetails.articleType,
+      description: openedProductDetails.description,
+      ...Object.fromEntries(specs.map(({ key }) => [key, openedProductDetails[key]])),
+      ...clean,
+    };
+  };
 
   return (
     <Modal
@@ -94,56 +154,83 @@ console.log('openedProductDetails:', openedProductDetails);
       fullscreen={"md-down"}
       className={styles.leafyFeel}
     >
-      <Container className="p-3 h-100">
+      <Container className="p-0 h-100">
         <div
-          className="d-flex flex-row-reverse p-1 cursorPointer"
+          className={styles.closeButton}
           onClick={handleClose}
         >
-          <Icon glyph="X" />
+          <Icon glyph="X" size="large" />
         </div>
         {openedProductDetails !== null && (
           <div className={styles.detailModal}>
+            {/* Left: Product Image */}
             <div className={styles.detailPhoto}>
               <Image
                 src={openedProductDetails.photo}
                 alt={openedProductDetails.name}
-                width={400}
-                height={400}
+                width={350}
+                height={350}
                 priority={true}
                 style={{
                   objectFit: "contain",
-                  borderRadius: "8px"
+                  borderRadius: "8px",
+                  maxWidth: "100%",
+                  height: "auto",
                 }}
               />
             </div>
-            <div className={styles.detailInfo}>
-              <Label className={styles.productName}>
-                {openedProductDetails.name}
-              </Label>
-              
-              <div className="mb-2">
-                <Description><strong>Brand:</strong> {openedProductDetails.brand}</Description>
-                {openedProductDetails.articleType && (
-                  <Description><strong>Type:</strong> {openedProductDetails.articleType}</Description>
-                )}
-                {openedProductDetails.subCategory && (
-                  <Description><strong>Category:</strong> {openedProductDetails.subCategory}</Description>
-                )}
-              </div>
-              
-              <Subtitle className={styles.price}>
-                ${openedProductDetails.price}
-              </Subtitle>
 
-              {(highlightedProducts[openedProductDetails?.id]) && (
-                <Alert key="danger" variant="danger">
+            {/* Right: Product Info */}
+            <div className={styles.detailInfo}>
+              {/* Category Breadcrumb */}
+              {breadcrumbParts.length > 0 && (
+                <div className={styles.breadcrumb}>
+                  {breadcrumbParts.map((part, i) => (
+                    <span key={i}>
+                      {i > 0 && <span className={styles.breadcrumbSep}> › </span>}
+                      <span className={styles.breadcrumbItem}>{part}</span>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Product Name */}
+              <h2 className={styles.productName}>
+                {openedProductDetails.name}
+              </h2>
+
+              {/* Brand */}
+              <div className={styles.brandLine}>
+                Visit the <span className={styles.brandLink}>{openedProductDetails.brand}</span> Store
+              </div>
+
+              {/* Price */}
+              <div className={styles.priceSection}>
+                <span className={styles.priceLabel}>Price:</span>
+                <span className={styles.price}>
+                  {typeof openedProductDetails.price === "object"
+                    ? `${openedProductDetails.price.currency === "USD" ? "$" : openedProductDetails.price.currency + " "}${openedProductDetails.price.amount}`
+                    : `$${openedProductDetails.price}`}
+                </span>
+              </div>
+
+              {/* Special Offer Alert */}
+              {highlightedProducts[openedProductDetails?.id] && (
+                <Alert key="danger" variant="danger" className="mt-2 mb-2">
                   <div className="d-flex flex-row align-items-center mb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#6c3036" className="me-2" viewBox="0 0 16 16">
-                      <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15"/>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="25"
+                      height="25"
+                      fill="#6c3036"
+                      className="me-2"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15" />
                     </svg>
                     <Alert.Heading className="m-0">
                       {highlightedProducts[openedProductDetails.id]?.title ||
-                        "Special Offer!"}{" "}
+                        "Special Offer!"}
                     </Alert.Heading>
                   </div>
                   <p>
@@ -153,24 +240,89 @@ console.log('openedProductDetails:', openedProductDetails);
                 </Alert>
               )}
 
+              {/* Add to Cart */}
               <Button
-                className={styles.detailCart}
-                disabled={isInCart} // TODO temporary while we implement remove from cart
+                className={styles.addToCartBtn}
+                variant="primary"
+                disabled={isInCart}
                 onClick={() => onAddToCartClick()}
               >
                 <img src="/cart.png" alt="Add Cart" width={18} height={18} />
-                {
-                  // TODO commented temporary while we implement remove from cart
-                  //isInCart ? 'Remove from' : 'Add to'
-                }{" "}
-                Add to Cart
+                {isInCart ? "In Cart" : "Add to Cart"}
               </Button>
 
-              <div className="mt-3">
-                <Description className="mb-2">Product Document (partial):</Description>
-                <Code language="javascript">
-                  {JSON.stringify(openedProductDetails, null, 2)}
-                </Code>
+              {/* Description */}
+              {openedProductDetails.description && (
+                <div className={styles.descriptionSection}>
+                  <h4 className={styles.sectionTitle}>About this item</h4>
+                  <p className={styles.descriptionText}>
+                    {openedProductDetails.description}
+                  </p>
+                </div>
+              )}
+
+              {/* Product Specifications */}
+              {specs.length > 0 && (
+                <div className={styles.specsSection}>
+                  <h4 className={styles.sectionTitle}>Product Details</h4>
+                  <table className={styles.specsTable}>
+                    <tbody>
+                      {specs.map(({ key, label, icon }) => (
+                        <tr key={key}>
+                          <td className={styles.specLabel}>
+                            <span className={styles.specIcon}>{icon}</span>
+                            {label}
+                          </td>
+                          <td className={styles.specValue}>
+                            {openedProductDetails[key]}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Magic Wand - JSON Toggle */}
+              <div className={styles.jsonToggleSection}>
+                <button
+                  className={styles.magicWandBtn}
+                  onClick={() => setShowJson(!showJson)}
+                  title={showJson ? "Hide raw document" : "Show raw MongoDB document"}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M15 4V2" />
+                    <path d="M15 16v-2" />
+                    <path d="M8 9h2" />
+                    <path d="M20 9h2" />
+                    <path d="M17.8 11.8 19 13" />
+                    <path d="M15 9h0" />
+                    <path d="M17.8 6.2 19 5" />
+                    <path d="M3 21l9-9" />
+                    <path d="M12.2 6.2 11 5" />
+                  </svg>
+                  <span className={styles.magicWandLabel}>
+                    {showJson ? "Hide" : "Show"} MongoDB Document
+                  </span>
+                </button>
+
+                {showJson && (
+                  <div className={styles.jsonContainer}>
+                    <Code language="javascript">
+                      {JSON.stringify(buildJsonDisplay(), null, 2)}
+                    </Code>
+                  </div>
+                )}
               </div>
             </div>
           </div>

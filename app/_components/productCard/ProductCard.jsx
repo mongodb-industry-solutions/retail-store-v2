@@ -29,6 +29,7 @@ const ProductCard = ({ id, product }) => {
   const onProductClick = () => {
     dispatch(
       setOpenedProductDetails({
+        ...product,
         id,
         photo,
         name,

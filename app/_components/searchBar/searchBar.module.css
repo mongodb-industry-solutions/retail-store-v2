@@ -1,15 +1,43 @@
-.searchContainer{
-    position: relative;
-
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
-.searchInputContainer{
-display: flex;
+.searchInputContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.searchInput{
-min-width: 250px;
+.searchButton {
+  flex-shrink: 0;
 }
-.searchInput input{
-    font-size: 20px;
+
+.searchInput {
+  min-width: 250px;
+}
+
+.searchInput input {
+  font-size: 20px;
+}
+
+.searchTypeToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.toggleLabel {
+  font-size: 13px;
+  color: #889397;
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+.activeLabel {
+  color: #001E2B;
+  font-weight: 600;
 }

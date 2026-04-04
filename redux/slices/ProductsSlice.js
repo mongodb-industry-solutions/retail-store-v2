@@ -7,17 +7,21 @@ const ProductsSlice = createSlice({
         products: [],
         query: '', 
         filters: {}, // {selectedBrands: {String, String...}, selectedCategories: {String, String...} }
-        query: '', 
+        searchType: 'vector', // 'vector' or 'text'
         totalItems: 0,
         currentPage: 1,
         searchIsLoading: false,
         initialLoad: false,
         error: null,         // null or {msg: ""}
-        openedProductDetails: null // null or {...} este es el 
+        openedProductDetails: null, // null or {...} este es el 
+        searchTrigger: 0, // incremented on every search to force re-fetch
     },
     reducers: {
         setQuery: (state, action) => {
             return { ...state, query: action.payload }
+        },
+        triggerSearch: (state, action) => {
+            return { ...state, query: action.payload, searchTrigger: state.searchTrigger + 1 }
         },
         setLoading: (state, action) => {
             return { ...state, searchIsLoading: action.payload }
@@ -83,6 +87,7 @@ export const {
     setInitialLoad,
     setFilters,
     setQuery,
+    triggerSearch,
     updateProductPrice,
     setOpenedProductDetails,
     setCurrentPage
