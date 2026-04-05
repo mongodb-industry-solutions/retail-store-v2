@@ -6,7 +6,8 @@
     "dev": "next dev -H 0.0.0.0 -p 8080",
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p 8080",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed:owner": "node scripts/seed-store-owner.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",

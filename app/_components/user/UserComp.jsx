@@ -35,9 +35,15 @@ const UserComp = ({user = null, isSelectedUser = false, setOpen, setLocalSelecte
             {
                 user === null
                 ? <Skeleton></Skeleton>
-                : <>
-                    <img src={`/rsc/users/${user._id}.png`}></img>
-                    <Body className={styles.userName}>{user.name}</Body>
+                :                 <>
+                    <div className={styles.avatarWrap}>
+                        <img src={`/rsc/users/${user._id}.png`} alt="" />
+                    </div>
+                    {user.type === "owner" ? (
+                        <Body className={styles.ownerBadge}>Owner</Body>
+                    ) : (
+                        <Body className={styles.userName}>{user.name}</Body>
+                    )}
                 </>
             }
 
