@@ -175,6 +175,12 @@ export default function OrderDetailsPage({ params }) {
       myStepperRef.current,
       document.getElementById("myStepperRef")
     );
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+        console.log("SSE connection closed - order details cleanup.");
+      }
+    };
   }, [listenToSSEUpdates, orderDetails._id]);
 
   useEffect(() => {
