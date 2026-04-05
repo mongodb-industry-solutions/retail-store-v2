@@ -48,6 +48,7 @@ export default function Page() {
   const [selectedStoreLocation, setSelectedStoreLocation] = useState(null);
   const [productDetailsOpened, setProductDetailsOpened] = useState(false);
   const [processingNewOrder, setProcessingNewOrder] = useState(false);
+  const [orderError, setOrderError] = useState(null);
 
   // --- Receipts walkthrough refs ---
   const triggerRefReceipts1 = useRef(null); // Confirm button
@@ -93,21 +94,37 @@ export default function Page() {
       return; // Stop order processing
     }
 
+    if (
+      shippingMethod.id === shippingMethods.home.id &&
+      !selectedUser?.address
+    ) {
+      setOrderError(
+        "Home delivery requires a shipping address on the selected customer."
+      );
+      return;
+    }
+
+    setOrderError(null);
     setProcessingNewOrder(true);
-    let order = await createNewOrder(
-      selectedUser._id,
-      selectedUser.address,
-      cart.products,
-      shippingMethod,
-      selectedStoreLocation
-    );
-    setProcessingNewOrder(false);
-    if (order) {
-      dispatch(clearOrder());
-      dispatch(clearCartProductsList());
-      handleCreateNewOrder(order);
-      router.push(`/orderDetails/${order._id}?feature=${feature}`);
-      await clearCart(selectedUser._id);
+    try {
+      const order = await createNewOrder(
+        selectedUser._id,
+        selectedUser.address,
+        cart.products,
+        shippingMethod,
+        selectedStoreLocation
+      );
+      if (order) {
+        dispatch(clearOrder());
+        dispatch(clearCartProductsList());
+        handleCreateNewOrder(order);
+        router.push(`/orderDetails/${order._id}?feature=${feature}`);
+        await clearCart(selectedUser._id);
+      }
+    } catch (e) {
+      setOrderError(e.message || "Could not place order.");
+    } finally {
+      setProcessingNewOrder(false);
     }
   };
 
@@ -181,6 +198,11 @@ export default function Page() {
         ) : (
           <div className="mt-3">
             <H3 className="mb-2">Payment details</H3>
+            {orderError && (
+              <Banner variant="danger" className="mb-3">
+                {orderError}
+              </Banner>
+            )}
             <Card
               className={styles.cardInfo}
             >
@@ -267,8 +289,10 @@ export default function Page() {
                 variant="primary"
                 disabled={
                   cart.products?.length === 0 ||
-                  (shippingMethod.id === shippingMethods.bopis &&
-                    selectedStoreLocation === null)
+                  (shippingMethod.id === shippingMethods.bopis.id &&
+                    selectedStoreLocation === null) ||
+                  (shippingMethod.id === shippingMethods.home.id &&
+                    !selectedUser?.address)
                 }
                 onClick={onConfirmOrder}
               >

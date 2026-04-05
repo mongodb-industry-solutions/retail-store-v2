@@ -3,6 +3,35 @@ import { clientPromise, dbName } from "@/lib/mongodb";
 import { PAGINATION_PER_PAGE } from "@/lib/constants";
 import axios from "axios";
 
+/** After $skip/$limit inside $facet.results: attach stockQuantity from product_inventory */
+const inventoryFacetStages = [
+  {
+    $lookup: {
+      from: "product_inventory",
+      localField: "_id",
+      foreignField: "_id",
+      as: "_inv",
+    },
+  },
+  {
+    $addFields: {
+      stockQuantity: {
+        $cond: {
+          if: { $gt: [{ $size: { $ifNull: ["$_inv", []] } }, 0] },
+          then: {
+            $getField: {
+              field: "quantity",
+              input: { $arrayElemAt: ["$_inv", 0] },
+            },
+          },
+          else: null,
+        },
+      },
+    },
+  },
+  { $project: { _inv: 0 } },
+];
+
 // ─── Voyage AI Embedding Helper ──────────────────────────────────────────────
 
 async function generateQueryEmbedding(query) {
@@ -72,6 +101,7 @@ function buildVectorSearchPipeline(queryEmbedding, facets, paginationPage) {
       results: [
         { $skip: PAGINATION_PER_PAGE * paginationPage },
         { $limit: PAGINATION_PER_PAGE },
+        ...inventoryFacetStages,
       ],
       totalCount: [{ $count: "total" }],
     },
@@ -146,6 +176,7 @@ function buildTextSearchPipeline(query, facets, paginationPage) {
       results: [
         { $skip: PAGINATION_PER_PAGE * paginationPage },
         { $limit: PAGINATION_PER_PAGE },
+        ...inventoryFacetStages,
       ],
       totalCount: [{ $count: "total" }],
     },
@@ -191,6 +222,7 @@ function buildBrowsePipeline(facets, paginationPage) {
       results: [
         { $skip: PAGINATION_PER_PAGE * paginationPage },
         { $limit: PAGINATION_PER_PAGE },
+        ...inventoryFacetStages,
       ],
       totalCount: [{ $count: "total" }],
     },

@@ -8,7 +8,8 @@ import Card from "@leafygreen-ui/card";
 import { Label, Description, Subtitle } from "@leafygreen-ui/typography";
 import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
 import Image from "next/image";
-import { EVENT_STREAMS_TYPES } from "@/lib/constants";
+import { EVENT_STREAMS_TYPES, LOW_STOCK_THRESHOLD } from "@/lib/constants";
+import Badge from "@leafygreen-ui/badge";
 import useCustomerRetentionTracking from "@/hooks/useCustomerRetentionTracking";
 
 const ProductCard = ({ id, product }) => {
@@ -26,6 +27,13 @@ const ProductCard = ({ id, product }) => {
   );
   const hasNotification = highlightedProducts[id];
 
+  const stockQty =
+    product.stockQuantity !== undefined ? product.stockQuantity : null;
+  const isLowStock =
+    typeof stockQty === "number" &&
+    stockQty > 0 &&
+    stockQty <= LOW_STOCK_THRESHOLD;
+
   const onProductClick = () => {
     dispatch(
       setOpenedProductDetails({
@@ -37,6 +45,7 @@ const ProductCard = ({ id, product }) => {
         price,
         articleType,
         subCategory,
+        stockQuantity: stockQty,
       })
     );
 
@@ -86,6 +95,21 @@ const ProductCard = ({ id, product }) => {
           <div className={styles.subtitle}>
             <Subtitle>${price}</Subtitle>
           </div>
+          {typeof stockQty === "number" && stockQty === 0 && (
+            <Badge variant="dark" className="mt-1">
+              Out of stock
+            </Badge>
+          )}
+          {isLowStock && (
+            <Badge variant="warning" className="mt-1">
+              Only {stockQty} left
+            </Badge>
+          )}
+          {typeof stockQty === "number" && stockQty > LOW_STOCK_THRESHOLD && (
+            <Description className="mt-1 small text-muted">
+              {stockQty} in stock
+            </Description>
+          )}
         </div>
       </Card>
     </LeafyGreenProvider>

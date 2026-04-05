@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from "uuid";
 import { Container } from 'react-bootstrap'
-import Code from '@leafygreen-ui/code';
+import JsonTreeViewer from '@/app/_components/jsonTreeViewer/JsonTreeViewer';
 import { H2, H3 } from '@leafygreen-ui/typography';
 
 import './personalizedRecommendations.css'
@@ -38,7 +38,7 @@ const PersonalizedRecommendationsContainer = () => {
               heading: "Document",
               content: <Container className={` p-3 h-100`}>
                 <H3 className='mb-2'>User document</H3>
-                <Code language="javascript">{JSON.stringify(selectedUser, null, 2)}</Code>
+                <JsonTreeViewer data={selectedUser ?? null} />
               </Container>
             },
             {

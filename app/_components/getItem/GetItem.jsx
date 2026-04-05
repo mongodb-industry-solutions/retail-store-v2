@@ -4,6 +4,7 @@ import React from "react";
 import styles from "./getItem.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import JsonTreeViewer from "@/app/_components/jsonTreeViewer/JsonTreeViewer";
 
 const GetItem = () => {
   const [item, setItem] = useState(null);
@@ -25,7 +26,7 @@ const GetItem = () => {
   return (
     <div className={styles.container}>
       <h2>Item Details</h2>
-      {item ? <pre>{JSON.stringify(item, null, 2)}</pre> : <p>No item found</p>}
+      {item ? <JsonTreeViewer data={item} /> : <p>No item found</p>}
     </div>
   );
 };

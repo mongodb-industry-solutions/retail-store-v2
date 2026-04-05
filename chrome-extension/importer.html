@@ -187,6 +187,38 @@
       </div>
     </div>
 
+    <!-- Bulk seed (200 searches) -->
+    <div class="card">
+      <h2>Bulk seed catalog</h2>
+      <p style="font-size:13px;color:#555;margin-bottom:12px;line-height:1.45;">
+        Runs <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">seedSearches.json</code> (regenerate with <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">npm run seed:amazon-searches</code>).
+        Per search: top results, then PDP scrape per ASIN. Posts <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">mode: &quot;raw&quot;</code>. With <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">VOYAGE_AI_API_KEY</code> on the Next server, each batch also saves <strong>seed embeddings</strong>. Pass 2 (Haiku categories + new vectors): <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">npm run enrich:amazon-text</code>. Backfill vectors only for already-imported rows: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">npm run embed:amazon-raw</code> in <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">microservices/productEmbeddings</code>.
+      </p>
+      <div class="form-row">
+        <div class="field-sm">
+          <label for="bulkItemsPerSearch">Per search</label>
+          <input type="number" id="bulkItemsPerSearch" min="1" max="48" value="10">
+        </div>
+        <div class="field-sm">
+          <label for="bulkDelayPdpMs">PDP delay (ms)</label>
+          <input type="number" id="bulkDelayPdpMs" min="0" value="2000">
+        </div>
+        <div class="field-sm">
+          <label for="bulkDelaySearchMs">Search delay (ms)</label>
+          <input type="number" id="bulkDelaySearchMs" min="0" value="3000">
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+        <button type="button" id="bulkStartBtn" class="btn btn-primary">Start bulk run</button>
+        <button type="button" id="bulkPauseBtn" class="btn btn-outline" disabled>Pause</button>
+        <button type="button" id="bulkResumeBtn" class="btn btn-outline" disabled>Resume</button>
+        <button type="button" id="bulkCancelBtn" class="btn btn-outline" disabled>Cancel</button>
+        <button type="button" id="bulkResetBtn" class="btn btn-sm">Reset progress</button>
+      </div>
+      <div id="bulkProgressLine" style="margin-top:12px;font-size:13px;font-weight:600;color:#00684a;"></div>
+      <pre id="bulkLog" style="margin-top:10px;max-height:180px;overflow:auto;background:#f8f8f8;border:1px solid #e0e0e0;border-radius:6px;padding:10px;font-size:11px;line-height:1.4;"></pre>
+    </div>
+
     <!-- Search -->
     <div class="card">
       <h2>🔍 Search Amazon</h2>

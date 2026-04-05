@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styles from "./productDetailsModal.module.css";
 import { Subtitle, Label, Description, Body } from "@leafygreen-ui/typography";
 import { Modal, Container, Alert } from "react-bootstrap";
-import Code from "@leafygreen-ui/code";
+import JsonTreeViewer from "@/app/_components/jsonTreeViewer/JsonTreeViewer";
 import Image from "next/image";
 import Button from "@leafygreen-ui/button";
 import IconButton from "@leafygreen-ui/icon-button";
@@ -14,31 +14,44 @@ import { setOpenedProductDetails } from "@/redux/slices/ProductsSlice";
 import { updateCartProduct, redeemNextBestAction } from "@/lib/api";
 import { setCartProductsList } from "@/redux/slices/UserSlice";
 import { markNextBestActionAsRedeemed } from "@/redux/slices/CustomerRetentionSlice";
-import { EVENT_STREAMS_TYPES } from "@/lib/constants";
+import { EVENT_STREAMS_TYPES, LOW_STOCK_THRESHOLD } from "@/lib/constants";
 import useCustomerRetentionTracking from "@/hooks/useCustomerRetentionTracking";
-
-// Known product attribute keys to display in the specs table
-const SPEC_KEYS = [
-  { key: "material", label: "Material", icon: "🧵" },
-  { key: "color", label: "Color", icon: "🎨" },
-  { key: "dimensions", label: "Dimensions", icon: "📐" },
-  { key: "usage", label: "Usage", icon: "💡" },
-  { key: "pattern", label: "Pattern", icon: "🔲" },
-  { key: "mountType", label: "Mount Type", icon: "🔩" },
-  { key: "style", label: "Style", icon: "✨" },
-  { key: "weight", label: "Weight", icon: "⚖️" },
-  { key: "season", label: "Season", icon: "🌤️" },
-  { key: "gender", label: "Gender", icon: "👤" },
-  { key: "baseColour", label: "Base Colour", icon: "🎨" },
-];
+import { SPEC_KEYS } from "@/lib/productSpecKeys";
 
 // Keys to exclude from the JSON display
 const EXCLUDED_KEYS = [
   "_id", "id", "photo", "image", "price", "name", "brand",
   "masterCategory", "subCategory", "articleType", "description",
   "score", "vai_4_embedding", "vai_text_embedding",
+  "stockQuantity",
   ...SPEC_KEYS.map((s) => s.key),
 ];
+
+/** Root keys not shown as dynamic Amazon-style attribute rows (keep in sync with lib/amazonImportShape). */
+const RESERVED_ROOT_KEYS = new Set([
+  "_id",
+  "id",
+  "name",
+  "brand",
+  "price",
+  "image",
+  "photo",
+  "masterCategory",
+  "subCategory",
+  "articleType",
+  "description",
+  "score",
+  "stockQuantity",
+  "source",
+  "importedAt",
+  "lastUpdatedAt",
+  "enrichmentStatus",
+  "amazonImports",
+  "vai_4_embedding",
+  "vai_text_embedding",
+  "amazonTextEnrichedAt",
+  "amazonPdpScrapeError",
+]);
 
 const ProductDetailsModal = () => {
   const openedProductDetails = useSelector(
@@ -120,6 +133,22 @@ const ProductDetailsModal = () => {
       openedProductDetails?.[key] !== ""
   );
 
+  const specKeyNames = new Set(SPEC_KEYS.map((s) => s.key));
+
+  const dynamicSpecs = openedProductDetails
+    ? Object.entries(openedProductDetails)
+        .filter(([k, v]) => {
+          if (!k || k.startsWith("_")) return false;
+          if (RESERVED_ROOT_KEYS.has(k)) return false;
+          if (specKeyNames.has(k)) return false;
+          const t = typeof v;
+          if (t === "string") return v.trim() !== "";
+          if (t === "number" || t === "boolean") return true;
+          return false;
+        })
+        .sort(([a], [b]) => a.localeCompare(b))
+    : [];
+
   // Build a clean JSON object for the raw view (exclude UI-computed fields)
   const buildJsonDisplay = () => {
     if (!openedProductDetails) return {};
@@ -139,10 +168,30 @@ const ProductDetailsModal = () => {
       subCategory: openedProductDetails.subCategory,
       articleType: openedProductDetails.articleType,
       description: openedProductDetails.description,
+      stockQuantity:
+        openedProductDetails.stockQuantity !== undefined
+          ? openedProductDetails.stockQuantity
+          : null,
       ...Object.fromEntries(specs.map(({ key }) => [key, openedProductDetails[key]])),
       ...clean,
     };
   };
+
+  const priceLabel =
+    openedProductDetails &&
+    (typeof openedProductDetails.price === "object"
+      ? `${openedProductDetails.price.currency === "USD" ? "$" : openedProductDetails.price.currency + " "}${openedProductDetails.price.amount}`
+      : `$${openedProductDetails.price}`);
+
+  const rawStock = openedProductDetails?.stockQuantity;
+  let stockQty = null;
+  if (rawStock !== undefined && rawStock !== null) {
+    const n = Number(rawStock);
+    if (Number.isFinite(n)) stockQty = n;
+  }
+  const isLowStockModal =
+    stockQty !== null && stockQty > 0 && stockQty <= LOW_STOCK_THRESHOLD;
+  const outOfStock = stockQty === 0;
 
   return (
     <Modal
@@ -207,12 +256,30 @@ const ProductDetailsModal = () => {
               {/* Price */}
               <div className={styles.priceSection}>
                 <span className={styles.priceLabel}>Price:</span>
-                <span className={styles.price}>
-                  {typeof openedProductDetails.price === "object"
-                    ? `${openedProductDetails.price.currency === "USD" ? "$" : openedProductDetails.price.currency + " "}${openedProductDetails.price.amount}`
-                    : `$${openedProductDetails.price}`}
-                </span>
+                <span className={styles.price}>{priceLabel}</span>
+                {isLowStockModal && (
+                  <span className={styles.lowInventoryChip}>low inventory</span>
+                )}
               </div>
+
+              {stockQty === null && (
+                <Body className="text-muted mt-2 mb-0">
+                  In stock — quantity not tracked until inventory is seeded.
+                </Body>
+              )}
+              {stockQty !== null && stockQty > LOW_STOCK_THRESHOLD && (
+                <Body className="mt-2 mb-0">
+                  <strong>{stockQty}</strong> in stock
+                </Body>
+              )}
+              {outOfStock && (
+                <Alert variant="danger" className="mt-2 mb-2">
+                  <Alert.Heading className="h6 mb-0">Out of stock</Alert.Heading>
+                  <p className="mb-0 small">
+                    This item cannot be added to the cart until stock is replenished.
+                  </p>
+                </Alert>
+              )}
 
               {/* Special Offer Alert */}
               {highlightedProducts[openedProductDetails?.id] && (
@@ -244,7 +311,7 @@ const ProductDetailsModal = () => {
               <Button
                 className={styles.addToCartBtn}
                 variant="primary"
-                disabled={isInCart}
+                disabled={isInCart || outOfStock}
                 onClick={() => onAddToCartClick()}
               >
                 <img src="/cart.png" alt="Add Cart" width={18} height={18} />
@@ -261,8 +328,8 @@ const ProductDetailsModal = () => {
                 </div>
               )}
 
-              {/* Product Specifications */}
-              {specs.length > 0 && (
+              {/* Product Specifications + Amazon PDP labels (flattened on document root) */}
+              {(specs.length > 0 || dynamicSpecs.length > 0) && (
                 <div className={styles.specsSection}>
                   <h4 className={styles.sectionTitle}>Product Details</h4>
                   <table className={styles.specsTable}>
@@ -276,6 +343,15 @@ const ProductDetailsModal = () => {
                           <td className={styles.specValue}>
                             {openedProductDetails[key]}
                           </td>
+                        </tr>
+                      ))}
+                      {dynamicSpecs.map(([key, value]) => (
+                        <tr key={key}>
+                          <td className={styles.specLabel}>
+                            <span className={styles.specIcon}>📋</span>
+                            {key}
+                          </td>
+                          <td className={styles.specValue}>{String(value)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -318,9 +394,7 @@ const ProductDetailsModal = () => {
 
                 {showJson && (
                   <div className={styles.jsonContainer}>
-                    <Code language="javascript">
-                      {JSON.stringify(buildJsonDisplay(), null, 2)}
-                    </Code>
+                    <JsonTreeViewer data={buildJsonDisplay()} fillParent />
                   </div>
                 )}
               </div>

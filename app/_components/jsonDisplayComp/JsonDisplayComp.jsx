@@ -1,13 +1,8 @@
-import React from 'react';
-import styles from './jsonDisplayComp.module.css'
+import React from "react";
+import JsonTreeViewer from "@/app/_components/jsonTreeViewer/JsonTreeViewer";
 
-const JsonDisplay = ({ data }) => {
-    console.log(data)
-    return <pre 
-        className={styles.jsonDisplay}
-    >
-        {JSON.stringify(data, null, 2)}
-    </pre>
-};
+const JsonDisplay = ({ data }) => (
+  <JsonTreeViewer data={data} className="" />
+);
 
 export default JsonDisplay;

@@ -15,7 +15,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const importResults = document.getElementById("importResults");
   const emptyState = document.getElementById("emptyState");
 
+  const bulkStartBtn = document.getElementById("bulkStartBtn");
+  const bulkPauseBtn = document.getElementById("bulkPauseBtn");
+  const bulkResumeBtn = document.getElementById("bulkResumeBtn");
+  const bulkCancelBtn = document.getElementById("bulkCancelBtn");
+  const bulkResetBtn = document.getElementById("bulkResetBtn");
+  const bulkItemsPerSearch = document.getElementById("bulkItemsPerSearch");
+  const bulkDelayPdpMs = document.getElementById("bulkDelayPdpMs");
+  const bulkDelaySearchMs = document.getElementById("bulkDelaySearchMs");
+  const bulkProgressLine = document.getElementById("bulkProgressLine");
+  const bulkLogEl = document.getElementById("bulkLog");
+
+  const BULK_STORAGE_KEY = "bulkSeedStateV1";
+
   let scrapedProducts = [];
+  let bulkRunnerActive = false;
 
   // Persist store URL in chrome.storage
   chrome.storage.local.get(["storeUrl"], (result) => {
@@ -23,6 +37,117 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   storeUrlEl.addEventListener("change", () => {
     chrome.storage.local.set({ storeUrl: storeUrlEl.value });
+  });
+
+  bulkPauseBtn.addEventListener("click", async () => {
+    await chrome.storage.local.set({
+      [BULK_STORAGE_KEY]: { ...(await getBulkState()), paused: true },
+    });
+    bulkLog("Paused.");
+  });
+
+  bulkResumeBtn.addEventListener("click", async () => {
+    const st = await getBulkState();
+    await chrome.storage.local.set({ [BULK_STORAGE_KEY]: { ...st, paused: false } });
+    bulkResumeBtn.disabled = true;
+    bulkPauseBtn.disabled = false;
+    bulkLog("Resumed.");
+  });
+
+  bulkCancelBtn.addEventListener("click", async () => {
+    await chrome.storage.local.set({ bulkSeedCancelled: true });
+    bulkLog("Cancel requested — will stop after current step.");
+  });
+
+  bulkResetBtn.addEventListener("click", async () => {
+    await chrome.storage.local.set({
+      [BULK_STORAGE_KEY]: {
+        searchIndex: 0,
+        paused: false,
+        running: false,
+        totals: { imported: 0, skipped: 0, errors: 0 },
+      },
+      bulkSeedCancelled: false,
+    });
+    bulkProgressLine.textContent = "";
+    bulkLogEl.textContent = "";
+    bulkLog("Progress reset.");
+  });
+
+  bulkStartBtn.addEventListener("click", async () => {
+    if (bulkRunnerActive) return;
+    let searches;
+    try {
+      const res = await fetch(chrome.runtime.getURL("seedSearches.json"));
+      const data = await res.json();
+      searches = data.searches;
+    } catch (e) {
+      showStatus("Could not load seedSearches.json: " + e.message, "error");
+      return;
+    }
+    if (!searches || !searches.length) {
+      showStatus("seedSearches.json is empty.", "error");
+      return;
+    }
+
+    const storeUrl = storeUrlEl.value.replace(/\/+$/, "");
+    if (!storeUrl) {
+      showStatus("Set Store API URL first.", "error");
+      return;
+    }
+
+    const itemsPerSearch = Math.min(48, Math.max(1, parseInt(bulkItemsPerSearch.value, 10) || 10));
+    const delayPdp = Math.max(0, parseInt(bulkDelayPdpMs.value, 10) || 2000);
+    const delaySearch = Math.max(0, parseInt(bulkDelaySearchMs.value, 10) || 3000);
+
+    await chrome.storage.local.set({ bulkSeedCancelled: false });
+    let st = await getBulkState();
+    if (st.searchIndex >= searches.length) {
+      st = { searchIndex: 0, paused: false, running: true, totals: { imported: 0, skipped: 0, errors: 0 } };
+    } else {
+      st = { ...st, paused: false, running: true };
+    }
+    await chrome.storage.local.set({ [BULK_STORAGE_KEY]: st });
+
+    bulkRunnerActive = true;
+    bulkStartBtn.disabled = true;
+    bulkPauseBtn.disabled = false;
+    bulkResumeBtn.disabled = true;
+    bulkCancelBtn.disabled = false;
+    emptyState.style.display = "none";
+    bulkLog(`Starting bulk run (${searches.length} searches, ${itemsPerSearch} ASINs each, raw import)...`);
+
+    try {
+      await runBulkSeedLoop({
+        searches,
+        itemsPerSearch,
+        delayPdp,
+        delaySearch,
+        storeUrl,
+      });
+    } catch (e) {
+      bulkLog("Fatal: " + e.message);
+      showStatus("Bulk run error: " + e.message, "error");
+    } finally {
+      bulkRunnerActive = false;
+      bulkStartBtn.disabled = false;
+      bulkPauseBtn.disabled = true;
+      bulkResumeBtn.disabled = true;
+      bulkCancelBtn.disabled = true;
+      const final = await getBulkState();
+      await chrome.storage.local.set({
+        [BULK_STORAGE_KEY]: { ...final, running: false, paused: false },
+      });
+      showStatus("Bulk run finished.", "success");
+    }
+  });
+
+  chrome.storage.local.get([BULK_STORAGE_KEY], (r) => {
+    const st = r[BULK_STORAGE_KEY];
+    if (st && st.running) {
+      bulkProgressLine.textContent =
+        "Last session was interrupted. Use Start to continue from saved index, or Reset.";
+    }
   });
 
   // Enter key triggers search
@@ -192,10 +317,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Enrichment status badges
     let enrichmentHtml = "";
     if (result.enrichment) {
-      enrichmentHtml = `<div style="margin:8px 0; display:flex; gap:8px;">
+      enrichmentHtml = `<div style="margin:8px 0; display:flex; flex-wrap:wrap; gap:8px;">
         <span style="padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; ${result.enrichment.aiDescriptions ? "background:#e8f5e9; color:#2e7d32;" : "background:#fff3e0; color:#e65100;"}">${result.enrichment.aiDescriptions ? "✅ AI Descriptions" : "⚠️ No AI (add ANTHROPIC_API_KEY)"}</span>
         <span style="padding:3px 10px; border-radius:12px; font-size:11px; font-weight:600; ${result.enrichment.embeddings ? "background:#e8f5e9; color:#2e7d32;" : "background:#fff3e0; color:#e65100;"}">${result.enrichment.embeddings ? "✅ Embeddings" : "⚠️ No Embeddings (add VOYAGE_AI_API_KEY)"}</span>
       </div>`;
+      if (result.enrichment.note) {
+        enrichmentHtml += `<p style="font-size:12px;color:#555;margin-top:6px;">${escapeHtml(result.enrichment.note)}</p>`;
+      }
     }
 
     let productsHtml = "";
@@ -208,6 +336,9 @@ document.addEventListener("DOMContentLoaded", () => {
             "articleType", "description", "gender", "baseColour", "color", "amazonAsin",
             "amazonRating", "amazonReviewCount", "amazonUrl", "amazonCategory", "source",
             "importedAt", "lastUpdatedAt", "hasEmbedding", "embeddingDimensions", "descriptionSnippet",
+            "amazonImports",
+            "amazonBreadcrumbs", "amazonBreadcrumbPath", "amazonAttributes", "amazonFeatureBullets",
+            "rawAmazonDescription", "enrichmentStatus", "amazonPdpScrapeError", "amazonTextEnrichedAt",
           ]);
           const extraAttrs = Object.entries(p).filter(([k]) => !skipKeys.has(k));
 
@@ -226,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   ${p.gender ? `<span style="padding:2px 8px; background:#fce4ec; color:#880e4f; border-radius:10px;">${escapeHtml(p.gender)}</span>` : ""}
                   ${p.baseColour ? `<span style="padding:2px 8px; background:#f5f5f5; color:#333; border-radius:10px;">🎨 ${escapeHtml(p.baseColour)}</span>` : ""}
                   <span style="padding:2px 8px; background:${p.hasEmbedding ? "#e8f5e9" : "#ffebee"}; color:${p.hasEmbedding ? "#2e7d32" : "#c62828"}; border-radius:10px;">${p.hasEmbedding ? `✅ Embedding (${p.embeddingDimensions}d)` : "❌ No embedding"}</span>
-                  <span style="padding:2px 8px; background:#efebe9; color:#4e342e; border-radius:10px; font-family:monospace;">ASIN: ${escapeHtml(p.amazonAsin || "")}</span>
+                  <span style="padding:2px 8px; background:#efebe9; color:#4e342e; border-radius:10px; font-family:monospace;">ASIN: ${escapeHtml(p.amazonImports?.amazonAsin || p.amazonAsin || "")}</span>
                 </div>
                 ${p.description ? `<div style="font-size:12px; color:#555; line-height:1.4; margin-bottom:6px; max-height:60px; overflow:hidden;">${escapeHtml(p.description)}</div>` : ""}
                 ${extraAttrs.length > 0 ? `<div style="font-size:11px; color:#777; margin-top:4px;">
@@ -305,5 +436,188 @@ document.addEventListener("DOMContentLoaded", () => {
   function escapeAttr(str) {
     if (!str) return "";
     return str.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  async function getBulkState() {
+    const r = await chrome.storage.local.get([BULK_STORAGE_KEY]);
+    const d = r[BULK_STORAGE_KEY];
+    return {
+      searchIndex: typeof d?.searchIndex === "number" ? d.searchIndex : 0,
+      paused: !!d?.paused,
+      running: !!d?.running,
+      totals: d?.totals || { imported: 0, skipped: 0, errors: 0 },
+    };
+  }
+
+  function bulkLog(line) {
+    const ts = new Date().toISOString().slice(11, 19);
+    bulkLogEl.textContent += `[${ts}] ${line}\n`;
+    bulkLogEl.scrollTop = bulkLogEl.scrollHeight;
+  }
+
+  async function waitUnlessPaused() {
+    while (true) {
+      const cancel = await chrome.storage.local.get(["bulkSeedCancelled"]);
+      if (cancel.bulkSeedCancelled) return false;
+      const st = await getBulkState();
+      if (!st.paused) return true;
+      await sleep(400);
+    }
+  }
+
+  function mergeSearchAndPdp(card, detail, detailError) {
+    const d = detail || {};
+    return {
+      ...card,
+      title: d.pdpTitle || card.title,
+      imageUrl: d.pdpImageUrl || card.imageUrl,
+      amazonBreadcrumbs: d.amazonBreadcrumbs || [],
+      amazonFeatureBullets: d.amazonFeatureBullets || [],
+      amazonDescription: d.amazonDescription || "",
+      amazonAttributes: d.amazonAttributes && typeof d.amazonAttributes === "object" ? d.amazonAttributes : {},
+      pdpScrapeError: detailError || null,
+    };
+  }
+
+  async function runBulkSeedLoop({ searches, itemsPerSearch, delayPdp, delaySearch, storeUrl }) {
+    let st = await getBulkState();
+
+    for (let si = st.searchIndex; si < searches.length; si++) {
+      if (!(await waitUnlessPaused())) {
+        bulkLog("Cancelled.");
+        await chrome.storage.local.set({ [BULK_STORAGE_KEY]: { ...st, searchIndex: si } });
+        return;
+      }
+
+      const query = searches[si];
+      bulkProgressLine.textContent = `Search ${si + 1}/${searches.length}: ${query.slice(0, 60)}…`;
+      bulkLog(`Search ${si + 1}/${searches.length}: ${query}`);
+
+      const searchUrl = `https://www.amazon.com/s?k=${encodeURIComponent(query)}`;
+      const searchTab = await chrome.tabs.create({ url: searchUrl, active: false });
+      await waitForTabLoad(searchTab.id);
+      await sleep(Math.max(delaySearch, 1500));
+
+      await chrome.scripting.executeScript({
+        target: { tabId: searchTab.id },
+        files: ["content.js"],
+      });
+
+      let searchRes;
+      try {
+        searchRes = await chrome.tabs.sendMessage(searchTab.id, {
+          action: "scrapeProducts",
+          limit: itemsPerSearch,
+        });
+      } catch (e) {
+        bulkLog(`Search scrape failed: ${e.message}`);
+        st.totals.errors++;
+        try {
+          chrome.tabs.remove(searchTab.id);
+        } catch (_) {}
+        await chrome.storage.local.set({
+          [BULK_STORAGE_KEY]: { ...st, searchIndex: si + 1 },
+        });
+        continue;
+      }
+
+      try {
+        chrome.tabs.remove(searchTab.id);
+      } catch (_) {}
+
+      const cards = searchRes.products || [];
+      if (cards.length === 0) {
+        bulkLog("No results for this query.");
+        await chrome.storage.local.set({
+          [BULK_STORAGE_KEY]: { ...st, searchIndex: si + 1 },
+        });
+        st.searchIndex = si + 1;
+        await sleep(delaySearch);
+        continue;
+      }
+
+      const merged = [];
+      for (let ci = 0; ci < cards.length; ci++) {
+        if (!(await waitUnlessPaused())) {
+          await chrome.storage.local.set({
+            [BULK_STORAGE_KEY]: { ...st, searchIndex: si },
+          });
+          bulkLog("Cancelled.");
+          return;
+        }
+
+        const card = cards[ci];
+        if (!card.asin) continue;
+
+        const dpTab = await chrome.tabs.create({
+          url: `https://www.amazon.com/dp/${encodeURIComponent(card.asin)}`,
+          active: false,
+        });
+        await waitForTabLoad(dpTab.id);
+        await sleep(Math.max(delayPdp, 1000));
+
+        await chrome.scripting.executeScript({
+          target: { tabId: dpTab.id },
+          files: ["content-pdp.js"],
+        });
+
+        let detail = null;
+        let err = null;
+        try {
+          const r = await chrome.tabs.sendMessage(dpTab.id, { action: "scrapeProductDetail" });
+          detail = r.detail;
+          err = r.error;
+        } catch (e) {
+          err = e.message;
+        }
+
+        try {
+          chrome.tabs.remove(dpTab.id);
+        } catch (_) {}
+
+        merged.push(mergeSearchAndPdp(card, detail, err));
+        bulkLog(`  ASIN ${card.asin} PDP ${err ? "partial (" + err + ")" : "ok"}`);
+        await sleep(delayPdp);
+      }
+
+      if (merged.length === 0) {
+        await chrome.storage.local.set({
+          [BULK_STORAGE_KEY]: { ...st, searchIndex: si + 1 },
+        });
+        st.searchIndex = si + 1;
+        await sleep(delaySearch);
+        continue;
+      }
+
+      try {
+        const response = await fetch(`${storeUrl}/api/amazon/import`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mode: "raw", products: merged }),
+        });
+        const text = await response.text();
+        if (!response.ok) {
+          bulkLog(`API error ${response.status}: ${text.slice(0, 200)}`);
+          st.totals.errors++;
+        } else {
+          const result = JSON.parse(text);
+          st.totals.imported += result.imported || 0;
+          st.totals.skipped += result.skipped || 0;
+          bulkLog(
+            `  Posted: imported ${result.imported}, skipped ${result.skipped} (totals: +${st.totals.imported} / skip ${st.totals.skipped})`
+          );
+        }
+      } catch (e) {
+        bulkLog(`Fetch failed: ${e.message}`);
+        st.totals.errors++;
+      }
+
+      st.searchIndex = si + 1;
+      await chrome.storage.local.set({ [BULK_STORAGE_KEY]: { ...st, searchIndex: si + 1 } });
+      await sleep(delaySearch);
+    }
+
+    bulkProgressLine.textContent = `Done. Imported ~${st.totals.imported}, skipped ${st.totals.skipped}, errors ${st.totals.errors}`;
+    bulkLog("All searches complete. Run pass 2: npm run enrich:amazon-text in microservices/productEmbeddings");
   }
 });

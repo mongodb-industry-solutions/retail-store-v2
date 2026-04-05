@@ -6,6 +6,7 @@ import {
   CATALOG_FORBIDDEN_UPDATE_KEYS,
   sanitizeProductUpdatePayload,
 } from "@/lib/catalogProductConstants";
+import { syncProductEmbeddingFromDoc } from "@/lib/productCatalogEmbedding";
 
 const DEFAULT_NEW_PRODUCT = {
   brand: "Unknown",
@@ -61,8 +62,13 @@ export async function POST(request) {
       doc.image = { url: String(doc.image.url ?? "") };
     }
 
-    await ctx.db.collection("products").insertOne(doc);
-    return NextResponse.json({ product: serializeDoc(doc) }, { status: 200 });
+    const col = ctx.db.collection("products");
+    await col.insertOne(doc);
+    const embedding = await syncProductEmbeddingFromDoc(col, doc);
+    return NextResponse.json(
+      { product: serializeDoc(doc), embedding },
+      { status: 200 }
+    );
   } catch (e) {
     console.error("[catalog/product POST]", e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
@@ -105,15 +111,22 @@ export async function PATCH(request) {
     if (Object.keys($set).length > 0) updateOp.$set = $set;
     if (Object.keys($unset).length > 0) updateOp.$unset = $unset;
 
-    const result = await ctx.db
-      .collection("products")
-      .updateOne({ _id: new ObjectId(productId) }, updateOp);
+    const col = ctx.db.collection("products");
+    const oid = new ObjectId(productId);
+    const result = await col.updateOne({ _id: oid }, updateOp);
+
+    let embedding = { ok: false, reason: "not_matched" };
+    if (result.matchedCount > 0) {
+      const fresh = await col.findOne({ _id: oid });
+      embedding = await syncProductEmbeddingFromDoc(col, fresh);
+    }
 
     return NextResponse.json(
       {
         matchedCount: result.matchedCount,
         modifiedCount: result.modifiedCount,
         acknowledged: result.acknowledged,
+        embedding,
       },
       { status: 200 }
     );

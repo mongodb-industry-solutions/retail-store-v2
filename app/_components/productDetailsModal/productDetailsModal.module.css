@@ -109,7 +109,8 @@
 
 .priceSection {
   display: flex;
-  align-items: baseline;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   padding: 12px 0;
   border-top: 1px solid #e7e7e7;
@@ -127,6 +128,22 @@
   font-weight: 600;
   color: #0f1111;
   letter-spacing: -0.5px;
+}
+
+.lowInventoryChip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #9a3412;
+  background: #ffedd5;
+  border: 1px solid #fb923c;
+  border-radius: 999px;
+  padding: 4px 10px;
+  margin-left: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 /* ─── Add to Cart Button ──────────────────────────────────────── */

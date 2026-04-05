@@ -1,4 +1,5 @@
 import { clientPromise, dbName } from "@/lib/mongodb";
+import { flattenAmazonAttributesOntoDocument } from "@/lib/amazonImportShape";
 import Anthropic from "@anthropic-ai/sdk";
 import axios from "axios";
 import { ObjectId } from "mongodb";
@@ -62,7 +63,7 @@ function buildPrompt(product, categoryCache) {
 PRODUCT INFORMATION:
 - Name: ${product.name}
 - Brand: ${product.brand || "Unknown"}
-- Amazon Category: ${product.amazonCategory || "Unknown"}
+- Amazon Category: ${product.amazonImports?.amazonCategory ?? product.amazonCategory ?? "Unknown"}
 - Color: ${product.color || "Unknown"}
 - Price: $${product.price?.amount || "Unknown"}
 - Amazon Description Snippet: ${product.descriptionSnippet || "None available"}
@@ -189,11 +190,85 @@ async function generateEmbeddings(texts) {
   }
 }
 
+// ─── Raw import: Amazon text only, no vision / no embeddings (pass 2 enriches) ─
+
+function normalizeStringArray(v) {
+  if (!Array.isArray(v)) return [];
+  return v.map((x) => String(x).trim()).filter(Boolean);
+}
+
+function buildRawSeedDescription(p) {
+  const bullets = normalizeStringArray(p.amazonFeatureBullets);
+  const desc = (p.amazonDescription || "").trim();
+  const attrObj = p.amazonAttributes && typeof p.amazonAttributes === "object" && !Array.isArray(p.amazonAttributes) ? p.amazonAttributes : {};
+  const attrLines = Object.entries(attrObj).map(([k, v]) => `${k}: ${v}`);
+  const parts = [];
+  if (bullets.length) parts.push("Features:\n- " + bullets.join("\n- "));
+  if (desc) parts.push(desc);
+  if (attrLines.length) parts.push("Details:\n" + attrLines.join("\n"));
+  const combined = parts.join("\n\n").trim();
+  return combined || (p.descriptionSnippet || "").trim() || "";
+}
+
+function buildRawImportDocuments(newProducts) {
+  return newProducts.map((p) => {
+    const bullets = normalizeStringArray(p.amazonFeatureBullets);
+    const attrObj =
+      p.amazonAttributes && typeof p.amazonAttributes === "object" && !Array.isArray(p.amazonAttributes) ? { ...p.amazonAttributes } : {};
+    const breadcrumbs = normalizeStringArray(p.amazonBreadcrumbs);
+    const seedDesc = buildRawSeedDescription(p);
+
+    const amazonImports = {
+      amazonAsin: p.asin,
+      amazonRating: p.rating ?? null,
+      amazonReviewCount: p.reviewCount ?? null,
+      amazonUrl: p.productUrl || "",
+      amazonCategory: p.category || "",
+      amazonBreadcrumbs: breadcrumbs,
+      amazonBreadcrumbPath: breadcrumbs.join(" > "),
+      amazonAttributes: attrObj,
+      amazonFeatureBullets: bullets,
+      rawAmazonDescription: (p.amazonDescription || "").trim(),
+      ...(p.pdpScrapeError ? { amazonPdpScrapeError: String(p.pdpScrapeError).slice(0, 500) } : {}),
+    };
+
+    const doc = {
+      _id: new ObjectId(),
+      name: (p.pdpTitle || p.title || "Untitled Product").trim(),
+      brand: p.brand || "Unknown",
+      price: {
+        amount: p.price != null ? p.price : 0,
+        currency: "USD",
+      },
+      image: {
+        url: (p.pdpImageUrl || p.imageUrl || "").trim(),
+      },
+      masterCategory: "imported",
+      subCategory: "amazon",
+      articleType: "",
+      description: seedDesc.slice(0, 50000),
+      gender: "unisex",
+      baseColour: p.color || "",
+      color: p.color || "",
+      amazonImports,
+      enrichmentStatus: "pending_text_enrich",
+      source: "amazon",
+      importedAt: new Date(),
+    };
+
+    flattenAmazonAttributesOntoDocument(doc, attrObj);
+
+    return doc;
+  });
+}
+
 // ─── POST /api/amazon/import ─────────────────────────────────────────────────
 
 export async function POST(request) {
   try {
-    const { products } = await request.json();
+    const body = await request.json();
+    const { products, mode } = body;
+    const isRaw = mode === "raw";
 
     if (!products || !Array.isArray(products) || products.length === 0) {
       return NextResponse.json({ error: "No products provided" }, { status: 400, headers: CORS_HEADERS });
@@ -206,15 +281,102 @@ export async function POST(request) {
     // ── Dedup by ASIN ──
     const asins = products.map((p) => p.asin).filter(Boolean);
     const existing = await collection
-      .find({ amazonAsin: { $in: asins } }, { projection: { amazonAsin: 1 } })
+      .find(
+        {
+          $or: [{ amazonAsin: { $in: asins } }, { "amazonImports.amazonAsin": { $in: asins } }],
+        },
+        { projection: { amazonAsin: 1, "amazonImports.amazonAsin": 1 } }
+      )
       .toArray();
-    const existingAsins = new Set(existing.map((p) => p.amazonAsin));
+    const existingAsins = new Set();
+    for (const row of existing) {
+      if (row.amazonAsin) existingAsins.add(row.amazonAsin);
+      if (row.amazonImports?.amazonAsin) existingAsins.add(row.amazonImports.amazonAsin);
+    }
     const newProducts = products.filter((p) => !existingAsins.has(p.asin));
     const skipped = products.length - newProducts.length;
 
     if (newProducts.length === 0) {
       return NextResponse.json(
-        { imported: 0, skipped, total: products.length, importedProducts: [], message: "All products already exist in store" },
+        { imported: 0, skipped, total: products.length, importedProducts: [], message: "All products already exist in store", mode: isRaw ? "raw" : "full" },
+        { status: 200, headers: CORS_HEADERS }
+      );
+    }
+
+    // ── Raw two-pass import: no Anthropic; optional Voyage seed embeddings (same text formula as full import) ──
+    if (isRaw) {
+      const hasVoyageKey = !!VOYAGE_API_KEY;
+      console.log(`\n${"═".repeat(60)}`);
+      console.log(`[Amazon Import RAW] ${new Date().toISOString()} — ${newProducts.length} new (${skipped} skipped)`);
+      const documents = buildRawImportDocuments(newProducts);
+      const result = await collection.insertMany(documents);
+      console.log(`   Inserted: ${result.insertedCount}`);
+
+      let rawEmbeddingsOk = false;
+      if (hasVoyageKey && documents.length > 0) {
+        console.log(`   🔢 Seed embeddings (Voyage) for ${documents.length} product(s)...`);
+        const batchSize = 20;
+        for (let i = 0; i < documents.length; i += batchSize) {
+          const batchDocs = documents.slice(i, i + batchSize);
+          const texts = batchDocs.map((d) => {
+            return `${d.name}. ${d.description} Brand: ${d.brand}. Category: ${d.masterCategory}/${d.subCategory}. Type: ${d.articleType || "Unknown"}.`;
+          });
+          const embeddings = await generateEmbeddings(texts);
+          if (embeddings) {
+            const ops = batchDocs.map((doc, idx) => ({
+              updateOne: {
+                filter: { _id: doc._id },
+                update: { $set: { vai_4_embedding: embeddings[idx] } },
+              },
+            }));
+            await collection.bulkWrite(ops);
+            batchDocs.forEach((doc, idx) => {
+              doc.vai_4_embedding = embeddings[idx];
+            });
+            rawEmbeddingsOk = true;
+            console.log(`      ✅ Batch ${Math.floor(i / batchSize) + 1} (${batchDocs.length} vectors)`);
+          } else {
+            console.log(`      ❌ Embedding batch failed`);
+          }
+          if (i + batchSize < documents.length) {
+            await new Promise((r) => setTimeout(r, 500));
+          }
+        }
+      } else if (!hasVoyageKey) {
+        console.log(`   ⚠️  No VOYAGE_AI_API_KEY — seed embeddings skipped (add key or run embed:amazon-raw)`);
+      }
+
+      console.log(`${"═".repeat(60)}\n`);
+
+      const importedProducts = documents.map((d) => {
+        const { vai_4_embedding, ...rest } = d;
+        return {
+          ...rest,
+          _id: d._id.toString(),
+          hasEmbedding: !!vai_4_embedding,
+          embeddingDimensions: vai_4_embedding?.length || null,
+        };
+      });
+
+      const embeddingsDone = rawEmbeddingsOk && documents.some((d) => d.vai_4_embedding);
+
+      return NextResponse.json(
+        {
+          imported: newProducts.length,
+          skipped,
+          total: products.length,
+          importedProducts,
+          mode: "raw",
+          enrichment: {
+            aiDescriptions: false,
+            embeddings: embeddingsDone,
+            note: embeddingsDone
+              ? "Seed embeddings saved. Run npm run enrich:amazon-text in microservices/productEmbeddings for Haiku categories (re-embeds after)."
+              : hasVoyageKey
+                ? "Embeddings failed or empty descriptions. Run npm run embed:amazon-raw to backfill, or enrich:amazon-text for pass 2."
+                : "Add VOYAGE_AI_API_KEY for seed embeddings during import, or run npm run embed:amazon-raw / enrich:amazon-text.",
+          },
+        },
         { status: 200, headers: CORS_HEADERS }
       );
     }
@@ -251,6 +413,22 @@ export async function POST(request) {
       const p = newProducts[i];
       const progress = `[${i + 1}/${newProducts.length}]`;
 
+      const attrObj =
+        p.amazonAttributes && typeof p.amazonAttributes === "object" && !Array.isArray(p.amazonAttributes) ? { ...p.amazonAttributes } : {};
+      const breadcrumbs = normalizeStringArray(p.amazonBreadcrumbs);
+      const amazonImports = {
+        amazonAsin: p.asin,
+        amazonRating: p.rating ?? null,
+        amazonReviewCount: p.reviewCount ?? null,
+        amazonUrl: p.productUrl || "",
+        amazonCategory: p.category || "",
+        amazonBreadcrumbs: breadcrumbs,
+        amazonBreadcrumbPath: breadcrumbs.join(" > "),
+        amazonAttributes: attrObj,
+        amazonFeatureBullets: normalizeStringArray(p.amazonFeatureBullets),
+        rawAmazonDescription: (p.amazonDescription || "").trim(),
+      };
+
       // Build base document
       const doc = {
         _id: new ObjectId(),
@@ -270,15 +448,12 @@ export async function POST(request) {
         gender: "unisex",
         baseColour: p.color || "",
         color: p.color || "",
-        // Amazon metadata
-        amazonAsin: p.asin,
-        amazonRating: p.rating || null,
-        amazonReviewCount: p.reviewCount || null,
-        amazonUrl: p.productUrl || "",
-        amazonCategory: p.category || "",
+        amazonImports,
         source: "amazon",
         importedAt: new Date(),
       };
+
+      flattenAmazonAttributesOntoDocument(doc, attrObj);
 
       // AI enhancement with Anthropic (if available)
       if (anthropicClient) {
@@ -375,7 +550,7 @@ export async function POST(request) {
       console.log(`       brand: ${d.brand} | price: $${d.price.amount} ${d.price.currency}`);
       console.log(`       category: ${d.masterCategory} > ${d.subCategory} | type: ${d.articleType}`);
       console.log(`       gender: ${d.gender} | color: ${d.baseColour || "N/A"}`);
-      console.log(`       asin: ${d.amazonAsin}`);
+      console.log(`       asin: ${d.amazonImports?.amazonAsin ?? d.amazonAsin}`);
       console.log(`       description: ${d.description?.substring(0, 80)}...`);
       console.log(`       embedding: ${d.vai_4_embedding ? `✅ ${d.vai_4_embedding.length} dims` : "❌ none"}`);
       // Log any extra attributes
@@ -383,8 +558,8 @@ export async function POST(request) {
         (k) =>
           ![
             "_id", "name", "brand", "price", "image", "masterCategory", "subCategory",
-            "articleType", "description", "gender", "baseColour", "color", "amazonAsin",
-            "amazonRating", "amazonReviewCount", "amazonUrl", "amazonCategory", "source",
+            "articleType", "description", "gender", "baseColour", "color", "amazonImports",
+            "amazonAsin", "amazonRating", "amazonReviewCount", "amazonUrl", "amazonCategory", "source",
             "importedAt", "lastUpdatedAt", "vai_4_embedding",
           ].includes(k)
       );
@@ -411,6 +586,7 @@ export async function POST(request) {
         skipped,
         total: products.length,
         importedProducts,
+        mode: "full",
         enrichment: {
           aiDescriptions: hasAnthropicKey,
           embeddings: hasVoyageKey,

@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start -H 0.0.0.0 -p 8080",
     "lint": "next lint",
-    "seed:owner": "node scripts/seed-store-owner.js"
+    "seed:owner": "node scripts/seed-store-owner.js",
+    "seed:amazon-searches": "node scripts/generate-amazon-seed-searches.js",
+    "embed:amazon-raw": "npm run embed:amazon-raw --prefix microservices/productEmbeddings",
+    "enrich:amazon-text": "npm run enrich:amazon-text --prefix microservices/productEmbeddings"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",

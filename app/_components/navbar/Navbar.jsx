@@ -121,9 +121,14 @@ const Navbar = () => {
           <Link href={`/?feature=${featureInStore}`}>Home</Link>
           <Link href={`/shop?feature=${featureInStore}`}>Shop</Link>
           {selectedUser?.type === "owner" && (
-            <Link href={`/catalog/edit?feature=${featureInStore}`}>
-              Edit catalog
-            </Link>
+            <>
+              <Link href={`/catalog/edit?feature=${featureInStore}`}>
+                Edit catalog
+              </Link>
+              <Link href={`/inventory?feature=${featureInStore}`}>
+                Inventory
+              </Link>
+            </>
           )}
           <Link href={`/about?feature=${featureInStore}`}>About</Link>
           {/* <Link href="/contact">Contact</Link> */}

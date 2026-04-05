@@ -17,6 +17,9 @@ export const metadata = {
   description: "",
 };
 
+const aiChatbotDisabled =
+  process.env.NEXT_PUBLIC_DISABLE_AI_CHATBOT === "true";
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={GeistSans.className}>
@@ -28,7 +31,7 @@ export default function RootLayout({ children }) {
             {children}
             <LoginComp />
             <DigitalReceiptComp />
-            <ChatbotOpener />
+            {!aiChatbotDisabled && <ChatbotOpener />}
             <AlertsContainer />
           </AppFeatureWrapper>
         </ClientProvider>

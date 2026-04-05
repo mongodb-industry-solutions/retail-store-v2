@@ -287,9 +287,10 @@ async function phase1_enhanceProducts() {
   
   const collection = await getCollection();
   
-  // Find products that haven't been enhanced yet
+  // Find products that haven't been enhanced yet (exclude Amazon raw two-pass — use enrichAmazonText.js)
   const products = await collection.find({
     lastUpdatedAt: { $exists: false },
+    enrichmentStatus: { $ne: 'pending_text_enrich' },
   }).toArray();
   
   if (products.length === 0) {
