@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazon Product Importer — Leafy Store</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f6f7;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: #00684a;
+      color: white;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .header img { width: 32px; height: 32px; border-radius: 4px; }
+    .header h1 { font-size: 20px; font-weight: 700; }
+    .header .subtitle { font-size: 13px; opacity: 0.8; margin-left: auto; }
+
+    /* Main container */
+    .main {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 0 24px;
+    }
+
+    /* Card */
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .card h2 {
+      font-size: 16px;
+      color: #00684a;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e8f5e9;
+    }
+
+    /* Form elements */
+    label { font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 4px; }
+    input[type="text"], input[type="number"], input[type="url"] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.15s;
+    }
+    input:focus { outline: none; border-color: #00684a; box-shadow: 0 0 0 2px rgba(0,104,74,0.15); }
+
+    .form-row { display: flex; gap: 16px; margin-bottom: 16px; }
+    .form-row .field { flex: 1; }
+    .form-row .field-sm { width: 120px; flex-shrink: 0; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 24px; border: none; border-radius: 6px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s ease; gap: 8px;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: #00684a; color: white; }
+    .btn-primary:hover:not(:disabled) { background: #005c42; }
+    .btn-success { background: #13AA52; color: white; }
+    .btn-success:hover:not(:disabled) { background: #119746; }
+    .btn-sm { padding: 6px 14px; font-size: 12px; background: #e8e8e8; color: #444; border-radius: 4px; }
+    .btn-sm:hover { background: #d4d4d4; }
+    .btn-outline { background: transparent; border: 1px solid #ccc; color: #555; }
+    .btn-outline:hover { background: #f5f5f5; }
+
+    /* Status */
+    .status-bar {
+      padding: 10px 16px; border-radius: 6px; font-size: 13px; margin-bottom: 16px; display: none;
+    }
+    .status-bar.info { background: #e8f4fd; color: #0070c0; border: 1px solid #b8daff; display: block; }
+    .status-bar.error { background: #fde8e8; color: #c00; border: 1px solid #ffb8b8; display: block; }
+    .status-bar.success { background: #e8fde8; color: #006600; border: 1px solid #b8ffb8; display: block; }
+
+    /* Results header */
+    .results-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .results-header span { font-weight: 600; color: #444; font-size: 14px; }
+    .results-actions { display: flex; gap: 6px; }
+
+    /* Product grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .product-card {
+      display: flex; gap: 12px; padding: 12px;
+      border: 2px solid #e8e8e8; border-radius: 8px;
+      background: white; cursor: pointer; transition: all 0.15s;
+      position: relative;
+    }
+    .product-card:hover { border-color: #00684a; }
+    .product-card.selected { border-color: #13AA52; background: #f0faf4; }
+    .product-card .check {
+      position: absolute; top: 8px; right: 8px;
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid #ccc; background: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: white; transition: all 0.15s;
+    }
+    .product-card.selected .check { background: #13AA52; border-color: #13AA52; }
+    .product-card img {
+      width: 72px; height: 72px; object-fit: contain;
+      border-radius: 4px; background: #f9f9f9; flex-shrink: 0;
+    }
+    .product-info { flex: 1; min-width: 0; }
+    .product-title {
+      font-size: 13px; font-weight: 500; line-height: 1.3;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .product-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; }
+    .product-price { font-weight: 700; color: #B12704; }
+    .product-brand { color: #888; }
+    .product-rating { color: #de7921; }
+
+    /* Import results */
+    .import-results {
+      padding: 16px; border-radius: 8px;
+      background: #f0faf4; border: 1px solid #b8e6cc;
+    }
+    .import-results h3 { font-size: 16px; color: #00684a; margin-bottom: 8px; }
+    .import-results .stat { font-size: 13px; color: #444; margin-bottom: 4px; }
+    .import-results .stat strong { color: #00684a; }
+
+    /* Settings row */
+    .settings-section { margin-bottom: 0; }
+    .settings-section .form-row { margin-bottom: 0; }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: white;
+      border-radius: 50%; animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 48px 24px; color: #888;
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="icons/icon48.png" alt="logo">
+    <h1>Amazon Product Importer</h1>
+    <span class="subtitle">Leafy Popup Store</span>
+  </div>
+
+  <div class="main">
+    <!-- Settings -->
+    <div class="card settings-section">
+      <h2>⚙️ Settings</h2>
+      <div class="form-row">
+        <div class="field">
+          <label for="storeUrl">Store API URL</label>
+          <input type="url" id="storeUrl" value="http://localhost:8080" placeholder="http://localhost:8080">
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk seed (200 searches) -->
+    <div class="card">
+      <h2>Bulk seed catalog</h2>
+      <p style="font-size:13px;color:#555;margin-bottom:12px;line-height:1.45;">
+        Runs <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">seedSearches.json</code> (regenerate with <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">npm run seed:amazon-searches</code>).
+        Per search: top results, then PDP scrape per ASIN. Posts <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">mode: &quot;raw&quot;</code>. With <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">VOYAGE_AI_API_KEY</code> on the Next server, each batch also saves <strong>seed embeddings</strong>. Pass 2 (Haiku categories + new vectors): <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">npm run enrich:amazon-text</code>. Backfill vectors only for already-imported rows: <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">npm run embed:amazon-raw</code> in <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;">microservices/productEmbeddings</code>.
+      </p>
+      <div class="form-row">
+        <div class="field-sm">
+          <label for="bulkItemsPerSearch">Per search</label>
+          <input type="number" id="bulkItemsPerSearch" min="1" max="48" value="10">
+        </div>
+        <div class="field-sm">
+          <label for="bulkDelayPdpMs">PDP delay (ms)</label>
+          <input type="number" id="bulkDelayPdpMs" min="0" value="2000">
+        </div>
+        <div class="field-sm">
+          <label for="bulkDelaySearchMs">Search delay (ms)</label>
+          <input type="number" id="bulkDelaySearchMs" min="0" value="3000">
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+        <button type="button" id="bulkStartBtn" class="btn btn-primary">Start bulk run</button>
+        <button type="button" id="bulkPauseBtn" class="btn btn-outline" disabled>Pause</button>
+        <button type="button" id="bulkResumeBtn" class="btn btn-outline" disabled>Resume</button>
+        <button type="button" id="bulkCancelBtn" class="btn btn-outline" disabled>Cancel</button>
+        <button type="button" id="bulkResetBtn" class="btn btn-sm">Reset progress</button>
+      </div>
+      <div id="bulkProgressLine" style="margin-top:12px;font-size:13px;font-weight:600;color:#00684a;"></div>
+      <pre id="bulkLog" style="margin-top:10px;max-height:180px;overflow:auto;background:#f8f8f8;border:1px solid #e0e0e0;border-radius:6px;padding:10px;font-size:11px;line-height:1.4;"></pre>
+    </div>
+
+    <!-- Search -->
+    <div class="card">
+      <h2>🔍 Search Amazon</h2>
+      <div class="form-row">
+        <div class="field">
+          <label for="searchQuery">Product Search</label>
+          <input type="text" id="searchQuery" placeholder="e.g. wireless earbuds, yoga mat, coffee maker..." autofocus>
+        </div>
+        <div class="field-sm">
+          <label for="resultCount"># Results</label>
+          <input type="number" id="resultCount" min="1" max="48" value="10">
+        </div>
+      </div>
+      <button id="searchBtn" class="btn btn-primary" style="width:100%;">
+        <span class="btn-text">🔎 Search Amazon</span>
+        <span class="btn-loading" style="display:none;"><span class="spinner"></span> Searching...</span>
+      </button>
+    </div>
+
+    <!-- Status -->
+    <div id="statusBar" class="status-bar"></div>
+
+    <!-- Results -->
+    <div id="resultsSection" style="display:none;">
+      <div class="card">
+        <div class="results-header">
+          <span id="resultsCount">0 products found</span>
+          <div class="results-actions">
+            <button id="selectAllBtn" class="btn btn-sm">✅ Select All</button>
+            <button id="deselectAllBtn" class="btn btn-sm">❌ Deselect All</button>
+          </div>
+        </div>
+        <div id="productGrid" class="product-grid"></div>
+        <button id="importBtn" class="btn btn-success" style="width:100%;">
+          <span class="btn-text">📦 Import Selected to Store</span>
+          <span class="btn-loading" style="display:none;"><span class="spinner"></span> Importing...</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Import results -->
+    <div id="importResults" class="import-results" style="display:none;"></div>
+
+    <!-- Empty state (initial) -->
+    <div id="emptyState" class="card empty-state">
+      <div class="icon">🛒</div>
+      <p>Search for products on Amazon to get started.<br>Results will appear here for you to review and import.</p>
+    </div>
+  </div>
+
+  <script src="importer.js"></script>
+</body>
+</html>

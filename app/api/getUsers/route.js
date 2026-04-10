@@ -6,9 +6,13 @@ export async function POST() {
     const db = client.db(dbName);
     const collection = db.collection("users");
 
-    const users = await collection
-        .find({})
-        .toArray();
+    const users = await collection.find({}).toArray();
 
-    return NextResponse.json({ users }, { status: 200 });
+    const serialized = users.map((u) => ({
+        ...u,
+        _id: u._id.toString(),
+        type: u.type === "owner" ? "owner" : "customer",
+    }));
+
+    return NextResponse.json({ users: serialized }, { status: 200 });
 }

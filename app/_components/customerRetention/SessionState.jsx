@@ -4,7 +4,7 @@ import SectionHeader from "./SectionHeader";
 import { useSelector, useDispatch } from "react-redux";
 import { getSessionAndUserId } from "@/lib/helpers";
 import { setSessionState } from "@/redux/slices/CustomerRetentionSlice";
-import Code from "@leafygreen-ui/code";
+import JsonTreeViewer from "@/app/_components/jsonTreeViewer/JsonTreeViewer";
 import { COLLECTIONS } from "@/lib/constants";
 
 const SessionState = () => {
@@ -59,9 +59,7 @@ const SessionState = () => {
         }
       />
       <div>
-        <Code language="javascript" expandable>
-          {JSON.stringify(sessionState, null, 2)}
-        </Code>
+        <JsonTreeViewer data={sessionState} />
       </div>
     </Card>
   );

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Icon from "@leafygreen-ui/icon";
-import Code from "@leafygreen-ui/code";
+import JsonTreeViewer from "@/app/_components/jsonTreeViewer/JsonTreeViewer";
 import { Modal, Container, ModalHeader, ModalFooter } from "react-bootstrap";
 import { H3 } from "@leafygreen-ui/typography";
 
@@ -68,9 +68,7 @@ const DigitalReceiptComp = () => {
         <Tab className={``} name="Document">
           <Container className={` p-3 h-100`}>
             <H3 className="mb-2">Invoice document</H3>
-            <Code language="javascript">
-              {JSON.stringify(openedInvoice, null, 2)}
-            </Code>
+            <JsonTreeViewer data={openedInvoice} />
           </Container>
         </Tab>
 

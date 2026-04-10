@@ -1,27 +1,309 @@
+/* ─── Modal Chrome ─────────────────────────────────────────────── */
+
 .leafyFeel :global(.modal-content) {
-    border-radius: 24px;
-}
-/* Remove border-radius when modal is fullscreen */
-@media (max-width: 767.98px) { /* Corresponds to md-down */
-    .leafyFeel :global(.modal-content) {
-      border-radius: 0px;
-    }
-}
-.detailModal {
-    display: flex;
-   }
-   .detailInfo{
-    margin-left: 20px;
-}
-.productName{
-    font-size: 16px;
-}
-.price{
-    padding-top: 20px;
-    font-size: 30px;
-    padding-bottom: 20px;
-}
-.detailCart{
-    margin-top: 20px;
+  border-radius: 24px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
+@media (max-width: 767.98px) {
+  .leafyFeel :global(.modal-content) {
+    border-radius: 0px;
+  }
+}
+
+.closeButton {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 20px 0 0;
+  cursor: pointer;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  opacity: 0.7;
+}
+
+/* ─── Layout ──────────────────────────────────────────────────── */
+
+.detailModal {
+  display: flex;
+  padding: 0 32px 32px 32px;
+  gap: 36px;
+}
+
+.detailPhoto {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 8px;
+  position: sticky;
+  top: 50px;
+  align-self: flex-start;
+  max-width: 350px;
+  width: 40%;
+}
+
+.detailInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ─── Breadcrumb ──────────────────────────────────────────────── */
+
+.breadcrumb {
+  font-size: 13px;
+  color: #565656;
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+
+.breadcrumbItem {
+  color: #007185;
+  cursor: default;
+}
+
+.breadcrumbItem:hover {
+  color: #c7511f;
+  text-decoration: underline;
+}
+
+.breadcrumbSep {
+  color: #999;
+  margin: 0 2px;
+}
+
+/* ─── Product Name ────────────────────────────────────────────── */
+
+.productName {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #0f1111;
+  margin: 4px 0 6px 0;
+}
+
+/* ─── Brand ───────────────────────────────────────────────────── */
+
+.brandLine {
+  font-size: 14px;
+  color: #565656;
+  margin-bottom: 12px;
+}
+
+.brandLink {
+  color: #007185;
+  cursor: default;
+  font-weight: 500;
+}
+
+.brandLink:hover {
+  color: #c7511f;
+  text-decoration: underline;
+}
+
+/* ─── Price ───────────────────────────────────────────────────── */
+
+.priceSection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  border-top: 1px solid #e7e7e7;
+  border-bottom: 1px solid #e7e7e7;
+  margin-bottom: 12px;
+}
+
+.priceLabel {
+  font-size: 14px;
+  color: #565656;
+}
+
+.price {
+  font-size: 28px;
+  font-weight: 600;
+  color: #0f1111;
+  letter-spacing: -0.5px;
+}
+
+.lowInventoryChip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #9a3412;
+  background: #ffedd5;
+  border: 1px solid #fb923c;
+  border-radius: 999px;
+  padding: 4px 10px;
+  margin-left: 10px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* ─── Add to Cart Button ──────────────────────────────────────── */
+
+.addToCartBtn {
+  margin: 8px 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── Description Section ─────────────────────────────────────── */
+
+.descriptionSection {
+  padding: 20px 0 8px 0;
+  border-top: 1px solid #e7e7e7;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f1111;
+  margin: 0 0 10px 0;
+}
+
+.descriptionText {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* ─── Product Specs Table ─────────────────────────────────────── */
+
+.specsSection {
+  padding: 20px 0 8px 0;
+  border-top: 1px solid #e7e7e7;
+}
+
+.specsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.specsTable tr:nth-child(odd) {
+  background-color: #f7f7f7;
+}
+
+.specsTable tr:nth-child(even) {
+  background-color: #fff;
+}
+
+.specsTable td {
+  padding: 9px 14px;
+  vertical-align: top;
+}
+
+.specLabel {
+  font-weight: 600;
+  color: #565656;
+  width: 160px;
+  white-space: nowrap;
+}
+
+.specIcon {
+  margin-right: 8px;
+  font-size: 15px;
+}
+
+.specValue {
+  color: #0f1111;
+}
+
+/* ─── Magic Wand / JSON Toggle ────────────────────────────────── */
+
+.jsonToggleSection {
+  padding: 20px 0 8px 0;
+  border-top: 1px solid #e7e7e7;
+}
+
+.magicWandBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid #d5d5d5;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: #565656;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.magicWandBtn:hover {
+  background: #f0f0f0;
+  border-color: #aaa;
+  color: #0f1111;
+}
+
+.magicWandBtn svg {
+  transition: transform 0.3s ease;
+}
+
+.magicWandBtn:hover svg {
+  transform: rotate(-15deg) scale(1.15);
+}
+
+.magicWandLabel {
+  font-weight: 500;
+}
+
+.jsonContainer {
+  margin-top: 12px;
+  animation: slideDown 0.3s ease-out;
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 8px;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 400px;
+  }
+}
+
+/* ─── Responsive ──────────────────────────────────────────────── */
+
+@media (max-width: 767.98px) {
+  .detailModal {
+    flex-direction: column;
+    padding: 0 16px 24px 16px;
+    gap: 16px;
+  }
+
+  .detailPhoto {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+  }
+
+  .productName {
+    font-size: 18px;
+  }
+
+  .price {
+    font-size: 24px;
+  }
+
+  .specLabel {
+    width: 120px;
+  }
+}

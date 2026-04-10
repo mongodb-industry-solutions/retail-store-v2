@@ -1,0 +1,157 @@
+.wrap {
+  position: relative;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  background: #f7f8fa;
+  border: 1px solid #e8eaed;
+  border-radius: 6px;
+  max-height: min(70vh, 520px);
+  overflow: auto;
+}
+
+/* Parent already has max-height + overflow (e.g. modal JSON panel) */
+.wrapFillParent {
+  max-height: none;
+  overflow: visible;
+}
+
+.tree {
+  padding: 10px 12px 12px;
+  min-height: 2rem;
+}
+
+.copyBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  background: #fff;
+  color: #5f6368;
+  cursor: pointer;
+}
+
+.copyBtn:hover {
+  background: #f1f3f4;
+  color: #202124;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  min-height: 1.45em;
+  padding: 1px 6px 1px 0;
+  margin-left: -6px;
+  margin-right: -6px;
+  border-radius: 3px;
+}
+
+.row:hover {
+  background: rgba(0, 0, 0, 0.045);
+}
+
+.caretBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-right: 2px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #5f6368;
+  cursor: pointer;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+
+.caretBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #202124;
+}
+
+.caret {
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 4px 0 4px 6px;
+  border-color: transparent transparent transparent currentColor;
+  margin-left: 2px;
+  transition: transform 0.12s ease;
+}
+
+.caretOpen {
+  transform: rotate(90deg);
+}
+
+.key {
+  color: #202124;
+  font-weight: 500;
+}
+
+.sep {
+  color: #5f6368;
+  margin: 0 1px;
+}
+
+.typeMuted {
+  color: #80868b;
+  font-weight: 400;
+}
+
+.string {
+  color: #188038;
+  word-break: break-word;
+}
+
+.number {
+  color: #1967d2;
+}
+
+.bool {
+  color: #9334e6;
+}
+
+.nullish {
+  color: #80868b;
+  font-style: italic;
+}
+
+.oid {
+  color: #a04200;
+}
+
+.placeholder {
+  color: #80868b;
+}
+
+.punct {
+  color: #202124;
+  font-weight: 500;
+}
+
+/* Align closing `}` / `]` with opening line when caret is present */
+.caretSpacer {
+  display: inline-block;
+  width: 18px;
+  flex-shrink: 0;
+  margin-right: 2px;
+  vertical-align: middle;
+}
+
+.children {
+  width: 100%;
+  flex-basis: 100%;
+}

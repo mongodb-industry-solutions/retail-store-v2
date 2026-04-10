@@ -1,0 +1,62 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  min-height: calc(100vh - 120px);
+}
+
+.listPanel {
+  border: 1px solid var(--gray6, #e8e8e8);
+  border-radius: 8px;
+  padding: 1rem;
+  background: var(--white, #fff);
+  max-height: calc(100vh - 140px);
+  overflow: auto;
+}
+
+.listItem {
+  cursor: pointer;
+  padding: 0.5rem 0.65rem;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  border: 1px solid transparent;
+}
+
+.listItem:hover {
+  background: var(--gray8, #f6f6f6);
+}
+
+.listItemActive {
+  border-color: var(--green7, #00ed64);
+  background: rgba(0, 237, 100, 0.08);
+}
+
+.formPanel {
+  border: 1px solid var(--gray6, #e8e8e8);
+  border-radius: 8px;
+  padding: 1.25rem;
+  background: var(--white, #fff);
+}
+
+.extraRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  align-items: end;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .listPanel {
+    max-height: 280px;
+  }
+
+  .extraRow {
+    grid-template-columns: 1fr;
+  }
+}

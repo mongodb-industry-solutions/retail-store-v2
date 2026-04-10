@@ -8,16 +8,33 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-color: #ffffff;
 }
-.userCard img{
+.avatarWrap {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    line-height: 0;
+}
+.avatarWrap img {
     width: 100%;
     height: auto;
+    display: block;
 }
 .userName{
-    margin-top: -5px;
+    margin-top: 6px;
+}
+.ownerBadge {
+    font-size: 11px;
+    color: #01684a;
+    margin-top: 6px;
+    font-weight: 600;
 }
 .userSelected{
-    background-color: rgba(235, 235, 235, 0.868);
+    background-color: #ffffff;
+    outline: 2px solid #01684a;
+    outline-offset: 0;
 }
 /* .userCard:hover{
     cursor: pointer;

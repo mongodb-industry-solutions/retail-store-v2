@@ -11,18 +11,6 @@
   .PRCard .brand{
     font-weight: lighter;
   }
-  .scoreContainer{
-    position: relative;
-    top: 34px;
-    margin-left: 10px;
-    z-index: 1;
-  }
-  .scorebadge{
-    box-shadow: 0 4px 14px 0px rgb(0 0 0 / 91%);
-  }
-  .scorebadge svg{
-    margin-right: 5px;
-  }
   .imageContainer{
     width: 200px;
     height: 200px;

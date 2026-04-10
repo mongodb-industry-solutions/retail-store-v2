@@ -10,11 +10,15 @@ import AlertsContainer from "./_components/alertsContainer/AlertsContainer";
 import AppFeatureWrapper from "./_components/featureListener/AppFeatureWrapper";
 import Footer from "./_components/footer/Footer";
 import ConditionalHeartbeatManager from "./_components/heartbeatManager/ConditionalHeartbeatManager";
+import IndexWarningBanner from "./_components/indexWarningBanner/IndexWarningBanner";
 
 export const metadata = {
   title: "Home",
   description: "",
 };
+
+const aiChatbotDisabled =
+  process.env.NEXT_PUBLIC_DISABLE_AI_CHATBOT === "true";
 
 export default function RootLayout({ children }) {
   return (
@@ -22,11 +26,12 @@ export default function RootLayout({ children }) {
       <body>
         <ClientProvider>
           <AppFeatureWrapper>
+            <IndexWarningBanner />
             <ConditionalHeartbeatManager />
             {children}
             <LoginComp />
             <DigitalReceiptComp />
-            <ChatbotOpener />
+            {!aiChatbotDisabled && <ChatbotOpener />}
             <AlertsContainer />
           </AppFeatureWrapper>
         </ClientProvider>

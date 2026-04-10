@@ -1,5 +1,14 @@
 {
+  "name": "product-embeddings-pipeline",
+  "version": "2.0.0",
+  "description": "Product enhancement pipeline: AI descriptions, embeddings, category fixes, and Atlas Search indexes",
+  "scripts": {
+    "start": "node script.js",
+    "enrich:amazon-text": "node enrichAmazonText.js",
+    "embed:amazon-raw": "node enrichAmazonText.js --seed-embed-only"
+  },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
     "axios": "^1.8.4",
     "dotenv": "^16.4.7",
     "mongodb": "^6.15.0"

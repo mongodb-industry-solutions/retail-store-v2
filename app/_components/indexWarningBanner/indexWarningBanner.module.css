@@ -1,0 +1,35 @@
+.bannerWrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  width: 100%;
+}
+
+.bannerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+}
+
+.bannerText {
+  flex: 1;
+}
+
+.bannerText p {
+  margin: 0 0 4px 0;
+}
+
+.bannerText p:last-child {
+  margin-bottom: 0;
+}
+
+.resultText {
+  font-size: 0.85em;
+  opacity: 0.85;
+}
+
+.createButton {
+  flex-shrink: 0;
+}

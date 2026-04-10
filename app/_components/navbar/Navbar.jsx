@@ -26,6 +26,7 @@ const Navbar = () => {
   const sessionId = useRef(uuidv4());
   const ordersLoaded = useSelector((state) => state.User.orders?.initialLoad);
   const userId = useSelector((state) => state.User.selectedUser?._id);
+  const selectedUser = useSelector((state) => state.User.selectedUser);
   const openedProductDetails = useSelector((state) => state.Products.openedProductDetails);
   const { isDrawerOpen, isCustomerRetentionEnabled } = useSelector(
     (state) => state.CustomerRetention
@@ -119,6 +120,16 @@ const Navbar = () => {
         <div className={"links"}>
           <Link href={`/?feature=${featureInStore}`}>Home</Link>
           <Link href={`/shop?feature=${featureInStore}`}>Shop</Link>
+          {selectedUser?.type === "owner" && (
+            <>
+              <Link href={`/catalog/edit?feature=${featureInStore}`}>
+                Edit catalog
+              </Link>
+              <Link href={`/inventory?feature=${featureInStore}`}>
+                Inventory
+              </Link>
+            </>
+          )}
           <Link href={`/about?feature=${featureInStore}`}>About</Link>
           {/* <Link href="/contact">Contact</Link> */}
         </div>

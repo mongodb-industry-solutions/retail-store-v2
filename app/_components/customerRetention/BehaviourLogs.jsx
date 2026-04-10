@@ -6,6 +6,7 @@ import IconButton from "@leafygreen-ui/icon-button";
 import Icon from "@leafygreen-ui/icon";
 import { getBehaviorConfig } from "@/lib/helpers";
 import useAutoScroll from "@/hooks/useAutoScroll";
+import JsonTreeViewer from "@/app/_components/jsonTreeViewer/JsonTreeViewer";
 
 const BehaviourLogs = () => {
   const [openLogId, setOpenLogId] = useState(null);
@@ -65,9 +66,13 @@ const BehaviourLogs = () => {
           </IconButton>
         </div>
         {isOpen && (
-          <pre className="log-document" style={{ marginTop: "12px" }}>
-            {JSON.stringify(log, null, 2)}
-          </pre>
+          <div style={{ marginTop: "12px" }}>
+            <JsonTreeViewer
+              data={log}
+              maxStringLength={80}
+              fillParent
+            />
+          </div>
         )}
       </div>
     );

@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "name": "Leafy Store - Amazon Product Importer",
+  "version": "1.0.0",
+  "description": "Search Amazon and import products into the Leafy popup store",
+  "permissions": ["activeTab", "scripting", "tabs", "storage"],
+  "host_permissions": [
+    "https://www.amazon.com/*",
+    "http://localhost:8080/*",
+    "http://127.0.0.1/*",
+    "https://*/*",
+    "http://*/*"
+  ],
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.amazon.com/s*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.amazon.com/dp/*",
+        "https://www.amazon.com/*/dp/*",
+        "https://www.amazon.com/gp/product/*"
+      ],
+      "js": ["content-pdp.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["importer.html", "importer.js", "content.js", "content-pdp.js", "seedSearches.json", "icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import IconButton from "@leafygreen-ui/icon-button";
 import Icon from "@leafygreen-ui/icon";
 import useAutoScroll from "@/hooks/useAutoScroll";
+import JsonTreeViewer from "@/app/_components/jsonTreeViewer/JsonTreeViewer";
 import { HEARTBEAT_INTERVAL_MS } from "@/lib/constants";
 
 const EventStreamLogs = () => {
@@ -34,13 +35,13 @@ const EventStreamLogs = () => {
           </IconButton>
         </div>
         {isOpen && (
-          <pre className="log-document">
-            {JSON.stringify(
-              { ...log },
-              null,
-              2
-            )}
-          </pre>
+          <div className="log-document">
+            <JsonTreeViewer
+              data={{ ...log }}
+              maxStringLength={80}
+              fillParent
+            />
+          </div>
         )}
       </div>
     );
