@@ -1,4 +1,4 @@
-# Retail store buying experience
+# Retail store buying experience.
 
 
 ## Table of Contents
