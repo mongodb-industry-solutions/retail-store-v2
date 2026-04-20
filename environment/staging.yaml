@@ -54,3 +54,11 @@ env:
   GCP_LOCATION: us-central1
   # Si luego usás Vertex directamente:
   # VERTEXAI_COMPLETIONS_MODEL: gemini-2.0-flash-001
+
+# Kanopy security and ownership (requires web-app chart v4.30.0+)
+security:
+  dataClassification: "Internal"
+  dataDesignation: ["MI"]
+
+ownership:
+  driEmail: angie.guemes@mongodb.com
