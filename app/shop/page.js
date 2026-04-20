@@ -36,8 +36,15 @@ export default function Page() {
     }
 
     console.log("listenToSSEUpdates func - sid:", sid, "uid:", uid);
+    
+    // Build custom filter for customer behavior events
+    const customFilter = {
+      "fullDocument.uid": uid,
+      "fullDocument.sid": sid
+    };
+    
     const eventSource = new EventSource(
-      `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.CUSTOMER_BEHAVIOUR}&uid=${uid}&sid=${sid}`
+      `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.CUSTOMER_BEHAVIOUR}&filter=${encodeURIComponent(JSON.stringify(customFilter))}`
     );
 
     eventSource.onopen = () => {

@@ -161,9 +161,8 @@ console.log('openedProductDetails:', openedProductDetails);
                 <img src="/cart.png" alt="Add Cart" width={18} height={18} />
                 {
                   // TODO commented temporary while we implement remove from cart
-                  //isInCart ? 'Remove from' : 'Add to'
-                }{" "}
-                Add to Cart
+                  isInCart ? 'Product already in cart' : 'Add to cart'
+                }
               </Button>
 
               <div className="mt-3">
