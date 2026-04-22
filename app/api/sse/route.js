@@ -29,6 +29,12 @@ export async function GET(req) {
   const sessionId = url.searchParams.get("sessionId");
   const colName = url.searchParams.get("colName");
   const _id = url.searchParams.get("_id");
+  const filterParam = url.searchParams.get("filter"); // Generic filter parameter
+  
+  // Legacy parameters for backward compatibility
+  const uid = url.searchParams.get("uid");
+  const sid = url.searchParams.get("sid");
+  const user = url.searchParams.get("user");
 
   // Validate required sessionId parameter
   if (!sessionId) {
@@ -36,6 +42,8 @@ export async function GET(req) {
   }
 
   const key = sessionId;
+
+  console.log(`SSE Connection started for sessionId=${sessionId}, colName=${colName}, filter=${filterParam}, uid=${uid}, sid=${sid}, user=${user}`);
 
   // Send heartbeat every interval to keep connection alive
   const intervalId = setInterval(() => {
@@ -60,6 +68,37 @@ export async function GET(req) {
   const filter = {};
   if (colName) filter["ns.coll"] = colName;
   if (_id) filter["documentKey._id"] = { $oid: _id };
+  
+  // Handle generic filter parameter (preferred approach)
+  if (filterParam) {
+    try {
+      const customFilter = JSON.parse(filterParam);
+      Object.assign(filter, customFilter);
+      console.log('Applied custom filter:', customFilter);
+    } catch (error) {
+      console.warn('Invalid filter parameter, ignoring:', error.message);
+    }
+  } else {
+    // Legacy parameter handling for backward compatibility
+    if (uid || user) {
+      const userId = uid || user; // Use uid if available, fallback to user
+      
+      if (colName === "orders") {
+        // Orders use direct user field with ObjectId
+        filter["fullDocument.user"] = { $oid: userId };
+      } else {
+        // Events use tags.userId with string
+        filter["fullDocument.tags.userId"] = userId;
+      }
+    }
+    
+    // Filter by session ID for events (orders don't have session concept)
+    if (sid && colName !== "orders") {
+      filter["fullDocument.tags.sessionId"] = sid;
+    }
+  }
+
+  console.log('SSE Change Stream Filter:', JSON.stringify(filter, null, 2));
 
   // Get MongoDB Change Stream for filtered events
   const changeStream = await getChangeStream(filter, key);

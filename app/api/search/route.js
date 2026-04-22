@@ -3,7 +3,7 @@ import { clientPromise, dbName } from "@/lib/mongodb";
 import { PAGINATION_PER_PAGE } from "@/lib/constants";
 
 export async function POST(request) {
-  const { query, facets, pagination_page } = await request.json();
+  const { query = '', facets, pagination_page } = await request.json();
 
   try {
     const client = await clientPromise;
@@ -47,13 +47,17 @@ export async function POST(request) {
       }
     }
 
-    // Add the $addFields and $limit stages
-    pipeline.push(
-      {
+    // Conditionally add the score field only if we have a search query
+    if (query) {
+      pipeline.push({
         $addFields: {
           score: { $meta: "searchScore" },
         },
-      },
+      });
+    }
+
+    // Add the $project and $limit stages
+    pipeline.push(
       {
         $project: {
           vai_text_embedding: 0, // Exclude the embedding field from the results

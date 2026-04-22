@@ -31,8 +31,15 @@ const Notifications = ({ isMenuOpened, onToggle }) => {
     }
 
     console.log("listenToSSEUpdates func - sessionId:", sid, "userId:", uid);
+    
+    // Build custom filter for next best actions
+    const customFilter = {
+      "fullDocument.uid": uid,
+      "fullDocument.sid": sid
+    };
+    
     const eventSource = new EventSource(
-      `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.NEXT_BEST_ACTIONS}&uid=${uid}&sid=${sid}`
+      `/api/sse?sessionId=${changeStreamSessionID.current}&colName=${COLLECTIONS.NEXT_BEST_ACTIONS}&filter=${encodeURIComponent(JSON.stringify(customFilter))}`
     );
     
     eventSource.onopen = () => {

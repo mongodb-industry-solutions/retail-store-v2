@@ -26,7 +26,6 @@ export default function RootLayout({ children }) {
             {children}
             <LoginComp />
             <DigitalReceiptComp />
-            <ChatbotOpener />
             <AlertsContainer />
           </AppFeatureWrapper>
         </ClientProvider>
