@@ -29,7 +29,11 @@ const SessionState = () => {
   useEffect(() => {
     if (!uid || !sid) return;
     const sessionId = { current: sid };
-    const url = `/api/sse?sessionId=${sessionId.current}&colName=${COLLECTIONS.SESSION_STATE}&uid=${uid}&sid=${sid}`;
+    const customFilter = {
+      "fullDocument.userId": uid,
+      "fullDocument.sessionId": sid
+    };
+    const url = `/api/sse?sessionId=${sessionId.current}&colName=${COLLECTIONS.SESSION_STATE}&filter=${encodeURIComponent(JSON.stringify(customFilter))}`;
     const eventSource = new window.EventSource(url);
 
     eventSource.onmessage = (event) => {
@@ -65,7 +69,7 @@ const SessionState = () => {
         amount={null}
         extraHTMLElement={
           <IconButton onClick={() => getSessionState()} aria-label="Fetch Session State">
-            <Icon glyph="CurlyBraces" />
+            <Icon glyph="Refresh" />
           </IconButton>
         }
         learnMoreElement={
